@@ -1,0 +1,30 @@
+package POJO;
+
+import java.util.Date;
+
+public class LigneReservation {
+	// VARIABLES
+	private int numClient;
+	private int numReservation;
+	private Date dateReservation;
+	
+	// CONSTRUCTEURS
+	public LigneReservation(){
+		Date d1 = new Date();
+		this.dateReservation = d1; // now
+	}
+	public LigneReservation(int numClient, int numReservation){
+		Date d1 = new Date();
+		this.numClient = numClient;
+		this.numReservation = numReservation;
+		this.dateReservation = d1; // now
+	}
+	
+	// PROPRIETE
+	public int getNumClient			() { return numClient; }
+	public int getNumReservation	() { return numReservation; }
+	public Date getDateReservation 	() { return dateReservation;}
+	public void setNumClient		(int el) 	{ this.numClient = el; }
+	public void setNumReservation	(int el) 	{ this.numReservation = el; }
+	public void setDateReservation 	(Date el)	{ this.dateReservation = el;}
+}

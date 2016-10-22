@@ -1,0 +1,52 @@
+package POJO;
+
+import java.util.Date;
+import java.util.Scanner;
+
+public class Moniteur extends Utilisateur{
+	// VARIABLES 
+	private Date 	dateDiplome;
+	private String 	sportPratique;
+	private int 	evaluation;
+	
+	// CONSTRUCTEURS
+	public Moniteur(){}
+	public Moniteur(String nom, String pre, String ville, String rue, String sexe, Date dateNaissance,
+			String pseudo, String mdp, int typeUtilisateur, Date dateDiplome, String sportPratique, int evaluation){
+		super(nom, pre, ville, rue, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
+		this.dateDiplome 	= dateDiplome;
+		this.sportPratique 	= sportPratique;
+		this.evaluation 	= evaluation;
+	}
+	
+	// METHODES 
+	public void ajouterMoniteur() throws Exception{
+		Scanner dateDiplomeMoniteur = new Scanner(System.in);
+		Scanner sportPratiqueMoniteur = new Scanner(System.in);
+		Scanner evaluationMoniteur = new Scanner(System.in);
+		System.out.println("Ajout d'un moniteur");
+		super.ajouterPersonne();
+		
+		System.out.print("Date de diplôme du moniteur [jj-mm-yyyy] : "); setNom(dateDiplomeMoniteur.next());
+		System.out.print("Sport enseigné par le moniteur : "); setNom(sportPratiqueMoniteur.next());
+		System.out.print("Evaluation du moniteur (/10) : "); setNom(evaluationMoniteur.next());
+	}
+	
+	// METHODE SURCHARGEE
+	@Override
+	public String toString() { 
+		return 
+			super.toString()+ System.getProperty("line.separator")
+			+ "MONITEUR, diplômé depuis " + dateDiplome + System.getProperty("line.separator")
+			+ "Sport pratiqué : " + sportPratique + System.getProperty("line.separator")
+			+ "Evaluation  : " + evaluation + "/10" + System.getProperty("line.separator");
+	}
+	
+	// PROPRIETES
+	public Date getDateDiplome		() { return dateDiplome; }
+	public String getSportPratique	() { return sportPratique; }
+	public int getEvaluation		() { return evaluation; }
+	public void setDateDiplome		(Date dateDiplome) 		{ this.dateDiplome = dateDiplome; }
+	public void setSportPratique	(String sportSpratique) { this.sportPratique = sportSpratique; }
+	public void setEvaluation		(int evaluation) 		{ this.evaluation = evaluation; }
+}
