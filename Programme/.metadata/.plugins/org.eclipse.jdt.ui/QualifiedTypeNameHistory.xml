@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="DAO.UtilisateurDAO"/>
+<fullyQualifiedTypeName name="DAO.DAO"/>
+<fullyQualifiedTypeName name="DAO.AbstractDAOFactory"/>
 <fullyQualifiedTypeName name="POJO.Utilisateur"/>
 </qualifiedTypeNameHistroy>

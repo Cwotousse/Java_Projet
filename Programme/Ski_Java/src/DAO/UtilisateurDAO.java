@@ -72,6 +72,36 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		}
 		return utilisateur;
 	}
+	
+	public Utilisateur verifPseudoMdp(String pseu, String pwd) {
+		Utilisateur utilisateur = new Utilisateur();
+		PreparedStatement pst = null;
+		try {
+			String sql = "SELECT * FROM utilisateur WHERE pseudo = ? AND mdp = ? ";
+			pst = this.connect.prepareStatement(sql);
+			pst.setString(1, pseu);
+			pst.setString(2, pwd);
+			ResultSet rs = pst.executeQuery();
+			while (rs.next()) {
+				utilisateur.setPseudo(rs.getString("pseudo"));
+				utilisateur.setMdp(rs.getString("mdp"));
+				utilisateur.setTypeUtilisateur(rs.getInt("typeUtilisateur"));
+				utilisateur.setNumUtilisateur(rs.getInt("numUtilisateur"));
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (pst != null) {
+				try {
+					pst.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return utilisateur;
+	}
 
 	public ArrayList<Utilisateur> getList() {
 		Utilisateur utilisateur;

@@ -7,6 +7,7 @@ public class Utilisateur extends Personne{
 	private String pseudo;
 	private String mdp;
 	private int typeUtilisateur;
+	private int numUtilisateur;
 
 	// CONSTRUCTEURs
 	public Utilisateur(){}
@@ -33,7 +34,9 @@ public class Utilisateur extends Personne{
 	public String getPseudo			() { return pseudo; }
 	public String getMdp			() { return mdp; }
 	public int getTypeUtilisateur	() { return typeUtilisateur; }
-	public void setPseudo				(String pseudo) 		{ this.pseudo = pseudo; }
-	public void setMdp					(String mdp)			{ this.mdp = mdp; }
-	public void setTypeUtilisateur		(int typeUtilisateur) 	{ this.typeUtilisateur = typeUtilisateur; }
+	public int getNumUtilisateur	() { return numUtilisateur; }
+	public void setPseudo			(String pseudo) 		{ this.pseudo = pseudo; }
+	public void setMdp				(String mdp)			{ this.mdp = mdp; }
+	public void setTypeUtilisateur	(int typeUtilisateur) 	{ this.typeUtilisateur = typeUtilisateur; }
+	public void setNumUtilisateur	(int numUtilisateur) 	{ this.numUtilisateur = numUtilisateur; }
 }

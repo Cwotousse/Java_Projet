@@ -1,6 +1,8 @@
 package DAO;
 import java.sql.Connection;
 
+import POJO.Utilisateur;
+
 public abstract class DAO<T> {
 	protected Connection connect = null;
 
@@ -15,4 +17,6 @@ public abstract class DAO<T> {
 	public abstract boolean update(T obj);
 
 	public abstract T find(int id);
+
+	public abstract T verifPseudoMdp(String text, String text2);
 }
