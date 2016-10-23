@@ -1,6 +1,6 @@
 package POJO;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.Scanner;
 
 public class Eleve extends Personne{
@@ -10,8 +10,8 @@ public class Eleve extends Personne{
 	
 	// CONSTRUCTEURS
 	public Eleve(){}
-	public Eleve(String nom, String pre, String ville, String rue, String sexe, Date dateNaissance, boolean aUneAssurance){
-		super(nom, pre, ville, rue, sexe, dateNaissance);
+	public Eleve(String nom, String pre, String adresse, String sexe, Date dateNaissance, int numPersonne, boolean aUneAssurance){
+		super(nom, pre, adresse, sexe, dateNaissance, numPersonne);
 		this.aUneAssurance 			= aUneAssurance;
 		attributerCategorie();
 	}
@@ -26,13 +26,11 @@ public class Eleve extends Personne{
 	
 	public void ajouterEleve() throws Exception{
 		Scanner aUneAssuranceEleve = new Scanner(System.in);
-		Scanner nombreHeureEffectueeEleve = new Scanner(System.in);
-		Scanner categorieEleve = new Scanner(System.in);
+		Scanner categoriee = new Scanner(System.in);
 		System.out.println("Ajout d'un élève");
 		super.ajouterPersonne();
 		
-		System.out.print("L'alève possède t-il une assurance ? [true/false] "); setNom(aUneAssuranceEleve.next());
-		System.out.print("Quel est le nombre d'heure de cours effectuée ? "); setNom(nombreHeureEffectueeEleve.next());
+		System.out.print("L'elève possède t-il une assurance ? [true/false] "); setNom(aUneAssuranceEleve.next());
 		attributerCategorie();
 	}
 	

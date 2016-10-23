@@ -1,6 +1,6 @@
 package POJO;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Utilisateur extends Personne{
 	// VARIABLES
@@ -11,9 +11,9 @@ public class Utilisateur extends Personne{
 
 	// CONSTRUCTEURs
 	public Utilisateur(){}
-	public Utilisateur(String nom, String pre, String ville, String rue, String sexe, Date dateNaissance,
+	public Utilisateur(String nom, String pre, String adresse, String sexe, Date dateNaissance, int numPersonne,
 			String pseudo, String mdp, int typeUtilisateur){
-		super(nom, pre, ville, rue, sexe, dateNaissance);
+		super(nom, pre, adresse, sexe, dateNaissance, numPersonne);
 		this.pseudo 			= pseudo;
 		this.mdp 				= mdp;
 		this.typeUtilisateur 	= typeUtilisateur;

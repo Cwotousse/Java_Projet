@@ -1,27 +1,27 @@
 package POJO;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.Scanner;
 
 public class Client extends Utilisateur{
 	// VARIABLES
-	private String numCarteBanq;
+	private int numClient;
 	
 	// CONSTRUCTEURs
 	public Client(){}
-	public Client(String nom, String pre, String ville, String rue, String sexe, Date dateNaissance,
-			String pseudo, String mdp, int typeUtilisateur, String numCarteBanq){
-		super(nom, pre, ville, rue, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
-		this.numCarteBanq = numCarteBanq;
+	public Client(String nom, String pre, String adresse, String sexe, Date dateNaissance, int numPersonne,
+			String pseudo, String mdp, int typeUtilisateur, int numClient){
+		super(nom, pre, adresse, sexe, dateNaissance, numPersonne, pseudo, mdp, typeUtilisateur);
+		this.numClient = numClient;
 	}
 	
 	// METHODES
 	public void ajouterClient() throws Exception{
-		Scanner numCarteBanqClient = new Scanner(System.in);
+		Scanner numClient = new Scanner(System.in);
 		System.out.println("Ajout d'un client");
 		super.ajouterPersonne();
 		
-		System.out.print("Numéro de carte bancaire : "); setNom(numCarteBanqClient.next());
+		System.out.print("Numéro de client : "); setNom(numClient.next());
 	}
 	
 	
@@ -31,10 +31,10 @@ public class Client extends Utilisateur{
 		return 
 			super.toString()+ System.getProperty("line.separator")
 			+ "CLIENT." + System.getProperty("line.separator")
-			+ "N° de carte  : " + numCarteBanq + System.getProperty("line.separator");
+			+ "N° de client : " + numClient + System.getProperty("line.separator");
 	}
 	
 	// PROPRIETES
-	public String getNumCarteBanq() { return numCarteBanq; }
-	public void setNumCarteBanq(String numCarteBanq) { this.numCarteBanq = numCarteBanq; }
+	public int getNumClient		() 				{ return numClient; }
+	public void setNumClient 	(int numClient) { this.numClient = numClient; }
 }

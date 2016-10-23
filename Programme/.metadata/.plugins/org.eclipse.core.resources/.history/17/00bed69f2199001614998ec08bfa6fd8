@@ -1,0 +1,128 @@
+package FENETRE;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.util.Properties;
+
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Date;
+
+public class F_Inscription extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField txtF_userName;
+	private JTextField txtF_mdp;
+	private JTextField txtF_nom;
+	private JTextField txtF_pre;
+	private JTextField txtF_adresse;
+	private JTextField txtF_dateNaiss;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					F_Inscription frame = new F_Inscription();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public F_Inscription() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblInscription = new JLabel("Inscription");
+		lblInscription.setFont(new Font("Yu Gothic UI", Font.PLAIN, 13));
+		lblInscription.setBounds(10, 11, 67, 14);
+		contentPane.add(lblInscription);
+		
+		txtF_userName = new JTextField();
+		txtF_userName.setToolTipText("Pseudonyme");
+		txtF_userName.setBounds(10, 36, 86, 20);
+		contentPane.add(txtF_userName);
+		txtF_userName.setColumns(10);
+		
+		txtF_mdp = new JTextField();
+		txtF_mdp.setToolTipText("Mot de passe");
+		txtF_mdp.setBounds(10, 67, 86, 20);
+		contentPane.add(txtF_mdp);
+		txtF_mdp.setColumns(10);
+		
+		txtF_nom = new JTextField();
+		txtF_nom.setToolTipText("Nom");
+		txtF_nom.setBounds(10, 98, 86, 20);
+		contentPane.add(txtF_nom);
+		txtF_nom.setColumns(10);
+		
+		txtF_pre = new JTextField();
+		txtF_pre.setToolTipText("Prenom");
+		txtF_pre.setBounds(10, 129, 86, 20);
+		contentPane.add(txtF_pre);
+		txtF_pre.setColumns(10);
+		
+		txtF_adresse = new JTextField();
+		txtF_adresse.setToolTipText("Adresse");
+		txtF_adresse.setBounds(10, 197, 86, 40);
+		contentPane.add(txtF_adresse);
+		txtF_adresse.setColumns(10);
+		
+		
+		
+		UtilDateModel model = new UtilDateModel();
+		Properties p = new Properties();
+		p.put("text.today", "Today");
+		p.put("text.month", "Month");
+		p.put("text.year", "Year");
+		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+		datePanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Date selectedDate = (Date) datePanel.getModel().getValue();
+				txtF_dateNaiss.setText(selectedDate.toString());
+			}
+		});
+		
+		datePanel.setBounds(204, 51, 154, 154);
+		contentPane.add(datePanel);
+		
+		
+		
+		txtF_dateNaiss = new JTextField();
+		txtF_dateNaiss.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				datePanel.setVisible(true);
+			}
+		});
+		txtF_dateNaiss.setBounds(10, 160, 86, 20);
+		contentPane.add(txtF_dateNaiss);
+		txtF_dateNaiss.setColumns(10);
+	}
+}

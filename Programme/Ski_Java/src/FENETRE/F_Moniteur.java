@@ -60,11 +60,11 @@ public class F_Moniteur extends JFrame {
 		contentPane.add(separator);
 		
 		JRadioButton rdbtnConsulterHoraire = new JRadioButton("Consulter horaire");
-		rdbtnConsulterHoraire.setBounds(6, 54, 109, 23);
+		rdbtnConsulterHoraire.setBounds(6, 54, 121, 23);
 		contentPane.add(rdbtnConsulterHoraire);
 		
 		JRadioButton rdbtnSeDconnecter = new JRadioButton("Se d\u00E9connecter");
-		rdbtnSeDconnecter.setBounds(6, 80, 109, 23);
+		rdbtnSeDconnecter.setBounds(6, 80, 121, 23);
 		contentPane.add(rdbtnSeDconnecter);
 		
 		JButton btnSuivant = new JButton("Suivant");
@@ -85,7 +85,7 @@ public class F_Moniteur extends JFrame {
 				}
 			}
 		});
-		btnSuivant.setBounds(10, 191, 89, 23);
+		btnSuivant.setBounds(10, 191, 117, 23);
 		contentPane.add(btnSuivant);
 		
 		

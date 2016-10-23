@@ -1,6 +1,6 @@
 package POJO;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.Scanner;
 
 public class Moniteur extends Utilisateur{
@@ -9,9 +9,9 @@ public class Moniteur extends Utilisateur{
 	
 	// CONSTRUCTEURS
 	public Moniteur(){}
-	public Moniteur(String nom, String pre, String ville, String rue, String sexe, Date dateNaissance,
+	public Moniteur(String nom, String pre, String adresse, String sexe, Date dateNaissance, int numPersonne, 
 			String pseudo, String mdp, int typeUtilisateur){
-		super(nom, pre, ville, rue, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
+		super(nom, pre, adresse, sexe, dateNaissance, numPersonne, pseudo, mdp, typeUtilisateur);
 		this.anneeDexp 	= 0 ;// A CHANGER via une methode calculerAnneeExp
 	}
 	

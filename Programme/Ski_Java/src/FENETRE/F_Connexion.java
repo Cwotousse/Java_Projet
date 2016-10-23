@@ -107,6 +107,16 @@ public class F_Connexion extends JFrame {
 		getContentPane().add(btnSeConnecter);
 		
 		JButton btnJeNePossde = new JButton("S'inscrire");
+		btnJeNePossde.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				setVisible(false); //you can't see me!
+				//dispose(); //Destroy the JFrame object
+				F_Inscription frame = new F_Inscription(txtNomDutilisateur.getText(), pwdPassword.getText());
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+		});
 		btnJeNePossde.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}

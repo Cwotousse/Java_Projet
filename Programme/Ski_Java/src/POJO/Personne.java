@@ -1,35 +1,36 @@
 package POJO;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-public abstract class Personne {
+public class Personne {
 	// VARIABLES 
 	private String 	nom;
 	private String 	pre;
 	private String 	adresse;
-	private String 	rue;
 	private String 	sexe;
 	private Date 	dateNaissance;
+	private int 	numPersonne;
 		
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	// CONSTRUCTEURS
 	public Personne(){}
-	public Personne(String nom, String pre, String adresse, String rue, String sexe, Date dateNaissance){
+	public Personne(String nom, String pre, String adresse, String sexe, Date dateNaissance, int numPersonne){
 		this.nom 			= nom;
 		this.pre 			= pre;
 		this.adresse 		= adresse;
-		this.rue 			= rue;
 		this.sexe 			= sexe;
 		this.dateNaissance 	= dateNaissance;
+		this.numPersonne 	= numPersonne;
 	}
 	
 	
 	// METHODES
 	public double calculerAge(){
-		Date now = new Date();
+		Date now = new Date(Calendar.getInstance().getTime().getTime());
 		long diffInMillies = now.getTime() - this.getDateNaissance().getTime();
 		long tu =  TimeUnit.DAYS.convert(diffInMillies,TimeUnit.MILLISECONDS);
 				//- this.getDateNaissance();
@@ -49,10 +50,9 @@ public abstract class Personne {
 			System.out.println("Nom de la personne : "); setNom(sc.next());
 			System.out.println("Prénom de la personne : "); setPre(sc.next());
 			System.out.println("Sexe de la personne  [m/f]: "); while (!sc.hasNext("[mf]")) { System.out.print("Reponse incorrecte, entrez m ou f.");setSexe(sc.next()); } // Autorise juste h ou f
-			System.out.println("Rue de la personne : "); setRue(sc.next());
-			System.out.println("Ville de la personne: "); setAdresse(sc.next());
+			System.out.println("Adresse de la personne: "); setAdresse(sc.next());
 		} while(!sc.hasNext("[a-z]")); // autorise que des caracteres
-		System.out.println("Date de naissance de la personne [jj/mm/yyyy] : "); while (!sc.hasNext("[/123456789]")) setDateNaissance(Utilitaire.stringToDate(sc.next()));
+		//System.out.println("Date de naissance de la personne [jj/mm/yyyy] : "); while (!sc.hasNext("[/123456789]")) setDateNaissance(Utilitaire.stringToDate(sc.next()));
 	}
 	
 	// METHODE SURCHARGEE
@@ -61,20 +61,20 @@ public abstract class Personne {
 		return 
 			nom.toUpperCase() + " " + pre + ", " + sexe + System.getProperty("line.separator") 
 			+ "Date de naissance : " + dateFormat.format(dateNaissance) + " (" + (int)calculerAge() + ")" + System.getProperty("line.separator") 
-			+ "Residence : " + rue + ", " + adresse.toUpperCase() + System.getProperty("line.separator");
+			+ "Residence : " + adresse.toUpperCase() + System.getProperty("line.separator");
 	}
 	
 	// PROPRIETE
 	public String getNom		() { return nom; }
 	public String getPre		() { return pre; }
 	public String getAdresse	() { return adresse; }
-	public String getRue		() { return rue; }
 	public String getSexe		() { return sexe; }
 	public Date getDateNaissance() { return dateNaissance; }
+	public int getNumPersonne 	() { return numPersonne; }
 	public void setNom			(String nom) 			{ this.nom = nom; }
 	public void setPre			(String pre) 			{ this.pre = pre; }
 	public void setAdresse		(String adresse) 		{ this.adresse = adresse;	}
-	public void setRue			(String rue) 			{ this.rue = rue; }
 	public void setSexe			(String sexe) 			{ this.sexe = sexe; }
 	public void setDateNaissance(Date dateNaissance) 	{ this.dateNaissance = dateNaissance; }
+	public void setNumPersonne	(int el)				{ this.numPersonne = el; }
 }

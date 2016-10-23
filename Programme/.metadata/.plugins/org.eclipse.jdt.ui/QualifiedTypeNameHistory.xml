@@ -4,4 +4,15 @@
 <fullyQualifiedTypeName name="DAO.DAO"/>
 <fullyQualifiedTypeName name="DAO.AbstractDAOFactory"/>
 <fullyQualifiedTypeName name="POJO.Utilisateur"/>
+<fullyQualifiedTypeName name="org.jdatepicker.impl.UtilDateModel"/>
+<fullyQualifiedTypeName name="org.jdatepicker.impl.JDatePanelImpl"/>
+<fullyQualifiedTypeName name="org.jdatepicker.impl.JDatePickerImpl"/>
+<fullyQualifiedTypeName name="java.util.Properties"/>
+<fullyQualifiedTypeName name="java.sql.Date"/>
+<fullyQualifiedTypeName name="javax.swing.JFormattedTextField.AbstractFormatter"/>
+<fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
+<fullyQualifiedTypeName name="java.text.ParseException"/>
+<fullyQualifiedTypeName name="java.util.Calendar"/>
+<fullyQualifiedTypeName name="POJO.Personne"/>
+<fullyQualifiedTypeName name="POJO.Client"/>
 </qualifiedTypeNameHistroy>
