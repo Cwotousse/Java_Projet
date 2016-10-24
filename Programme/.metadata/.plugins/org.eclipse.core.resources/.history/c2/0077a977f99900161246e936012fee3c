@@ -1,0 +1,279 @@
+package FENETRE;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.UtilDateModel;
+
+import DAO.AbstractDAOFactory;
+import DAO.DAO;
+import POJO.Client;
+import POJO.Personne;
+import POJO.Utilisateur;
+
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.util.Calendar;
+import java.util.Properties;
+
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import javax.swing.JRadioButton;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JRadioButtonMenuItem;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class F_Inscription extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField txtF_userName;
+	private JTextField txtF_mdp;
+	private JTextField txtF_nom;
+	private JTextField txtF_pre;
+	private JTextField txtF_adresse;
+	private String sexe = "H"; 
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					F_Inscription frame = new F_Inscription("", "");
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public F_Inscription() {}
+	public F_Inscription(String login, String mdp) {
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 350, 275);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblInscription = new JLabel("Inscription");
+		lblInscription.setFont(new Font("Yu Gothic UI", Font.PLAIN, 13));
+		lblInscription.setBounds(10, 11, 67, 14);
+		contentPane.add(lblInscription);
+		
+		txtF_userName = new JTextField();
+		txtF_userName.setToolTipText("Pseudonyme");
+		txtF_userName.setBounds(159, 36, 155, 20);
+		txtF_userName.setText(login);
+		contentPane.add(txtF_userName);
+		txtF_userName.setColumns(10);
+		
+		txtF_mdp = new JTextField();
+		txtF_mdp.setToolTipText("Mot de passe");
+		txtF_mdp.setBounds(159, 67, 155, 20);
+		txtF_mdp.setText(mdp);
+		contentPane.add(txtF_mdp);
+		txtF_mdp.setColumns(10);
+		
+		txtF_nom = new JTextField();
+		txtF_nom.setToolTipText("Nom");
+		txtF_nom.setBounds(10, 36, 130, 20);
+		contentPane.add(txtF_nom);
+		txtF_nom.setColumns(10);
+		
+		txtF_pre = new JTextField();
+		txtF_pre.setToolTipText("Prenom");
+		txtF_pre.setBounds(10, 67, 130, 20);
+		contentPane.add(txtF_pre);
+		txtF_pre.setColumns(10);
+		
+		txtF_adresse = new JTextField();
+		txtF_adresse.setToolTipText("Adresse");
+		txtF_adresse.setBounds(10, 135, 130, 40);
+		contentPane.add(txtF_adresse);
+		txtF_adresse.setColumns(10);
+		
+		
+		
+		UtilDateModel model = new UtilDateModel();
+		Properties p = new Properties();
+		p.put("text.today", "Today");
+		p.put("text.month", "Month");
+		p.put("text.year", "Year");
+		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
+		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		datePicker.getJFormattedTextField().setToolTipText("Date de naissance");
+				
+		datePicker.setBounds(10, 101, 130, 23);
+		contentPane.add(datePicker);
+		
+		JRadioButton rdbtnH = new JRadioButton("Homme");
+		JRadioButton rdbtnF = new JRadioButton("Femme");
+		rdbtnH.setSelected(true);
+		rdbtnH.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				rdbtnH.setSelected(true);
+				sexe = "H";
+				rdbtnF.setSelected(false);
+			}
+		});
+		
+		rdbtnH.setBounds(159, 101, 67, 23);
+		contentPane.add(rdbtnH);
+		
+		
+		rdbtnF.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				rdbtnH.setSelected(false);
+				sexe = "F";
+				rdbtnF.setSelected(true);
+			}
+		});
+		rdbtnF.setBounds(239, 101, 75, 23);
+		contentPane.add(rdbtnF);
+		
+		JCheckBox chkb_snow = new JCheckBox("Snowboard");
+		chkb_snow.setToolTipText("Accreditation");
+		chkb_snow.setBounds(239, 144, 97, 23);
+		contentPane.add(chkb_snow);
+		
+		JCheckBox chkb_skiFond = new JCheckBox("Ski fond");
+		chkb_skiFond.setToolTipText("Accreditation");
+		chkb_skiFond.setBounds(239, 163, 97, 23);
+		contentPane.add(chkb_skiFond);
+		
+		JCheckBox chkb_skiAlpin = new JCheckBox("Ski alpin");
+		chkb_skiAlpin.setToolTipText("Accreditation");
+		chkb_skiAlpin.setBounds(159, 163, 97, 23);
+		contentPane.add(chkb_skiAlpin);
+		
+		JCheckBox chkb_telemark = new JCheckBox("T\u00E9l\u00E9mark");
+		chkb_telemark.setToolTipText("Accreditation");
+		chkb_telemark.setBounds(159, 144, 97, 23);
+		contentPane.add(chkb_telemark);
+		
+		chkb_snow.setVisible(false);
+		chkb_skiAlpin.setVisible(false);
+		chkb_skiFond.setVisible(false);
+		chkb_telemark.setVisible(false);
+		
+		JRadioButton rdbtnMoniteur = new JRadioButton("Moniteur");
+		JRadioButton rdbtnClient = new JRadioButton("Client");
+		rdbtnMoniteur.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				rdbtnMoniteur.setSelected(true);
+				rdbtnClient.setSelected(false);
+				
+				chkb_snow.setVisible(true);
+				chkb_skiAlpin.setVisible(true);
+				chkb_skiFond.setVisible(true);
+				chkb_telemark.setVisible(true);
+				
+			}
+		});
+		rdbtnMoniteur.setBounds(239, 120, 75, 23);
+		contentPane.add(rdbtnMoniteur);
+		
+		rdbtnClient.setSelected(true);
+		rdbtnClient.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				rdbtnClient.setSelected(true);
+				rdbtnMoniteur.setSelected(false);
+				
+				chkb_snow.setVisible(false);
+				chkb_skiAlpin.setVisible(false);
+				chkb_skiFond.setVisible(false);
+				chkb_telemark.setVisible(false);
+			}
+		});
+		rdbtnClient.setBounds(159, 120, 67, 23);
+		contentPane.add(rdbtnClient);
+		
+		JButton btn_inscrip = new JButton("S'enregistrer");
+		
+		
+		btn_inscrip.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+				DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
+				DAO<Personne> PersonneDao = adf.getPersonneDAO();
+				//Utilisateur u = UtilisateurDao.verifPseudoMdp(txtNomDutilisateur.getText(), pwdPassword.getText());
+				
+				if(rdbtnClient.isSelected()){
+					DAO<Client> ClientDao = adf.getClientDAO();
+					//Client c = new Client();
+					ClientDao.create(new Client(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, (java.sql.Date) datePicker.getModel().getValue(),
+							txtF_userName.getText(), txtF_mdp.getText(), 2, "rue des pd"));
+				}
+				else {
+					//DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
+					//ClientDao.create(new Client(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, (Date) datePicker.getModel().getValue(), numPers, txtF_userName.getText(), txtF_mdp.getText(), 1, numUtil));
+				}
+				
+			}
+		});
+		btn_inscrip.setBounds(159, 202, 155, 23);
+		contentPane.add(btn_inscrip);
+		
+		JButton btn_retour = new JButton("Retour");
+		btn_retour.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setVisible(false);
+				F_Connexion frame = new F_Connexion();
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+		});
+		btn_retour.setBounds(10, 202, 130, 23);
+		contentPane.add(btn_retour);
+		
+	}
+	
+	public class DateLabelFormatter extends AbstractFormatter {
+
+	    private String datePattern = "yyyy-MM-dd";
+	    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+	    @Override
+	    public Object stringToValue(String text) throws ParseException {
+	        return dateFormatter.parseObject(text);
+	    }
+
+	    @Override
+	    public String valueToString(Object value) throws ParseException {
+	        if (value != null) {
+	            Calendar cal = (Calendar) value;
+	            return dateFormatter.format(cal.getTime());
+	        }
+
+	        return "";
+	    }
+
+	}
+}

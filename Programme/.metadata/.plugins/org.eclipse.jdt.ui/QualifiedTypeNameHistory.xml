@@ -8,7 +8,6 @@
 <fullyQualifiedTypeName name="org.jdatepicker.impl.JDatePanelImpl"/>
 <fullyQualifiedTypeName name="org.jdatepicker.impl.JDatePickerImpl"/>
 <fullyQualifiedTypeName name="java.util.Properties"/>
-<fullyQualifiedTypeName name="java.sql.Date"/>
 <fullyQualifiedTypeName name="javax.swing.JFormattedTextField.AbstractFormatter"/>
 <fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
 <fullyQualifiedTypeName name="java.text.ParseException"/>
@@ -16,4 +15,8 @@
 <fullyQualifiedTypeName name="POJO.Personne"/>
 <fullyQualifiedTypeName name="POJO.Client"/>
 <fullyQualifiedTypeName name="java.text.DateFormat"/>
+<fullyQualifiedTypeName name="org.jdatepicker.impl.SqlDateModel"/>
+<fullyQualifiedTypeName name="java.sql.Date"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="POJO.Moniteur"/>
 </qualifiedTypeNameHistroy>

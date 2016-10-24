@@ -10,11 +10,13 @@ import javax.swing.border.EmptyBorder;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.SqlDateModel;
 import org.jdatepicker.impl.UtilDateModel;
 
 import DAO.AbstractDAOFactory;
 import DAO.DAO;
 import POJO.Client;
+import POJO.Moniteur;
 import POJO.Personne;
 import POJO.Utilisateur;
 
@@ -28,6 +30,7 @@ import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
+//import java.util.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,6 +40,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JRadioButtonMenuItem;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
+import javax.swing.JTable;
 
 public class F_Inscription extends JFrame {
 
@@ -47,6 +52,8 @@ public class F_Inscription extends JFrame {
 	private JTextField txtF_pre;
 	private JTextField txtF_adresse;
 	private String sexe = "H"; 
+	private JTable table;
+	private JTextField txtF_adresseFact;
 
 	/**
 	 * Launch the application.
@@ -67,11 +74,10 @@ public class F_Inscription extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public F_Inscription() {}
 	public F_Inscription(String login, String mdp) {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 350, 275);
+		setBounds(100, 100, 350, 320);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -84,39 +90,82 @@ public class F_Inscription extends JFrame {
 		
 		txtF_userName = new JTextField();
 		txtF_userName.setToolTipText("Pseudonyme");
-		txtF_userName.setBounds(159, 36, 155, 20);
+		txtF_userName.setBounds(159, 43, 155, 20);
 		txtF_userName.setText(login);
 		contentPane.add(txtF_userName);
 		txtF_userName.setColumns(10);
 		
 		txtF_mdp = new JTextField();
 		txtF_mdp.setToolTipText("Mot de passe");
-		txtF_mdp.setBounds(159, 67, 155, 20);
+		txtF_mdp.setBounds(159, 101, 155, 20);
 		txtF_mdp.setText(mdp);
 		contentPane.add(txtF_mdp);
 		txtF_mdp.setColumns(10);
 		
 		txtF_nom = new JTextField();
 		txtF_nom.setToolTipText("Nom");
-		txtF_nom.setBounds(10, 36, 130, 20);
+		txtF_nom.setBounds(10, 43, 130, 20);
 		contentPane.add(txtF_nom);
 		txtF_nom.setColumns(10);
 		
 		txtF_pre = new JTextField();
 		txtF_pre.setToolTipText("Prenom");
-		txtF_pre.setBounds(10, 67, 130, 20);
+		txtF_pre.setBounds(10, 101, 130, 20);
 		contentPane.add(txtF_pre);
 		txtF_pre.setColumns(10);
 		
 		txtF_adresse = new JTextField();
 		txtF_adresse.setToolTipText("Adresse");
-		txtF_adresse.setBounds(10, 135, 130, 40);
+		txtF_adresse.setBounds(10, 202, 130, 40);
 		contentPane.add(txtF_adresse);
 		txtF_adresse.setColumns(10);
 		
+		JLabel lblNom = new JLabel("Nom");
+		lblNom.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblNom.setBounds(10, 31, 46, 14);
+		contentPane.add(lblNom);
 		
+		JLabel lblPre = new JLabel("Prenom");
+		lblPre.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblPre.setBounds(10, 84, 130, 14);
+		contentPane.add(lblPre);
 		
-		UtilDateModel model = new UtilDateModel();
+		JLabel lblPseu = new JLabel("Pseudonyme");
+		lblPseu.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblPseu.setBounds(159, 31, 155, 14);
+		contentPane.add(lblPseu);
+		
+		JLabel lblMdp = new JLabel("Mot de passe");
+		lblMdp.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblMdp.setBounds(159, 84, 155, 14);
+		contentPane.add(lblMdp);
+		
+		JLabel lblDateNaiss = new JLabel("Date de naissance");
+		lblDateNaiss.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblDateNaiss.setBounds(10, 132, 130, 14);
+		contentPane.add(lblDateNaiss);
+		
+		JLabel lblAdresse = new JLabel("Adresse");
+		lblAdresse.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblAdresse.setBounds(10, 185, 130, 14);
+		contentPane.add(lblAdresse);
+		
+		JLabel lblAdresseFact = new JLabel("Adresse de facturation");
+		lblAdresseFact.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblAdresseFact.setBounds(159, 185, 155, 14);
+		contentPane.add(lblAdresseFact);
+		
+		JLabel lblAccred = new JLabel("Accreditation");
+		lblAccred.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblAccred.setBounds(159, 185, 155, 14);
+		contentPane.add(lblAccred);
+		
+		txtF_adresseFact = new JTextField();
+		txtF_adresseFact.setBounds(159, 203, 155, 39);
+		contentPane.add(txtF_adresseFact);
+		txtF_adresseFact.setColumns(10);
+		
+		SqlDateModel model = new SqlDateModel();
 		Properties p = new Properties();
 		p.put("text.today", "Today");
 		p.put("text.month", "Month");
@@ -125,7 +174,7 @@ public class F_Inscription extends JFrame {
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
 		datePicker.getJFormattedTextField().setToolTipText("Date de naissance");
 				
-		datePicker.setBounds(10, 101, 130, 23);
+		datePicker.setBounds(10, 146, 130, 23);
 		contentPane.add(datePicker);
 		
 		JRadioButton rdbtnH = new JRadioButton("Homme");
@@ -140,7 +189,7 @@ public class F_Inscription extends JFrame {
 			}
 		});
 		
-		rdbtnH.setBounds(159, 101, 67, 23);
+		rdbtnH.setBounds(159, 128, 67, 23);
 		contentPane.add(rdbtnH);
 		
 		
@@ -152,33 +201,28 @@ public class F_Inscription extends JFrame {
 				rdbtnF.setSelected(true);
 			}
 		});
-		rdbtnF.setBounds(239, 101, 75, 23);
+		rdbtnF.setBounds(228, 128, 75, 23);
 		contentPane.add(rdbtnF);
 		
 		JCheckBox chkb_snow = new JCheckBox("Snowboard");
 		chkb_snow.setToolTipText("Accreditation");
-		chkb_snow.setBounds(239, 144, 97, 23);
+		chkb_snow.setBounds(239, 202, 97, 23);
 		contentPane.add(chkb_snow);
 		
 		JCheckBox chkb_skiFond = new JCheckBox("Ski fond");
 		chkb_skiFond.setToolTipText("Accreditation");
-		chkb_skiFond.setBounds(239, 163, 97, 23);
+		chkb_skiFond.setBounds(239, 221, 97, 23);
 		contentPane.add(chkb_skiFond);
 		
 		JCheckBox chkb_skiAlpin = new JCheckBox("Ski alpin");
 		chkb_skiAlpin.setToolTipText("Accreditation");
-		chkb_skiAlpin.setBounds(159, 163, 97, 23);
+		chkb_skiAlpin.setBounds(159, 221, 97, 23);
 		contentPane.add(chkb_skiAlpin);
 		
 		JCheckBox chkb_telemark = new JCheckBox("T\u00E9l\u00E9mark");
 		chkb_telemark.setToolTipText("Accreditation");
-		chkb_telemark.setBounds(159, 144, 97, 23);
+		chkb_telemark.setBounds(159, 202, 97, 23);
 		contentPane.add(chkb_telemark);
-		
-		chkb_snow.setVisible(false);
-		chkb_skiAlpin.setVisible(false);
-		chkb_skiFond.setVisible(false);
-		chkb_telemark.setVisible(false);
 		
 		JRadioButton rdbtnMoniteur = new JRadioButton("Moniteur");
 		JRadioButton rdbtnClient = new JRadioButton("Client");
@@ -187,7 +231,10 @@ public class F_Inscription extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				rdbtnMoniteur.setSelected(true);
 				rdbtnClient.setSelected(false);
+				lblAdresseFact.setVisible(false);
+				txtF_adresseFact.setVisible(false);
 				
+				lblAccred.setVisible(true);
 				chkb_snow.setVisible(true);
 				chkb_skiAlpin.setVisible(true);
 				chkb_skiFond.setVisible(true);
@@ -195,7 +242,7 @@ public class F_Inscription extends JFrame {
 				
 			}
 		});
-		rdbtnMoniteur.setBounds(239, 120, 75, 23);
+		rdbtnMoniteur.setBounds(228, 146, 75, 23);
 		contentPane.add(rdbtnMoniteur);
 		
 		rdbtnClient.setSelected(true);
@@ -203,15 +250,18 @@ public class F_Inscription extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				rdbtnClient.setSelected(true);
-				rdbtnMoniteur.setSelected(false);
+				lblAdresseFact.setVisible(true);
+				txtF_adresseFact.setVisible(true);
 				
+				rdbtnMoniteur.setSelected(false);
+				lblAccred.setVisible(false);
 				chkb_snow.setVisible(false);
 				chkb_skiAlpin.setVisible(false);
 				chkb_skiFond.setVisible(false);
 				chkb_telemark.setVisible(false);
 			}
 		});
-		rdbtnClient.setBounds(159, 120, 67, 23);
+		rdbtnClient.setBounds(159, 146, 67, 23);
 		contentPane.add(rdbtnClient);
 		
 		JButton btn_inscrip = new JButton("S'enregistrer");
@@ -220,24 +270,34 @@ public class F_Inscription extends JFrame {
 		btn_inscrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-				DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
-				DAO<Personne> PersonneDao = adf.getPersonneDAO();
+				//DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
+				//DAO<Personne> PersonneDao = adf.getPersonneDAO();
 				//Utilisateur u = UtilisateurDao.verifPseudoMdp(txtNomDutilisateur.getText(), pwdPassword.getText());
-				
+				//Date dt = new Date(10, 10, 2016);
+				//java.sql.Date selectedDate = dt;//(java.sql.Date) datePicker.getModel().getValue();
 				if(rdbtnClient.isSelected()){
 					DAO<Client> ClientDao = adf.getClientDAO();
-					//Client c = new Client();
-					ClientDao.create(new Client(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, /*(Date) datePicker.getModel().getValue()*/,
-							txtF_userName.getText(), txtF_mdp.getText(), 2, "rue des pd"));
+					if (ClientDao.create(new Client(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, (Date) datePicker.getModel().getValue(),
+							txtF_userName.getText(), txtF_mdp.getText(), 2, txtF_adresseFact.getText()))){
+						// Afficher la fenetre client
+					}
 				}
 				else {
-					//DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
-					//ClientDao.create(new Client(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, (Date) datePicker.getModel().getValue(), numPers, txtF_userName.getText(), txtF_mdp.getText(), 1, numUtil));
+					DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
+					if (MoniteurDao.create(new Moniteur(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe,
+							(Date) datePicker.getModel().getValue(), txtF_userName.getText(), txtF_mdp.getText(), 1))){
+						setVisible(false); //you can't see me!
+						//dispose(); //Destroy the JFrame object
+						F_Moniteur frame = new F_Moniteur();
+						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frame.setVisible(true);
+					}
+					
 				}
 				
 			}
 		});
-		btn_inscrip.setBounds(159, 202, 155, 23);
+		btn_inscrip.setBounds(159, 251, 155, 23);
 		contentPane.add(btn_inscrip);
 		
 		JButton btn_retour = new JButton("Retour");
@@ -250,14 +310,23 @@ public class F_Inscription extends JFrame {
 				frame.setVisible(true);
 			}
 		});
-		btn_retour.setBounds(10, 202, 130, 23);
+		btn_retour.setBounds(10, 253, 130, 23);
 		contentPane.add(btn_retour);
 		
+		lblAdresseFact.setVisible(true);
+		txtF_adresseFact.setVisible(true);
+		
+		rdbtnMoniteur.setSelected(false);
+		lblAccred.setVisible(false);
+		chkb_snow.setVisible(false);
+		chkb_skiAlpin.setVisible(false);
+		chkb_skiFond.setVisible(false);
+		chkb_telemark.setVisible(false);
 	}
 	
 	public class DateLabelFormatter extends AbstractFormatter {
 
-	    private String datePattern = "yyyy-MM-dd";
+	    private String datePattern = "dd-MM-yyyy";
 	    private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
 
 	    @Override
@@ -274,6 +343,5 @@ public class F_Inscription extends JFrame {
 
 	        return "";
 	    }
-
 	}
 }

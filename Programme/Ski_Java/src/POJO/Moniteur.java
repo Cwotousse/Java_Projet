@@ -1,12 +1,14 @@
 package POJO;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Moniteur extends Utilisateur{
 	// VARIABLES 
 	private int anneeDexp;
 	private int numMoniteur;
+	private ArrayList<Accreditation> listAccreditation = new ArrayList<Accreditation>();
 	
 	// CONSTRUCTEURS
 	public Moniteur(){}
@@ -30,6 +32,15 @@ public class Moniteur extends Utilisateur{
 		System.out.print("Evaluation du moniteur (/10) : "); setNom(evaluationMoniteur.next());
 	}
 	
+	// Pour ne pas additionner 2 fois le même moniteur
+	public void addAccreditation(Accreditation ac){
+		if(!listAccreditation.contains(ac))
+			listAccreditation.add(ac);
+	}
+	public void removeAccreditation(Accreditation ac){ this.listAccreditation.remove(ac); }
+	public boolean equals(Moniteur mo){ return this.getNumMoniteur() == mo.getNumMoniteur(); }
+
+	
 	// METHODE SURCHARGEE
 	@Override
 	public String toString() { 
@@ -41,6 +52,8 @@ public class Moniteur extends Utilisateur{
 	// PROPRIETES
 	public int getAnneeExp		() 			{ return anneeDexp; }
 	public int getNumMoniteur	() 			{ return numMoniteur; }
+	public ArrayList<Accreditation> getAccrediList() { return listAccreditation; }
 	public void setNumMoniteur	(int el) { this.numMoniteur = el;}
 	public void setAnneeExp 	(int el) 	{ this.anneeDexp = el; }
+	public void setAccrediList(ArrayList<Accreditation> accrediList) { this.listAccreditation = accrediList; 	}
 }
