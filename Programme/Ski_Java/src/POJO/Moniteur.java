@@ -6,13 +6,15 @@ import java.util.Scanner;
 public class Moniteur extends Utilisateur{
 	// VARIABLES 
 	private int anneeDexp;
+	private int numMoniteur;
 	
 	// CONSTRUCTEURS
 	public Moniteur(){}
-	public Moniteur(String nom, String pre, String adresse, String sexe, Date dateNaissance, int numPersonne, 
+	public Moniteur(String nom, String pre, String adresse, String sexe, Date dateNaissance, 
 			String pseudo, String mdp, int typeUtilisateur){
-		super(nom, pre, adresse, sexe, dateNaissance, numPersonne, pseudo, mdp, typeUtilisateur);
+		super(nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
 		this.anneeDexp 	= 0 ;// A CHANGER via une methode calculerAnneeExp
+		//this.numMoniteur = numMoniteur;
 	}
 	
 	// METHODES 
@@ -37,6 +39,8 @@ public class Moniteur extends Utilisateur{
 	}
 	
 	// PROPRIETES
-	public int getAnneeExp	() 			{ return anneeDexp; }
-	public void setAnneeExp (int el) 	{ this.anneeDexp = el; }
+	public int getAnneeExp		() 			{ return anneeDexp; }
+	public int getNumMoniteur	() 			{ return numMoniteur; }
+	public void setNumMoniteur	(int el) { this.numMoniteur = el;}
+	public void setAnneeExp 	(int el) 	{ this.anneeDexp = el; }
 }

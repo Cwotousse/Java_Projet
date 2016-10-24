@@ -15,4 +15,5 @@
 <fullyQualifiedTypeName name="java.util.Calendar"/>
 <fullyQualifiedTypeName name="POJO.Personne"/>
 <fullyQualifiedTypeName name="POJO.Client"/>
+<fullyQualifiedTypeName name="java.text.DateFormat"/>
 </qualifiedTypeNameHistroy>

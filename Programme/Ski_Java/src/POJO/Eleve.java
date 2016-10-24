@@ -10,8 +10,8 @@ public class Eleve extends Personne{
 	
 	// CONSTRUCTEURS
 	public Eleve(){}
-	public Eleve(String nom, String pre, String adresse, String sexe, Date dateNaissance, int numPersonne, boolean aUneAssurance){
-		super(nom, pre, adresse, sexe, dateNaissance, numPersonne);
+	public Eleve(String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance){
+		super(nom, pre, adresse, sexe, dateNaissance);
 		this.aUneAssurance 			= aUneAssurance;
 		attributerCategorie();
 	}

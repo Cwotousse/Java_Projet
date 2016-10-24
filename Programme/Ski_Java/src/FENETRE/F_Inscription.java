@@ -28,6 +28,7 @@ import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import javax.swing.JRadioButton;
@@ -45,6 +46,7 @@ public class F_Inscription extends JFrame {
 	private JTextField txtF_nom;
 	private JTextField txtF_pre;
 	private JTextField txtF_adresse;
+	private String sexe = "H"; 
 
 	/**
 	 * Launch the application.
@@ -133,6 +135,7 @@ public class F_Inscription extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				rdbtnH.setSelected(true);
+				sexe = "H";
 				rdbtnF.setSelected(false);
 			}
 		});
@@ -145,6 +148,7 @@ public class F_Inscription extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				rdbtnH.setSelected(false);
+				sexe = "F";
 				rdbtnF.setSelected(true);
 			}
 		});
@@ -211,17 +215,24 @@ public class F_Inscription extends JFrame {
 		contentPane.add(rdbtnClient);
 		
 		JButton btn_inscrip = new JButton("S'enregistrer");
+		
+		
 		btn_inscrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 				DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
 				DAO<Personne> PersonneDao = adf.getPersonneDAO();
 				//Utilisateur u = UtilisateurDao.verifPseudoMdp(txtNomDutilisateur.getText(), pwdPassword.getText());
+				
 				if(rdbtnClient.isSelected()){
 					DAO<Client> ClientDao = adf.getClientDAO();
+					//Client c = new Client();
+					ClientDao.create(new Client(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, /*(Date) datePicker.getModel().getValue()*/,
+							txtF_userName.getText(), txtF_mdp.getText(), 2, "rue des pd"));
 				}
 				else {
 					//DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
+					//ClientDao.create(new Client(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, (Date) datePicker.getModel().getValue(), numPers, txtF_userName.getText(), txtF_mdp.getText(), 1, numUtil));
 				}
 				
 			}

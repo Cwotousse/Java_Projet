@@ -6,13 +6,15 @@ import java.util.Scanner;
 public class Client extends Utilisateur{
 	// VARIABLES
 	private int numClient;
+	private String adresseFacturation;
 	
 	// CONSTRUCTEURs
 	public Client(){}
-	public Client(String nom, String pre, String adresse, String sexe, Date dateNaissance, int numPersonne,
-			String pseudo, String mdp, int typeUtilisateur, int numClient){
-		super(nom, pre, adresse, sexe, dateNaissance, numPersonne, pseudo, mdp, typeUtilisateur);
-		this.numClient = numClient;
+	public Client(String nom, String pre, String adresse, String sexe, Date dateNaissance,
+			String pseudo, String mdp, int typeUtilisateur, String adresseFacturation){
+		super(nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
+		//this.numClient = numClient;
+		this.adresseFacturation = adresseFacturation;
 	}
 	
 	// METHODES
@@ -35,6 +37,8 @@ public class Client extends Utilisateur{
 	}
 	
 	// PROPRIETES
+	public String getAdresseFacturation() { return adresseFacturation;}
 	public int getNumClient		() 				{ return numClient; }
+	public void setAdresseFacturation (String el) { this.adresseFacturation  = el;}
 	public void setNumClient 	(int numClient) { this.numClient = numClient; }
 }

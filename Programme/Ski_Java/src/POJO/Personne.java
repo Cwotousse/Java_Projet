@@ -18,13 +18,13 @@ public class Personne {
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	// CONSTRUCTEURS
 	public Personne(){}
-	public Personne(String nom, String pre, String adresse, String sexe, Date dateNaissance, int numPersonne){
+	public Personne(String nom, String pre, String adresse, String sexe, Date dateNaissance){
 		this.nom 			= nom;
 		this.pre 			= pre;
 		this.adresse 		= adresse;
 		this.sexe 			= sexe;
 		this.dateNaissance 	= dateNaissance;
-		this.numPersonne 	= numPersonne;
+		//this.numPersonne 	= numPersonne;
 	}
 	
 	

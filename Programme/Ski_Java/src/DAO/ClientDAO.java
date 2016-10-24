@@ -15,31 +15,92 @@ public class ClientDAO extends DAO<Client> {
 	}
 
 	public boolean create(Client obj) {
+//		try {
+//			String requete = 
+//					"SELECT numClient FROM  Client " + 
+//					"INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Client.numUtilisateur " + 
+//					"WHERE Utilisateur.pseudo = '" + obj.getPseudo() + "' AND Utilisateur.mdp = '" + obj.getMdp()  +"';";
+//			 
+//			 Statement stmt = connect.createStatement();
+//
+//			// 5.2 Execution de l'insert into 
+//			 ResultSet find = stmt.executeQuery(requete);
+//			if (!find.next()){
+//				String sql = "INSERT INTO Client " + "(numUtilisateur) " + " VALUES(?)";
+//				PreparedStatement pst = this.connect.prepareStatement(sql);
+//				pst.setInt(1, obj.getNumUtilisateur());
+//				
+//				pst.executeUpdate();
+//			pst.close();
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return false;
+//	}
+		//On ajoute les données nécessaires dans la table personne
 		try {
-			String requete = "SELECT numClient FROM  Client WHERE nom = '" + obj.getNom() + "' AND prenom = '" + obj.getPre()  
-			+"' AND sexe = '" + obj.getSexe() + "' AND adresse = '" + obj.getAdresse() + "';";
-			 
-			 Statement stmt = connect.createStatement();
-
-			// 5.2 Execution de l'insert into 
-			 ResultSet find = stmt.executeQuery(requete);
-			if (!find.next()){
-				String sql = "INSERT INTO Client " + "(nom, prenom, adresse, dateNaissance, sexe) " + " VALUES(?,?,?, ?)";
-				PreparedStatement pst = this.connect.prepareStatement(sql);
-				pst.setString(1, obj.getNom());
-				pst.setString(2, obj.getPre());
-				pst.setString(3, obj.getAdresse());
-				pst.setDate(4, obj.getDateNaissance());
-				pst.setString(5, obj.getSexe());
-				pst.executeUpdate();
-			pst.close();
+		String requete = "INSERT INTO Personne (nom, prenom, adresse, dateNaissance, sexe) VALUES (?,?,?,?, ?)";
+		PreparedStatement pst = connect.prepareStatement(requete);
+		
+		pst.setString(1, obj.getNom());
+		pst.setString(2, obj.getPre());
+		pst.setString(3, obj.getAdresse());
+		pst.setDate(4, obj.getDateNaissance());
+		pst.setString(5, obj.getSexe());
+		
+		pst.executeUpdate();
+		pst.close();
+		
+		//on récupère l'id crée en dernier dans la table
+		String requete2 = "SELECT MAX(numPersonne) FROM personne";
+		PreparedStatement pst2 = connect.prepareStatement(requete2);
+		ResultSet resultat = pst2.executeQuery();
+		pst2.close();
+		int numUtilisateur = -1;
+		if(!resultat.next())
+			return false;
+		else{
+			numUtilisateur = resultat.getInt(1);
+			//on l'utilise pour ajouter les données dans la table Utilisateur
+			String requete3 = "INSERT INTO Utilisateur (numUtilisateur, pseudo, mdp, typeUtilisateur) VALUES (?,?,?, ?)";
+			PreparedStatement pst3 = connect.prepareStatement(requete3);
+			
+			pst3.setInt(1, numUtilisateur);     //L'id qui lie la table client a la table personne
+			pst3.setString(2, obj.getPseudo());
+			pst3.setString(3, obj.getMdp());
+			pst3.setInt(4, obj.getTypeUtilisateur());
+			
+			pst3.executeUpdate();
+			pst3.close();
+			
+			//on récupère l'id crée en dernier dans la table
+			String requete4 = "SELECT MAX(numPersonne) FROM personne";
+			PreparedStatement pst4 = connect.prepareStatement(requete4);
+			ResultSet resultat4 = pst4.executeQuery();
+			pst4.close();
+			int numClient = -1;
+			if(!resultat4.next())
+				return false;
+			else {
+				numUtilisateur = resultat.getInt(1);
+				//on l'utilise pour ajouter les données dans la table Utilisateur
+				String requete5 = "INSERT INTO Client (numClient, adresseFacturation) VALUES (?)";
+				PreparedStatement pst5 = connect.prepareStatement(requete5);
+				
+				pst5.setInt(1, numClient);     //L'id qui lie la table client a la table utilisateur
+				pst5.setString(2, obj.getAdresseFacturation());
+				pst5.executeUpdate();
+				pst5.close();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-
-		return false;
+	} 
+	catch (SQLException e) {
+		e.printStackTrace();
 	}
+	return false;
+}
 
 	public boolean delete(Client obj) {
 		return false;
@@ -51,7 +112,7 @@ public class ClientDAO extends DAO<Client> {
 
 	// On cherche une Client grâce à son id
 	public Client find(int id) {
-		Client pers = new Client();
+		Client client = new Client();
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM Client WHERE numClient = ?";
@@ -59,11 +120,8 @@ public class ClientDAO extends DAO<Client> {
 			pst.setInt(1, id);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
-				pers.setNom(rs.getString("nom"));
-				pers.setPre(rs.getString("prenom"));
-				pers.setAdresse(rs.getString("adresse"));
-				pers.setDateNaissance(rs.getDate("dateNaissance"));
-				pers.setSexe(rs.getString("sexe"));
+				client.setNumUtilisateur(rs.getInt("numUtilisateur"));
+				client.setNumClient(rs.getInt("numClient"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -76,13 +134,13 @@ public class ClientDAO extends DAO<Client> {
 				}
 			}
 		}
-		return pers;
+		return client;
 	}
 	
 	
 
 	public ArrayList<Client> getList() {
-		Client pers = null;
+		Client client = null;
 		ArrayList<Client> liste = new ArrayList<Client>();
 		PreparedStatement pst = null;
 		try {
@@ -90,12 +148,9 @@ public class ClientDAO extends DAO<Client> {
 			pst = this.connect.prepareStatement(sql);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
-				pers.setNom(rs.getString("nom"));
-				pers.setPre(rs.getString("prenom"));
-				pers.setAdresse(rs.getString("adresse"));
-				pers.setDateNaissance(rs.getDate("dateNaissance"));
-				pers.setSexe(rs.getString("sexe"));
-				liste.add(pers);
+				client.setNumUtilisateur(rs.getInt("numUtilisateur"));
+				client.setNumClient(rs.getInt("numClient"));
+				liste.add(client);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
