@@ -59,34 +59,18 @@ public class F_Moniteur extends JFrame {
 		separator.setBounds(10, 45, 73, 2);
 		contentPane.add(separator);
 		
-		JRadioButton rdbtnConsulterHoraire = new JRadioButton("Consulter horaire");
-		rdbtnConsulterHoraire.setBounds(6, 54, 121, 23);
-		contentPane.add(rdbtnConsulterHoraire);
-		
-		JRadioButton rdbtnSeDconnecter = new JRadioButton("Se d\u00E9connecter");
-		rdbtnSeDconnecter.setBounds(6, 80, 121, 23);
-		contentPane.add(rdbtnSeDconnecter);
-		
-		JButton btnSuivant = new JButton("Suivant");
-		btnSuivant.addMouseListener(new MouseAdapter() {
+		JButton btnDeco = new JButton("Se d\u00E9connecter");
+		btnDeco.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if(rdbtnConsulterHoraire.isSelected()){
-					
-				}
-				else if (rdbtnSeDconnecter.isSelected()){
-					setVisible(false);
-					F_Connexion frame = new F_Connexion();
-					frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-					frame.setVisible(true);
-				}
-				else {
-					errMsg.setText("Choissez une opération.");
-				}
+				setVisible(false);
+				F_Connexion frame = new F_Connexion();
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
 			}
 		});
-		btnSuivant.setBounds(10, 191, 117, 23);
-		contentPane.add(btnSuivant);
+		btnDeco.setBounds(166, 227, 117, 23);
+		contentPane.add(btnDeco);
 		
 		
 	}

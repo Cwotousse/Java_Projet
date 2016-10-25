@@ -8,16 +8,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import POJO.Moniteur;
+import POJO.Personne;
+import POJO.Utilisateur;
 
 public class MoniteurDAO extends DAO<Moniteur>{
 
 	public MoniteurDAO(Connection conn) { super(conn); }
 
 	public boolean create(Moniteur obj) {
-		//On ajoute les données nécessaires dans la table personne
-		Date now = new Date();
 		try {
-			String requete = "INSERT INTO Personne (nom, prenom, adresse, dateNaissance, sexe) VALUES (?,?,?,?,?)";
+			/*String requete = "INSERT INTO Personne (nom, prenom, adresse, dateNaissance, sexe) VALUES (?,?,?,?,?)";
 			PreparedStatement pst = connect.prepareStatement(requete);
 
 			pst.setString(1, obj.getNom());
@@ -39,44 +39,74 @@ public class MoniteurDAO extends DAO<Moniteur>{
 			pst2.setInt(3, obj.getTypeUtilisateur());
 
 			pst2.executeUpdate();
-			pst2.close();
-
-			//on l'utilise pour ajouter les données dans la table Moniteur
-			String requete3 = "INSERT INTO Moniteur (anneeDexp) VALUES (?)";
-			PreparedStatement pst3 = connect.prepareStatement(requete3);
-
-			//pst3.setInt(1, numMoniteur);     //L'id qui lie la table moniteur a la table utilisateur
-			pst3.setInt(1, 0); // obj.getAnneeExp()
-			pst3.executeUpdate();
-			pst3.close();
+			pst2.close();*/
+			AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+			DAO<Personne> PersonneDao = adf.getPersonneDAO();
+			DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
 			
-			// On lui ajoute les accréditations
-			String sql = "SELECT numMoniteur from Moniteur ORDER BY numMoniteur DESC LIMIT 1";
-			pst = this.connect.prepareStatement(sql);
-			ResultSet rs = pst.executeQuery();
-			int numMoniteur = -1 ;
-			while (rs.next()) numMoniteur = rs.getInt(1); // On a l'id du moniteur
-			
-			
-			String requete4 = "INSERT INTO LigneAccreditation (numMoniteur, numAccreditation, dateAccreditation) VALUES (?,?,?)";
-			PreparedStatement pst4 = connect.prepareStatement(requete4);
+			if (PersonneDao.create(new Personne(obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()))){
 
-			//pst2.setInt(1, numUtilisateur);     //L'id qui lie la table moniteur a la table personne
-			pst4.setInt(1, numMoniteur);
-			pst4.setInt(2, 3);
-			pst4.setDate(3, (java.sql.Date) now);
+				
+				if(UtilisateurDao.create(new Utilisateur(obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur()))){
 
-			pst4.executeUpdate();
-			pst4.close();
+					String sql0 = "SELECT MAX(numUtilisateur) from Utilisateur";
+					PreparedStatement pst0 = this.connect.prepareStatement(sql0);
+					ResultSet rs0 = pst0.executeQuery();
+					int numUtilisateur = -1 ;
+					while (rs0.next()) numUtilisateur = rs0.getInt(1); // On a l'id de l'utilisateur
 
-			System.out.println("Ajout d'un moniteur effectue");
+					//on l'utilise pour ajouter les données dans la table Moniteur
+					String requete3 = "INSERT INTO Moniteur (anneeDexp, numUtilisateur) VALUES (?, ?)";
+					PreparedStatement pst = connect.prepareStatement(requete3);
+
+					//pst.setInt(1, numMoniteur);     //L'id qui lie la table moniteur a la table utilisateur
+					pst.setInt(1, 0); // obj.getAnneeExp()
+					pst.setInt(2, numUtilisateur);
+					pst.executeUpdate();
+					pst.close();
+
+					// On lui ajoute les accréditations
+					String sql = "SELECT numMoniteur from Moniteur ORDER BY numMoniteur DESC LIMIT 1";
+					pst = this.connect.prepareStatement(sql);
+					ResultSet rs = pst.executeQuery();
+					int numMoniteur = -1 ;
+					while (rs.next()) numMoniteur = rs.getInt(1); // On a l'id du moniteur
+
+					java.util.Date ud = new Date();
+					java.sql.Date now = new java.sql.Date(ud.getTime());
+
+					for(int i = 0; i < obj.getAccrediList().size(); i++){
+						String sqlAccred = "SELECT numAccreditation from Accreditation WHERE nomAccreditation = ? ";
+						pst = this.connect.prepareStatement(sqlAccred);
+						pst.setString(1, obj.getAccrediList().get(i).toString()); // Nom de l'accréditation
+						ResultSet rsAccred = pst.executeQuery();
+						int numAccred = -1 ;
+						while (rsAccred.next()) numAccred = rsAccred.getInt(1); // On a l'id du moniteur
+
+						String requete4 = "INSERT INTO LigneAccreditation (numMoniteur, numAccreditation, dateAccreditation) VALUES (?,?,?)";
+						PreparedStatement pst4 = connect.prepareStatement(requete4);
+
+						//pst2.setInt(1, numUtilisateur);     //L'id qui lie la table moniteur a la table personne
+						pst4.setInt(1, numMoniteur);
+						pst4.setInt(2, numAccred);
+						pst4.setDate(3, now);
+
+						pst4.executeUpdate();
+						pst4.close();
+					}
+					System.out.println("Ajout d'un moniteur effectue");
+					return true;
+				} else {
+					PersonneDao.delete(null);
+					return false;
+					} // utilisateur
+			} else { return false; } // personne
 		} 
 		catch (SQLException e) {
-			System.out.println(obj.getDateNaissance());
 			System.out.println(e.getMessage());
 			e.printStackTrace();
+			return false;
 		}
-		return false;
 	}
 
 	public boolean delete(Moniteur obj) {
@@ -144,8 +174,8 @@ public class MoniteurDAO extends DAO<Moniteur>{
 	}
 
 	@Override
-	public Moniteur verifPseudoMdp(String text, String text2) {
+	public  int verifPseudoMdp(Utilisateur obj){
 		// TODO Auto-generated method stub
-		return null;
+		return -1;
 	}
 }

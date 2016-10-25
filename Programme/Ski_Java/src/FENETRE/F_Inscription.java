@@ -15,6 +15,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import DAO.AbstractDAOFactory;
 import DAO.DAO;
+import POJO.Accreditation;
 import POJO.Client;
 import POJO.Moniteur;
 import POJO.Personne;
@@ -22,6 +23,7 @@ import POJO.Utilisateur;
 
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -54,6 +56,7 @@ public class F_Inscription extends JFrame {
 	private String sexe = "H"; 
 	private JTable table;
 	private JTextField txtF_adresseFact;
+	private ArrayList<Accreditation> listAccreditation = new ArrayList<Accreditation>();
 
 	/**
 	 * Launch the application.
@@ -224,6 +227,16 @@ public class F_Inscription extends JFrame {
 		chkb_telemark.setBounds(159, 202, 97, 23);
 		contentPane.add(chkb_telemark);
 		
+		JLabel lbl_errLab = new JLabel("");
+		lbl_errLab.setForeground(Color.RED);
+		lbl_errLab.setBounds(128, 12, 186, 14);
+		contentPane.add(lbl_errLab);
+		lblAccred.setVisible(false);
+		chkb_snow.setVisible(false);
+		chkb_skiAlpin.setVisible(false);
+		chkb_skiFond.setVisible(false);
+		chkb_telemark.setVisible(false);
+		
 		JRadioButton rdbtnMoniteur = new JRadioButton("Moniteur");
 		JRadioButton rdbtnClient = new JRadioButton("Client");
 		rdbtnMoniteur.addMouseListener(new MouseAdapter() {
@@ -270,31 +283,53 @@ public class F_Inscription extends JFrame {
 		btn_inscrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-				//DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
-				//DAO<Personne> PersonneDao = adf.getPersonneDAO();
+				try {
+				
 				//Utilisateur u = UtilisateurDao.verifPseudoMdp(txtNomDutilisateur.getText(), pwdPassword.getText());
 				//Date dt = new Date(10, 10, 2016);
 				//java.sql.Date selectedDate = dt;//(java.sql.Date) datePicker.getModel().getValue();
+				String dateNaissance = datePicker.getJFormattedTextField().getText();
+				DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+				java.util.Date ud = df.parse(dateNaissance);
+				java.sql.Date sd = new java.sql.Date(ud.getTime());
+				
 				if(rdbtnClient.isSelected()){
 					DAO<Client> ClientDao = adf.getClientDAO();
-					if (ClientDao.create(new Client(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, (Date) datePicker.getModel().getValue(),
+					if (ClientDao.create(new Client(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, sd,
 							txtF_userName.getText(), txtF_mdp.getText(), 2, txtF_adresseFact.getText()))){
 						// Afficher la fenetre client
+						setVisible(false); //you can't see me!
+						//dispose(); //Destroy the JFrame object
+						F_Client frame = new F_Client();
+						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frame.setVisible(true);
 					}
+					else { lbl_errLab.setText("Verifiez vos donnees");}
 				}
 				else {
 					DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
+
+					if(chkb_snow.isSelected()) 		listAccreditation.add(new Accreditation("Snowboard"));
+					if(chkb_skiAlpin.isSelected())	listAccreditation.add(new Accreditation("Ski"));
+					if(chkb_skiFond.isSelected())	listAccreditation.add(new Accreditation("Ski de fond"));
+					if(chkb_telemark.isSelected())	listAccreditation.add(new Accreditation("Telemark"));
+					
 					if (MoniteurDao.create(new Moniteur(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe,
-							(Date) datePicker.getModel().getValue(), txtF_userName.getText(), txtF_mdp.getText(), 1))){
+							sd, txtF_userName.getText(), txtF_mdp.getText(), 1, listAccreditation))){
 						setVisible(false); //you can't see me!
 						//dispose(); //Destroy the JFrame object
 						F_Moniteur frame = new F_Moniteur();
 						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						frame.setVisible(true);
 					}
+					else { lbl_errLab.setText("Verifiez vos donnees");}
 					
 				}
-				
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					lbl_errLab.setText("Verifiez vos donnees");
+					e.printStackTrace();
+				}
 			}
 		});
 		btn_inscrip.setBounds(159, 251, 155, 23);
@@ -317,11 +352,8 @@ public class F_Inscription extends JFrame {
 		txtF_adresseFact.setVisible(true);
 		
 		rdbtnMoniteur.setSelected(false);
-		lblAccred.setVisible(false);
-		chkb_snow.setVisible(false);
-		chkb_skiAlpin.setVisible(false);
-		chkb_skiFond.setVisible(false);
-		chkb_telemark.setVisible(false);
+		
+
 	}
 	
 	public class DateLabelFormatter extends AbstractFormatter {

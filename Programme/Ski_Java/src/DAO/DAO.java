@@ -12,5 +12,7 @@ public abstract class DAO<T> {
 	public abstract boolean update(T obj);
 	public abstract T find(int id);
 
-	public abstract T verifPseudoMdp(String text, String text2);
+	public  int verifPseudoMdp(Utilisateur obj) {
+		return -1;
+	}
 }

@@ -6,42 +6,54 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 
 import POJO.Personne;
+import POJO.Utilisateur;
 
 public class PersonneDAO  extends DAO<Personne> {
 	public PersonneDAO(Connection conn) {
 		super(conn);
 	}
 
-	public boolean create(Personne obj) { return false; }
-		/*try {
-			String requete = "SELECT numPersonne FROM  Personne WHERE nom = '" + obj.getNom() + "' AND prenom = '" + obj.getPre()  
-			+"' AND sexe = '" + obj.getSexe() + "' AND adresse = '" + obj.getAdresse() + "';";
+	public boolean create(Personne obj) {
+		try {
+			String requete = "INSERT INTO Personne (nom, prenom, adresse, dateNaissance, sexe) VALUES (?,?,?,?,?)";
+			PreparedStatement pst = connect.prepareStatement(requete);
 
-			Statement stmt = connect.createStatement();
+			pst.setString(1, obj.getNom());
+			pst.setString(2, obj.getPre());
+			pst.setString(3, obj.getAdresse());
+			pst.setDate(4, obj.getDateNaissance());
+			pst.setString(5, obj.getSexe());
 
-			// 5.2 Execution de l'insert into 
-			ResultSet find = stmt.executeQuery(requete);
-			if (!find.next()){
-				String sql = "INSERT INTO Personne " + "(nom, prenom, adresse, dateNaissance, sexe) " + " VALUES(?,?,?, ?)";
-				PreparedStatement pst = this.connect.prepareStatement(sql);
-				pst.setString(1, obj.getNom());
-				pst.setString(2, obj.getPre());
-				pst.setString(3, obj.getAdresse());
-				pst.setDate(4, obj.getDateNaissance());
-				pst.setString(5, obj.getSexe());
-				pst.executeUpdate();
-				pst.close();
-			}
-		} catch (SQLException e) {
+			pst.executeUpdate();
+			pst.close();
+
+			return true;
+		} 
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
 			e.printStackTrace();
+			return false;
 		}
+	}
 
-		return false;
-	}*/ 
-
-	public boolean delete(Personne obj) { return false; }
+	public boolean delete(Personne obj) {
+		try {
+			String requete = "DELETE FROM Personne WHERE numPersonne = (SELECT MAX(numPersonne) FROM Personne);";
+			PreparedStatement pst = connect.prepareStatement(requete);
+			pst.executeUpdate();
+			pst.close();
+			System.out.println("Personne supprimée");
+			return true;
+		} 
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	public boolean update(Personne obj) { return false; }
 
@@ -124,8 +136,8 @@ public class PersonneDAO  extends DAO<Personne> {
 	}*/
 
 	@Override
-	public Personne verifPseudoMdp(String text, String text2) {
+	public  int verifPseudoMdp(Utilisateur obj){
 		// TODO Auto-generated method stub
-		return null;
+		return -1;
 	}
 }

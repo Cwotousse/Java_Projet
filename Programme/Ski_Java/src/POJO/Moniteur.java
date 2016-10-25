@@ -13,10 +13,11 @@ public class Moniteur extends Utilisateur{
 	// CONSTRUCTEURS
 	public Moniteur(){}
 	public Moniteur(String nom, String pre, String adresse, String sexe, Date dateNaissance, 
-			String pseudo, String mdp, int typeUtilisateur){
+			String pseudo, String mdp, int typeUtilisateur, ArrayList<Accreditation> listAccreditation){
 		super(nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
 		this.anneeDexp 	= 0 ;// A CHANGER via une methode calculerAnneeExp
 		//this.numMoniteur = numMoniteur;
+		this.listAccreditation = listAccreditation;
 	}
 	
 	// METHODES 
@@ -53,7 +54,7 @@ public class Moniteur extends Utilisateur{
 	public int getAnneeExp		() 			{ return anneeDexp; }
 	public int getNumMoniteur	() 			{ return numMoniteur; }
 	public ArrayList<Accreditation> getAccrediList() { return listAccreditation; }
-	public void setNumMoniteur	(int el) { this.numMoniteur = el;}
+	public void setNumMoniteur	(int el) 	{ this.numMoniteur = el;}
 	public void setAnneeExp 	(int el) 	{ this.anneeDexp = el; }
-	public void setAccrediList(ArrayList<Accreditation> accrediList) { this.listAccreditation = accrediList; 	}
+	public void setAccrediList	(ArrayList<Accreditation> accrediList) { this.listAccreditation = accrediList; 	}
 }

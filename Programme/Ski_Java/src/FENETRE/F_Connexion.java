@@ -83,9 +83,10 @@ public class F_Connexion extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 				DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
-				Utilisateur u = UtilisateurDao.verifPseudoMdp(txtNomDutilisateur.getText(), pwdPassword.getText());
-				switch(u.getTypeUtilisateur()){
-				case 2 : // moniteur
+				
+				switch(UtilisateurDao.verifPseudoMdp(new Utilisateur(txtNomDutilisateur.getText(), pwdPassword.getText(), -1))){
+				// -1 car le type est inconnu
+				case 1 : // moniteur
 					setVisible(false); //you can't see me!
 					//dispose(); //Destroy the JFrame object
 					F_Moniteur frame = new F_Moniteur();
@@ -93,10 +94,9 @@ public class F_Connexion extends JFrame {
 					frame.setVisible(true);
 					//F_Moniteur.
 					break;
-				case 1 : 
+				case 2 : 
 					setVisible(false); //you can't see me!
 					//dispose(); //Destroy the JFrame object
-
 					break;
 				default:
 					errorBox.setText("Donnees incorrectes");
