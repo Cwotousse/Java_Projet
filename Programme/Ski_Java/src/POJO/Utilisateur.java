@@ -11,16 +11,17 @@ public class Utilisateur extends Personne{
 
 	// CONSTRUCTEURs
 	public Utilisateur(){}
-	public Utilisateur(String pseudo, String mdp, int typeUtilisateur){
+	public Utilisateur(int numUtilisateur, String pseudo, String mdp, int typeUtilisateur){
+		this.numUtilisateur 	= numUtilisateur;
 		this.pseudo 			= pseudo;
 		this.mdp 				= mdp;
 		this.typeUtilisateur 	= typeUtilisateur;
 		//this.numUtilisateur 	= numUtilisateur;
 	}
 	
-	public Utilisateur(String nom, String pre, String adresse, String sexe, Date dateNaissance,
+	public Utilisateur(int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance,
 			String pseudo, String mdp, int typeUtilisateur){
-		super(nom, pre, adresse, sexe, dateNaissance);
+		super(numPersonne, nom, pre, adresse, sexe, dateNaissance);
 		this.pseudo 			= pseudo;
 		this.mdp 				= mdp;
 		this.typeUtilisateur 	= typeUtilisateur;

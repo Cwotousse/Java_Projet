@@ -1,0 +1,138 @@
+package FENETRE;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import DAO.AbstractDAOFactory;
+import DAO.ClientDAO;
+import DAO.DAO;
+import POJO.Client;
+import POJO.Eleve;
+import POJO.Utilisateur;
+
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Date;
+
+import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
+import javax.swing.JCheckBox;
+
+public class F_Client extends JFrame {
+
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					F_Client frame = new F_Client(2);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public F_Client(int idClient) {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 220, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		JLabel labStatut = new JLabel(""+idClient);
+		JRadioButton rdbtnAjouterUnlve = new JRadioButton("Ajouter un \u00E9l\u00E8ve");
+		JRadioButton rdbtnRserverUnCours = new JRadioButton("R\u00E9server un cours");
+		JRadioButton rdbtnVoirLaFacture = new JRadioButton("Voir la facture");
+
+		JButton btn_sajouterCli = new JButton("S'ajouter comme eleve");
+		btn_sajouterCli.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// S'ajouter en tant qu'élève
+				try {
+					AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+					DAO<Eleve> EleveDao = adf.getEleveDAO();
+					DAO<Client> ClientDao = adf.getClientDAO();
+					Client C = ClientDao.find(idClient);
+					if(C != null){
+						System.out.println("F_Client -> ajout eleve");
+						if (EleveDao.create(new Eleve(C.getNumPersonne(), C.getNom(), C.getPre(), C.getAdresse(), C.getSexe(), C.getDateNaissance(), false)) != -1)
+							labStatut.setText("Vous avez étés ajoutés en tant qu'élève.");
+						else
+							labStatut.setText("Verifiez vos donnees");
+					}
+					else{
+						labStatut.setText("ID relié à aucune personne.");
+					}
+				}
+			catch (Exception e) {
+				labStatut.setText("Verifiez vos donnees");
+				e.printStackTrace();
+			}
+
+		}
+	});
+		btn_sajouterCli.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btn_sajouterCli.setBounds(10, 38, 180, 30);
+		contentPane.add(btn_sajouterCli);
+
+		JLabel lblClient = new JLabel("Client");
+		lblClient.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
+		lblClient.setBounds(10, 11, 46, 14);
+		contentPane.add(lblClient);
+
+
+		labStatut.setBounds(83, 13, 46, 14);
+		contentPane.add(labStatut);
+
+
+		rdbtnAjouterUnlve.setBounds(10, 69, 139, 23);
+		contentPane.add(rdbtnAjouterUnlve);
+
+		;
+		rdbtnRserverUnCours.setBounds(10, 95, 139, 23);
+		contentPane.add(rdbtnRserverUnCours);
+
+		rdbtnVoirLaFacture.setBounds(10, 121, 139, 23);
+		contentPane.add(rdbtnVoirLaFacture);
+
+		JButton btnNewButton = new JButton("Deconnexion");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// deconnexion
+				setVisible(false);
+				F_Connexion frame = new F_Connexion();
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+		});
+		btnNewButton.setBounds(10, 217, 180, 23);
+		contentPane.add(btnNewButton);
+
+		JSeparator separator = new JSeparator();
+		separator.setBounds(10, 34, 53, 14);
+		contentPane.add(separator);
+}
+}

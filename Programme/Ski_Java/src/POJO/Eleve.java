@@ -7,11 +7,19 @@ public class Eleve extends Personne{
 	// VARIABLES
 	private boolean aUneAssurance;
 	private String categorie;
+	private int numEleve;
 	
 	// CONSTRUCTEURS
 	public Eleve(){}
-	public Eleve(String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance){
-		super(nom, pre, adresse, sexe, dateNaissance);
+	
+	public Eleve(String categorie, boolean aUneAssurance){
+		//this.numEleve 		= numEleve;
+		this.aUneAssurance 	= aUneAssurance;
+		this.categorie 		= categorie;
+	}
+	
+	public Eleve(int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance){
+		super(numPersonne, nom, pre, adresse, sexe, dateNaissance);
 		this.aUneAssurance 			= aUneAssurance;
 		attributerCategorie();
 	}
@@ -24,7 +32,7 @@ public class Eleve extends Personne{
 		//
 	}
 	
-	public void ajouterEleve() throws Exception{
+	/*public void ajouterEleve() throws Exception{
 		Scanner aUneAssuranceEleve = new Scanner(System.in);
 		Scanner categoriee = new Scanner(System.in);
 		System.out.println("Ajout d'un élève");
@@ -32,7 +40,7 @@ public class Eleve extends Personne{
 		
 		System.out.print("L'elève possède t-il une assurance ? [true/false] "); setNom(aUneAssuranceEleve.next());
 		attributerCategorie();
-	}
+	}*/
 	
 	// METHODEs SURCHARGEEs
 	@Override
@@ -44,8 +52,13 @@ public class Eleve extends Personne{
 	}
 	
 	// PROPRIETE
-	public boolean getAUneAssurance		() {return aUneAssurance;}
-	public String getCategorie			() {return categorie;}
-	public void setAUneAssurance		(boolean aUneAssurance) 	{this.aUneAssurance = aUneAssurance;}
-	public void setCategorie			(String categorie) 			{this.categorie = categorie;}
+	public boolean getAUneAssurance		() { return aUneAssurance; }
+	public String getCategorie			() { return categorie; }
+	public int getNumEleve				() { return numEleve; }
+	public void setAUneAssurance		(boolean aUneAssurance) 	{ this.aUneAssurance = aUneAssurance; }
+	public void setCategorie			(String categorie) 			{ this.categorie = categorie; }
+	public void setNumEleve				(int numEleve) 				{ this.numEleve = numEleve; }
+	
+
+	
 }

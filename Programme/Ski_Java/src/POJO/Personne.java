@@ -18,7 +18,8 @@ public class Personne {
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	// CONSTRUCTEURS
 	public Personne(){}
-	public Personne(String nom, String pre, String adresse, String sexe, Date dateNaissance){
+	public Personne(int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance){
+		this.numPersonne 	= numPersonne;
 		this.nom 			= nom;
 		this.pre 			= pre;
 		this.adresse 		= adresse;
@@ -30,11 +31,19 @@ public class Personne {
 	
 	// METHODES
 	public double calculerAge(){
-		Date now = new Date(Calendar.getInstance().getTime().getTime());
-		long diffInMillies = now.getTime() - this.getDateNaissance().getTime();
-		long tu =  TimeUnit.DAYS.convert(diffInMillies,TimeUnit.MILLISECONDS);
-				//- this.getDateNaissance();
-		return (double)tu/365;
+		try {
+			Date now = new Date(Calendar.getInstance().getTime().getTime());
+			long diffInMillies = now.getTime() - this.getDateNaissance().getTime();
+			long tu =  TimeUnit.DAYS.convert(diffInMillies,TimeUnit.MILLISECONDS);
+			return (double)tu/365;
+			
+		}
+		catch (Exception e) {
+			System.out.println("Erreur calculerAge");
+			e.getStackTrace();
+			return 0;
+		}
+		
 	}
 	
 	public void ajouterPersonne() throws Exception{

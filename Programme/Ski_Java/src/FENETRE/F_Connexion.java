@@ -27,12 +27,12 @@ import java.awt.Color;
 public class F_Connexion extends JFrame {
 	private JTextField txtNomDutilisateur;
 	private JPasswordField pwdPassword;
-	
+
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -53,59 +53,71 @@ public class F_Connexion extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 167, 203);
 		getContentPane().setLayout(null);
-		
+
 		JLabel lblStationSki = new JLabel("PROJET JAVA");
 		lblStationSki.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
 		lblStationSki.setBounds(77, 11, 74, 15);
 		getContentPane().add(lblStationSki);
-		
+
 		JLabel errorBox = new JLabel("");
 		errorBox.setForeground(Color.RED);
 		errorBox.setBounds(10, 90, 141, 14);
 		getContentPane().add(errorBox);
-		
+
 		txtNomDutilisateur = new JTextField();
 		txtNomDutilisateur.setToolTipText("Nom d'utilisateur");
 		txtNomDutilisateur.setText("adri");
 		txtNomDutilisateur.setBounds(10, 39, 139, 20);
 		getContentPane().add(txtNomDutilisateur);
 		txtNomDutilisateur.setColumns(10);
-		
+
 		pwdPassword = new JPasswordField();
 		pwdPassword.setToolTipText("Mot de passe");
 		pwdPassword.setText("test");
 		pwdPassword.setBounds(10, 70, 139, 20);
 		getContentPane().add(pwdPassword);
-		
+
 		JButton btnSeConnecter = new JButton("Se connecter");
 		btnSeConnecter.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-				DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
-				
-				switch(UtilisateurDao.verifPseudoMdp(new Utilisateur(txtNomDutilisateur.getText(), pwdPassword.getText(), -1))){
-				// -1 car le type est inconnu
-				case 1 : // moniteur
-					setVisible(false); //you can't see me!
-					//dispose(); //Destroy the JFrame object
-					F_Moniteur frame = new F_Moniteur();
-					frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-					frame.setVisible(true);
-					//F_Moniteur.
-					break;
-				case 2 : 
-					setVisible(false); //you can't see me!
-					//dispose(); //Destroy the JFrame object
-					break;
-				default:
-					errorBox.setText("Donnees incorrectes");
+				int numUtilisateur = -1;
+				try {
+					AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+					DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
+					numUtilisateur = UtilisateurDao.verifPseudoMdp(new Utilisateur(-1, txtNomDutilisateur.getText(), pwdPassword.getText(), -1));
+					Utilisateur U = UtilisateurDao.find(numUtilisateur);
+					System.out.println(U.getTypeUtilisateur());
+					switch(U.getTypeUtilisateur()){
+					// -1 car le type est inconnu
+					case 1 : // moniteur
+						setVisible(false); //you can't see me!
+						//dispose(); //Destroy the JFrame object
+						F_Moniteur frameMoni = new F_Moniteur();
+						frameMoni.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frameMoni.setVisible(true);
+						//F_Moniteur.
+						break;
+					case 2 : 
+						setVisible(false); //you can't see me!
+						//dispose(); //Destroy the JFrame object
+						F_Client frameCli = new F_Client(numUtilisateur);
+						frameCli.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frameCli.setVisible(true);
+						break;
+					default:
+						errorBox.setText("Donnees incorrectes");
+					}
+				}
+				catch (Exception e) {
+					e.getStackTrace();
+					System.out.println("Erreur : " + numUtilisateur);
 				}
 			}
 		});
 		btnSeConnecter.setBounds(10, 113, 139, 23);
 		getContentPane().add(btnSeConnecter);
-		
+
 		JButton btnJeNePossde = new JButton("S'inscrire");
 		btnJeNePossde.addMouseListener(new MouseAdapter() {
 			@Override
@@ -123,12 +135,10 @@ public class F_Connexion extends JFrame {
 		});
 		btnJeNePossde.setBounds(10, 138, 139, 23);
 		getContentPane().add(btnJeNePossde);
-		
+
 		JLabel label = new JLabel("STATION SKI");
 		label.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
 		label.setBounds(10, 0, 74, 15);
 		getContentPane().add(label);
-		
-		
 	}
 }

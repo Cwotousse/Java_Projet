@@ -16,41 +16,46 @@ public class ClientDAO extends DAO<Client> {
 		super(conn);
 	}
 
-	public boolean create(Client obj) {
+	@Override
+	public int create(Client obj) {
 		try {
 			AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 			DAO<Personne> PersonneDao = adf.getPersonneDAO();
-			if (PersonneDao.create(new Personne(obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()))){
-
+			int numPersonne = -1;
+			numPersonne = PersonneDao.create(new Personne(obj.getNumPersonne(), obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()));
+			if (numPersonne != -1){
 				DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
-				if(UtilisateurDao.create(new Utilisateur(obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur()))){
-					String sql0 = "SELECT MAX(numUtilisateur) from Utilisateur";
+				System.out.println("Client Dao -> " + numPersonne);
+				if(UtilisateurDao.create(new Utilisateur(numPersonne, obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur()))!= -1){
+					/*String sql0 = "SELECT numPersonne FROM Personne WHERE numPersonne";
 					PreparedStatement pst0 = this.connect.prepareStatement(sql0);
 					ResultSet rs0 = pst0.executeQuery();
 					int numUtilisateur = -1 ;
-					while (rs0.next()) numUtilisateur = rs0.getInt(1); // On a l'id de l'utilisateur
-					
-					String requete5 = "INSERT INTO Client (adresseFacturation, numUtilisateur) VALUES (?,?)";
+					while (rs0.next()) numUtilisateur = rs0.getInt(1); // On a l'id de l'utilisateur*/
+
+					String requete5 = "INSERT INTO Client (adresseFacturation, numClient) VALUES (?,?)";
 					PreparedStatement pst5 = connect.prepareStatement(requete5);
 
 					pst5.setString(1, obj.getAdresseFacturation());
-					pst5.setInt(2, numUtilisateur);
+					pst5.setInt(2, numPersonne);
 					pst5.executeUpdate();
 					pst5.close();
 					System.out.println("Ajout d'un client effectue");
-					return true;
-				} else { 
+					return numPersonne;
+				}
+				else { 
 					PersonneDao.delete(null);
-					return false;
-					} // utilisateur
-			} else { return false; } // personne
+					return -1;
+				} // utilisateur
+			}
+			else { return -1; } // personne
 		} 
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-			return false;
+			return -1;
 		}
- 
+
 	}
 
 	public boolean delete(Client obj) {
@@ -66,29 +71,31 @@ public class ClientDAO extends DAO<Client> {
 		Client client = new Client();
 		PreparedStatement pst = null;
 		try {
-			String sql = "SELECT * FROM Client WHERE numClient = ?";
+			String sql = "SELECT * FROM Client INNER JOIN Utilisateur ON Client.numClient = Utilisateur.numUtilisateur "
+					+ "INNER JOIN Personne ON Personne.numPersonne = Utilisateur.numUtilisateur WHERE numClient = ?;";
 			pst = this.connect.prepareStatement(sql);
 			pst.setInt(1, id);
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				client.setNumUtilisateur(rs.getInt("numUtilisateur"));
-				client.setNumClient(rs.getInt("numClient"));
+			ResultSet result = pst.executeQuery();
+			while (result.next()) {
+				client = new Client(result.getInt("numClient"), result.getString("nom"), result.getString("prenom"), result.getString("adresse"), 
+						result.getString("sexe"), result.getDate("dateNaissance"), result.getString("pseudo"),
+						result.getString("mdp"), result.getInt("typeUtilisateur"), result.getString("adresseFacturation"));
 			}
+			return client;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			return null;
 		} finally {
 			if (pst != null) {
 				try {
 					pst.close();
-				} catch (SQLException e) {
+				}
+				catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		return client;
 	}
-
-
 
 	public ArrayList<Client> getList() {
 		Client client = null;

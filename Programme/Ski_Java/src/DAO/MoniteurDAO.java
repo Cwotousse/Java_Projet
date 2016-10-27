@@ -15,7 +15,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 
 	public MoniteurDAO(Connection conn) { super(conn); }
 
-	public boolean create(Moniteur obj) {
+	public int create(Moniteur obj) {
 		try {
 			/*String requete = "INSERT INTO Personne (nom, prenom, adresse, dateNaissance, sexe) VALUES (?,?,?,?,?)";
 			PreparedStatement pst = connect.prepareStatement(requete);
@@ -44,10 +44,10 @@ public class MoniteurDAO extends DAO<Moniteur>{
 			DAO<Personne> PersonneDao = adf.getPersonneDAO();
 			DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
 			
-			if (PersonneDao.create(new Personne(obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()))){
+			if (PersonneDao.create(new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()))!= -1){
 
 				
-				if(UtilisateurDao.create(new Utilisateur(obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur()))){
+				if(UtilisateurDao.create(new Utilisateur(obj.getNumPersonne(), obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur())) != -1){
 
 					String sql0 = "SELECT MAX(numUtilisateur) from Utilisateur";
 					PreparedStatement pst0 = this.connect.prepareStatement(sql0);
@@ -95,17 +95,17 @@ public class MoniteurDAO extends DAO<Moniteur>{
 						pst4.close();
 					}
 					System.out.println("Ajout d'un moniteur effectue");
-					return true;
+					return 1;
 				} else {
 					PersonneDao.delete(null);
-					return false;
+					return -1;
 					} // utilisateur
-			} else { return false; } // personne
+			} else { return -1; } // personne
 		} 
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-			return false;
+			return -1;
 		}
 	}
 

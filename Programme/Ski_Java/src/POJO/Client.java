@@ -10,9 +10,9 @@ public class Client extends Utilisateur{
 	
 	// CONSTRUCTEURs
 	public Client(){}
-	public Client(String nom, String pre, String adresse, String sexe, Date dateNaissance,
+	public Client(int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance,
 			String pseudo, String mdp, int typeUtilisateur, String adresseFacturation){
-		super(nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
+		super(numPersonne, nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
 		//this.numClient = numClient;
 		this.adresseFacturation = adresseFacturation;
 	}

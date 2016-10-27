@@ -16,7 +16,7 @@ public class PersonneDAO  extends DAO<Personne> {
 		super(conn);
 	}
 
-	public boolean create(Personne obj) {
+	public int create(Personne obj) {
 		try {
 			String requete = "INSERT INTO Personne (nom, prenom, adresse, dateNaissance, sexe) VALUES (?,?,?,?,?)";
 			PreparedStatement pst = connect.prepareStatement(requete);
@@ -30,12 +30,20 @@ public class PersonneDAO  extends DAO<Personne> {
 			pst.executeUpdate();
 			pst.close();
 
-			return true;
+			PreparedStatement rechNumPersPst;
+			String sql = "SELECT MAX(numPersonne) FROM Personne";
+			rechNumPersPst = this.connect.prepareStatement(sql);
+			ResultSet rs = rechNumPersPst.executeQuery();
+			while (rs.next()) {
+				obj.setNumPersonne(rs.getInt(1));
+			}
+			System.out.println("personneDao -> " + obj.getNumPersonne());
+			return obj.getNumPersonne();
 		} 
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-			return false;
+			return -1;
 		}
 	}
 

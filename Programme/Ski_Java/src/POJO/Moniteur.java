@@ -12,9 +12,9 @@ public class Moniteur extends Utilisateur{
 	
 	// CONSTRUCTEURS
 	public Moniteur(){}
-	public Moniteur(String nom, String pre, String adresse, String sexe, Date dateNaissance, 
+	public Moniteur(int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, 
 			String pseudo, String mdp, int typeUtilisateur, ArrayList<Accreditation> listAccreditation){
-		super(nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
+		super(numPersonne, nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
 		this.anneeDexp 	= 0 ;// A CHANGER via une methode calculerAnneeExp
 		//this.numMoniteur = numMoniteur;
 		this.listAccreditation = listAccreditation;

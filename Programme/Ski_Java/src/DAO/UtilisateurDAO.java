@@ -13,41 +13,43 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		super(conn);
 	}
 
-	public boolean create(Utilisateur obj) { 
+	public int create(Utilisateur obj) { 
 		try
 		{
 			// Vérifier si la personne existe déjà (username/mdp)
 			if(verifPseudoMdp(obj) == 1 || verifPseudoMdp(obj) == 2){
-				return false;
+				return -1;
 			}
 			else {
-				String sql = "SELECT MAX(numPersonne) from Personne";
+				/*String sql = "SELECT MAX(numPersonne) from Personne";
 				PreparedStatement pst = this.connect.prepareStatement(sql);
 				ResultSet rs = pst.executeQuery();
 				int numPersonne = -1 ;
-				while (rs.next()) numPersonne = rs.getInt(1); // On a l'id de la personne
+				while (rs.next()) numPersonne = rs.getInt(1); // On a l'id de la personne*/
 				
 				//on l'utilise pour ajouter les données dans la table Utilisateur
-				String requete2 = "INSERT INTO Utilisateur (pseudo, mdp, typeUtilisateur, numPersonne) VALUES (?,?,?,?)";
+				System.out.println("UtilisateurDao -> " + obj.getNumUtilisateur());
+				String requete2 = "INSERT INTO Utilisateur (pseudo, mdp, typeUtilisateur, numUtilisateur) VALUES (?,?,?,?)";
 				PreparedStatement pst2 = connect.prepareStatement(requete2);
 	
 				//pst2.setInt(1, numUtilisateur);     //L'id qui lie la table moniteur a la table personne
 				pst2.setString(1, obj.getPseudo());
 				pst2.setString(2, obj.getMdp());
 				pst2.setInt(3, obj.getTypeUtilisateur());
-				pst2.setInt(4, numPersonne);
+				pst2.setInt(4, obj.getNumUtilisateur());
 	
 				pst2.executeUpdate();
 				pst2.close();
 				//System.out.println("Ajout d'un moniteur effectue");
-				return true;
+				System.out.println("UtilisateurDao -> " + obj.getNumUtilisateur());
+				return obj.getNumUtilisateur();
 			}
 		}
 
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-			return false;
+			return -1;
 		}
 	}
 	public boolean delete(Utilisateur obj) {
@@ -59,7 +61,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 	}
 
 	// On cherche un élève grâce à son id
-	public Utilisateur find(int id) {return null; } /*{
+	public Utilisateur find(int id) {
 		Utilisateur utilisateur = new Utilisateur();
 		PreparedStatement pst = null;
 		try {
@@ -84,7 +86,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 			}
 		}
 		return utilisateur;
-	}*/
+	}
 
 	public  int verifPseudoMdp(Utilisateur obj){
 		PreparedStatement pst = null;
@@ -112,7 +114,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return obj.getTypeUtilisateur(); // retourne le type d'objet
+		return obj.getNumUtilisateur(); // retourne le type d'objet
 	}
 
 	public  ArrayList<Utilisateur> getList() { return null;}  //{

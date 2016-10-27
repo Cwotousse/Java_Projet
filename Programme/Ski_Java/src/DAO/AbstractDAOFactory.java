@@ -1,6 +1,7 @@
 package DAO;
 
 import POJO.Client;
+import POJO.Eleve;
 import POJO.Moniteur;
 import POJO.Personne;
 import POJO.Utilisateur;
@@ -13,8 +14,9 @@ public abstract class AbstractDAOFactory {
 	public abstract DAO<Personne> 		getPersonneDAO();
 	public abstract DAO<Client> 		getClientDAO();
 	public abstract DAO<Moniteur> 		getMoniteurDAO();
+	public abstract DAO<Eleve> 			getEleveDAO();
 	//public abstract DAO<Professeur> getProfesseurDAO();
-	//public abstract DAO<Eleve> getEleveDAO();
+	
 	//public abstract DAO<Matiere> getMatiereDAO();
 
 	public static AbstractDAOFactory getFactory(int type){
