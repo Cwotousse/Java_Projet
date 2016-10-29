@@ -72,7 +72,7 @@ public class F_Client extends JFrame {
 					System.out.println(C.getAdresse());
 					if(C != null){
 						System.out.println("F_Client -> ajout eleve");
-						if (EleveDao.create(new Eleve(C.getNumPersonne(), C.getNom(), C.getPre(), C.getAdresse(), C.getSexe(), C.getDateNaissance(), false)) != -1)
+						if (EleveDao.create(new Eleve(C.getNumPersonne(), C.getNom(), C.getPre(), C.getAdresse(), C.getSexe(), C.getDateNaissance())) != -1)
 							labStatut.setText("Vous avez étés ajoutés en tant qu'élève.");
 						else
 							labStatut.setText("Verifiez vos donnees");
@@ -125,6 +125,16 @@ public class F_Client extends JFrame {
 		contentPane.add(separator);
 		
 		JButton btn_ajoutEleve = new JButton("Ajouter un \u00E9l\u00E8ve");
+		btn_ajoutEleve.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// Affiche F_ajoutEleve
+				setVisible(false);
+				F_AjoutEleve frame = new F_AjoutEleve(idClient);
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+		});
 		btn_ajoutEleve.setBounds(10, 81, 180, 30);
 		contentPane.add(btn_ajoutEleve);
 		

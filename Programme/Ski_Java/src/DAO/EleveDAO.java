@@ -23,37 +23,34 @@ public class EleveDAO extends DAO<Eleve> {
 			int numPersonne = obj.getNumPersonne();
 			//Vérification que la personne n'est pas encore inscrite en tant qu'élève.
 			Eleve e = find(numPersonne);
-			if (e == null){
-				if (numPersonne == -1 || numPersonne == 0){ // La personne n'existe pas
-					AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-					DAO<Personne> PersonneDao = adf.getPersonneDAO();
-					numPersonne = PersonneDao.create(new Personne(-1, obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()));
-					//				String sql1 = "SELECT numPersonne from Personne where nom = '" + obj.getNom() + "' and prenom = '" + obj.getPre() + 
-					//						"' AND adresse = '"+ obj.getAdresse() + "' AND SEXE ='"+ obj.getSexe() + "' AND dateNaissance = '" + obj.getDateNaissance() + "';";
-					//				PreparedStatement pst1 = this.connect.prepareStatement(sql1);
-					//				ResultSet rs1 = pst1.executeQuery();
-					//				while (rs1.next()) numPersonne = rs1.getInt(1); // On a l'id de l'utilisateur
+			// La personne n'existe pas
+			if (e == null || numPersonne == -1){
+				AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+				DAO<Personne> PersonneDao = adf.getPersonneDAO();
+				numPersonne = PersonneDao.create(new Personne(-1, obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()));
+				//				String sql1 = "SELECT numPersonne from Personne where nom = '" + obj.getNom() + "' and prenom = '" + obj.getPre() + 
+				//						"' AND adresse = '"+ obj.getAdresse() + "' AND SEXE ='"+ obj.getSexe() + "' AND dateNaissance = '" + obj.getDateNaissance() + "';";
+				//				PreparedStatement pst1 = this.connect.prepareStatement(sql1);
+				//				ResultSet rs1 = pst1.executeQuery();
+				//				while (rs1.next()) numPersonne = rs1.getInt(1); // On a l'id de l'utilisateur
 
-					if (numPersonne == -1){
-						PersonneDao.delete(null);
-						return -1;
-					}
+				if (numPersonne == -1){
+					PersonneDao.delete(null);
+					return -1;
 				}
-				String requete5 = "INSERT INTO Eleve (aPrisUneAssurance, categorie, numEleve) VALUES (?,?,?)";
-				PreparedStatement pst5 = connect.prepareStatement(requete5);
+			}
 
-				pst5.setBoolean(1, obj.getAUneAssurance());
-				pst5.setString(2, obj.getCategorie());
-				pst5.setInt(3, numPersonne);
-				pst5.executeUpdate();
-				pst5.close();
-				System.out.println("Ajout d'un eleve effectue");
-				return numPersonne;
-			}
-			else
-			{
-				return -1;
-			}
+			String requete5 = "INSERT INTO Eleve (aPrisUneAssurance, categorie, numEleve) VALUES (?,?,?)";
+			PreparedStatement pst5 = connect.prepareStatement(requete5);
+
+			pst5.setBoolean(1, obj.getAUneAssurance());
+			pst5.setString(2, obj.getCategorie());
+			pst5.setInt(3, numPersonne);
+			pst5.executeUpdate();
+			pst5.close();
+			System.out.println("Ajout d'un eleve effectue");
+			return numPersonne;
+
 		} 
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -82,7 +79,7 @@ public class EleveDAO extends DAO<Eleve> {
 			// int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance
 			while (result.next()) {
 				eleve = new Eleve(result.getInt("numClient"), result.getString("nom"), result.getString("prenom"), result.getString("adresse"), 
-						result.getString("sexe"), result.getDate("dateNaissance"), result.getBoolean("aPrisUneAssurance"));
+						result.getString("sexe"), result.getDate("dateNaissance"));
 			}
 			return eleve;
 		} catch (SQLException e) {
@@ -103,36 +100,44 @@ public class EleveDAO extends DAO<Eleve> {
 
 
 	public ArrayList<Eleve> getList() {
-		/*Eleve eleve = null;
+
 		ArrayList<Eleve> liste = new ArrayList<Eleve>();
 		PreparedStatement pst = null;
 		try {
-			String sql = "SELECT * FROM Eleve";
+			String sql = "SELECT * FROM Eleve INNER JOIN Personne On Personne.numPersonne = Eleve.numEleve";
 			pst = this.connect.prepareStatement(sql);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
-				eleve.setNumUtilisateur(rs.getInt("numUtilisateur"));
-				eleve.setNumEleve(rs.getInt("numEleve"));
+				//int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance
+				Eleve eleve = new Eleve(rs.getInt("numEleve"), rs.getString("nom"), rs.getString("prenom"), rs.getString("adresse"), rs.getString("sexe"), rs.getDate("dateNaissance"));
+				//				eleve.setNumEleve(rs.getInt("numEleve"));
+				//				eleve.setNom(rs.getString("nom"));
+				//				eleve.setPre(rs.getString("prenom"));
+				//				eleve.setDateNaissance(rs.getDate("dateNaissance"));
+				//				eleve.setSexe(rs.getString("sexe"));
+				//				eleve.setAdresse(rs.getString("adresse"));
 				liste.add(eleve);
 			}
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
+		}
+		finally {
 			if (pst != null) {
 				try {
 					pst.close();
-				} catch (SQLException e) {
+				}
+				catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		return liste;*/
-		return null;
+		return liste;
 	}
 
-	@Override
+	/*@Override
 	public  int verifPseudoMdp(Utilisateur obj){
 		// TODO Auto-generated method stub
 		return -1;
-	}
+	}*/
 }

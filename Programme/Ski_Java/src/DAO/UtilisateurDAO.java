@@ -17,7 +17,8 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		try
 		{
 			// Vérifier si la personne existe déjà (username/mdp)
-			if(verifPseudoMdp(obj) == 1 || verifPseudoMdp(obj) == 2){
+			Utilisateur UtilTmp = find(obj);
+			if(UtilTmp != null){
 				return -1;
 			}
 			else {
@@ -61,13 +62,13 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 	}
 
 	// On cherche un élève grâce à son id
-	public Utilisateur find(int id) {
+	public Utilisateur find(Utilisateur obj) {
 		Utilisateur utilisateur = new Utilisateur();
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM utilisateur WHERE numUtilisateur = ?";
 			pst = this.connect.prepareStatement(sql);
-			pst.setInt(1, id);
+			pst.setInt(1, obj.getNumUtilisateur());
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				utilisateur.setPseudo(rs.getString("pseudo"));
@@ -88,7 +89,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		return utilisateur;
 	}
 
-	public  int verifPseudoMdp(Utilisateur obj){
+	/*public  int verifPseudoMdp(Utilisateur obj){
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM utilisateur WHERE pseudo = ? AND mdp = ? ";
@@ -115,7 +116,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 			}
 		}
 		return obj.getNumUtilisateur(); // retourne le type d'objet
-	}
+	}*/
 
 	public  ArrayList<Utilisateur> getList() { return null;}  //{
 	/*Utilisateur utilisateur;

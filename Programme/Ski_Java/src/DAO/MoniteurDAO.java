@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import POJO.Accreditation;
 import POJO.Moniteur;
 import POJO.Personne;
 import POJO.Utilisateur;
@@ -17,61 +18,22 @@ public class MoniteurDAO extends DAO<Moniteur>{
 
 	public int create(Moniteur obj) {
 		try {
-			/*String requete = "INSERT INTO Personne (nom, prenom, adresse, dateNaissance, sexe) VALUES (?,?,?,?,?)";
-			PreparedStatement pst = connect.prepareStatement(requete);
-
-			pst.setString(1, obj.getNom());
-			pst.setString(2, obj.getPre());
-			pst.setString(3, obj.getAdresse());
-			pst.setDate(4, obj.getDateNaissance());
-			pst.setString(5, obj.getSexe());
-
-			pst.executeUpdate();
-			pst.close();
-
-			//on l'utilise pour ajouter les données dans la table Utilisateur
-			String requete2 = "INSERT INTO Utilisateur (pseudo, mdp, typeUtilisateur) VALUES (?,?,?)";
-			PreparedStatement pst2 = connect.prepareStatement(requete2);
-
-			//pst2.setInt(1, numUtilisateur);     //L'id qui lie la table moniteur a la table personne
-			pst2.setString(1, obj.getPseudo());
-			pst2.setString(2, obj.getMdp());
-			pst2.setInt(3, obj.getTypeUtilisateur());
-
-			pst2.executeUpdate();
-			pst2.close();*/
 			AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 			DAO<Personne> PersonneDao = adf.getPersonneDAO();
 			DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
-			
-			if (PersonneDao.create(new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()))!= -1){
-
-				
-				if(UtilisateurDao.create(new Utilisateur(obj.getNumPersonne(), obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur())) != -1){
-
-					String sql0 = "SELECT MAX(numUtilisateur) from Utilisateur";
-					PreparedStatement pst0 = this.connect.prepareStatement(sql0);
-					ResultSet rs0 = pst0.executeQuery();
-					int numUtilisateur = -1 ;
-					while (rs0.next()) numUtilisateur = rs0.getInt(1); // On a l'id de l'utilisateur
-
+			int numPersonne = PersonneDao.create(new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()));
+			if (numPersonne != -1){
+				if(UtilisateurDao.create(new Utilisateur(numPersonne, obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur())) != -1){
 					//on l'utilise pour ajouter les données dans la table Moniteur
 					String requete3 = "INSERT INTO Moniteur (anneeDexp, numUtilisateur) VALUES (?, ?)";
 					PreparedStatement pst = connect.prepareStatement(requete3);
-
-					//pst.setInt(1, numMoniteur);     //L'id qui lie la table moniteur a la table utilisateur
+					
 					pst.setInt(1, 0); // obj.getAnneeExp()
-					pst.setInt(2, numUtilisateur);
+					pst.setInt(2, numPersonne);
 					pst.executeUpdate();
 					pst.close();
 
 					// On lui ajoute les accréditations
-					String sql = "SELECT numMoniteur from Moniteur ORDER BY numMoniteur DESC LIMIT 1";
-					pst = this.connect.prepareStatement(sql);
-					ResultSet rs = pst.executeQuery();
-					int numMoniteur = -1 ;
-					while (rs.next()) numMoniteur = rs.getInt(1); // On a l'id du moniteur
-
 					java.util.Date ud = new Date();
 					java.sql.Date now = new java.sql.Date(ud.getTime());
 
@@ -86,8 +48,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 						String requete4 = "INSERT INTO LigneAccreditation (numMoniteur, numAccreditation, dateAccreditation) VALUES (?,?,?)";
 						PreparedStatement pst4 = connect.prepareStatement(requete4);
 
-						//pst2.setInt(1, numUtilisateur);     //L'id qui lie la table moniteur a la table personne
-						pst4.setInt(1, numMoniteur);
+						pst4.setInt(1, numPersonne);
 						pst4.setInt(2, numAccred);
 						pst4.setDate(3, now);
 
@@ -95,7 +56,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 						pst4.close();
 					}
 					System.out.println("Ajout d'un moniteur effectue");
-					return 1;
+					return numPersonne;
 				} else {
 					PersonneDao.delete(null);
 					return -1;
@@ -147,25 +108,43 @@ public class MoniteurDAO extends DAO<Moniteur>{
 
 
 	public ArrayList<Moniteur> getList() {
-		Moniteur moniteur = null;
 		ArrayList<Moniteur> liste = new ArrayList<Moniteur>();
 		PreparedStatement pst = null;
+		PreparedStatement pstAccred = null;
 		try {
-			String sql = "SELECT * FROM Moniteur";
+			String sql = "SELECT * FROM Moniteur "
+					+ "INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Moniteur.numMoniteur "
+					+ "INNER JOIN Personne ON Utilisateur.numUtilisateur = Personne.numPersonne";
 			pst = this.connect.prepareStatement(sql);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
-				moniteur.setNumUtilisateur(rs.getInt("numUtilisateur"));
-				moniteur.setNumMoniteur(rs.getInt("numMoniteur"));
+				ArrayList<Accreditation> listeAccred = new ArrayList<Accreditation>();
+				String sqlAccred = "Select * from Accreditation "
+						+ "INNER JOIN LigneAccreditation ON Accreditation.numAccreditation = LigneAccreditation.numAccreditation "
+						+ "WHERE numMoniteur = ?;";
+						pstAccred = this.connect.prepareStatement(sqlAccred);
+						pstAccred.setInt(1, rs.getInt("numMoniteur"));
+						ResultSet rsAccred = pstAccred.executeQuery();
+						while(rsAccred.next()){
+							Accreditation a = new Accreditation(rsAccred.getString("nomAccreditation"));
+							listeAccred.add(a);
+						}
+				Moniteur moniteur = new Moniteur(rs.getInt("numMoniteur"), rs.getString("nom"), rs.getString("prenom"),
+						rs.getString("adresse"), rs.getString("sexe"), rs.getDate("dateNaissance"), rs.getString("pseudo"), rs.getString("mdp"),
+						rs.getInt("typeUtilisateur"), listeAccred);
 				liste.add(moniteur);
 			}
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
+		}
+		finally {
 			if (pst != null) {
 				try {
 					pst.close();
-				} catch (SQLException e) {
+					pstAccred.close();
+				}
+				catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
@@ -173,9 +152,9 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		return liste;
 	}
 
-	@Override
+	/*@Override
 	public  int verifPseudoMdp(Utilisateur obj){
 		// TODO Auto-generated method stub
 		return -1;
-	}
+	}*/
 }

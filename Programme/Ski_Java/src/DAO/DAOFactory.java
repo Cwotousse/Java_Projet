@@ -2,6 +2,7 @@ package DAO;
 
 import java.sql.Connection;
 
+import POJO.Accreditation;
 import POJO.Client;
 import POJO.Eleve;
 import POJO.Moniteur;
@@ -11,9 +12,10 @@ import POJO.Utilisateur;
 public class DAOFactory extends AbstractDAOFactory{
 protected static final Connection conn = SingletonConnection.getInstance();
 	
-	public DAO<Utilisateur> getUtilisateurDAO	() { return new UtilisateurDAO(conn); }
-	public DAO<Personne> 	getPersonneDAO		() { return new PersonneDAO(conn); }
-	public DAO<Client> 		getClientDAO		() { return new ClientDAO(conn); }
-	public DAO<Moniteur> 	getMoniteurDAO		() { return new MoniteurDAO(conn); }
-	public DAO<Eleve> 		getEleveDAO			() { return new EleveDAO(conn); }
+	public DAO<Utilisateur> 	getUtilisateurDAO	() { return new UtilisateurDAO(conn); }
+	public DAO<Personne> 		getPersonneDAO		() { return new PersonneDAO(conn); }
+	public DAO<Client> 			getClientDAO		() { return new ClientDAO(conn); }
+	public DAO<Moniteur> 		getMoniteurDAO		() { return new MoniteurDAO(conn); }
+	public DAO<Eleve> 			getEleveDAO			() { return new EleveDAO(conn); }
+	public DAO<Accreditation> 	getAccreditationDAO	() { return new AccreditationDAO(conn); }
 }

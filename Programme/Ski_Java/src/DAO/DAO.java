@@ -1,5 +1,6 @@
 package DAO;
 import java.sql.Connection;
+import java.util.ArrayList;
 
 import POJO.Utilisateur;
 
@@ -10,9 +11,11 @@ public abstract class DAO<T> {
 	public abstract int create(T obj);
 	public abstract boolean delete(T obj);
 	public abstract boolean update(T obj);
-	public abstract T find(int id);
+	public abstract T find(T obj);
 
-	public  int verifPseudoMdp(Utilisateur obj) {
+	/*public  int verifPseudoMdp(Utilisateur obj) {
 		return -1;
-	}
+	}*/
+
+	public abstract ArrayList<T> getList();
 }

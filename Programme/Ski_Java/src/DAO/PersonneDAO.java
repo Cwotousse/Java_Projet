@@ -143,9 +143,9 @@ public class PersonneDAO  extends DAO<Personne> {
 		return liste;
 	}*/
 
-	@Override
+	/*@Override
 	public  int verifPseudoMdp(Utilisateur obj){
 		// TODO Auto-generated method stub
 		return -1;
-	}
+	}*/
 }

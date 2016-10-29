@@ -15,10 +15,11 @@
 <fullyQualifiedTypeName name="java.text.DateFormat"/>
 <fullyQualifiedTypeName name="org.jdatepicker.impl.SqlDateModel"/>
 <fullyQualifiedTypeName name="java.sql.Date"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
-<fullyQualifiedTypeName name="POJO.Moniteur"/>
 <fullyQualifiedTypeName name="POJO.Personne"/>
 <fullyQualifiedTypeName name="POJO.Utilisateur"/>
-<fullyQualifiedTypeName name="POJO.Eleve"/>
 <fullyQualifiedTypeName name="DAO.ClientDAO"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="POJO.Eleve"/>
+<fullyQualifiedTypeName name="POJO.Moniteur"/>
+<fullyQualifiedTypeName name="POJO.Accreditation"/>
 </qualifiedTypeNameHistroy>

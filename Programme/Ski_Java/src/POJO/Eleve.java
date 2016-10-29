@@ -18,9 +18,9 @@ public class Eleve extends Personne{
 		this.categorie 		= categorie;
 	}
 	
-	public Eleve(int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance){
+	public Eleve(int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance){
 		super(numPersonne, nom, pre, adresse, sexe, dateNaissance);
-		this.aUneAssurance 			= aUneAssurance;
+		//this.aUneAssurance 			= aUneAssurance;
 		attributerCategorie();
 	}
 	

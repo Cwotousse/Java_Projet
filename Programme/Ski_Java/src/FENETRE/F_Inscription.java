@@ -87,88 +87,136 @@ public class F_Inscription extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblInscription = new JLabel("Inscription");
-		lblInscription.setFont(new Font("Yu Gothic UI", Font.PLAIN, 13));
-		lblInscription.setBounds(10, 11, 67, 14);
-		contentPane.add(lblInscription);
 		
-		txtF_userName = new JTextField();
-		txtF_userName.setToolTipText("Pseudonyme");
-		txtF_userName.setBounds(159, 43, 155, 20);
-		txtF_userName.setText(login);
-		contentPane.add(txtF_userName);
-		txtF_userName.setColumns(10);
+		// News
+		JLabel lblInscription 		= new JLabel("Inscription");
+		JLabel lblNom 				= new JLabel("Nom");
+		JLabel lblPre 				= new JLabel("Prenom");
+		JLabel lblPseu 				= new JLabel("Pseudonyme");
+		JLabel lblMdp				= new JLabel("Mot de passe");
+		JLabel lblDateNaiss 		= new JLabel("Date de naissance");
+		JLabel lblAdresse 			= new JLabel("Adresse");
+		JLabel lblAdresseFact 		= new JLabel("Adresse de facturation");
+		JLabel lblAccred 			= new JLabel("Accreditation");
+		JLabel lbl_errLab 			= new JLabel("");
+		JRadioButton rdbtnH 		= new JRadioButton("Homme");
+		JRadioButton rdbtnF 		= new JRadioButton("Femme");
+		JRadioButton rdbtnMoniteur 	= new JRadioButton("Moniteur");
+		JRadioButton rdbtnClient 	= new JRadioButton("Client");
+		JCheckBox chkb_snow 		= new JCheckBox("Snowboard");
+		JCheckBox chkb_skiFond 		= new JCheckBox("Ski fond");
+		JCheckBox chkb_skiAlpin 	= new JCheckBox("Ski alpin");
+		JCheckBox chkb_telemark 	= new JCheckBox("T\u00E9l\u00E9mark");
+		JCheckBox chkb_jeune 		= new JCheckBox("Enfant");
+		JCheckBox chkb_adulte 		= new JCheckBox("Adulte");
+		txtF_userName 				= new JTextField();
+		txtF_mdp 					= new JTextField();
+		txtF_nom 					= new JTextField();
+		txtF_pre 					= new JTextField();
+		txtF_adresse 				= new JTextField();
+		txtF_adresseFact 			= new JTextField();
 		
-		txtF_mdp = new JTextField();
-		txtF_mdp.setToolTipText("Mot de passe");
-		txtF_mdp.setBounds(159, 101, 155, 20);
-		txtF_mdp.setText(mdp);
-		contentPane.add(txtF_mdp);
-		txtF_mdp.setColumns(10);
+		// Visibility
+		lblAccred.setVisible		(false);
+		chkb_snow.setVisible		(false);
+		chkb_skiAlpin.setVisible	(false);
+		chkb_skiFond.setVisible		(false);
+		chkb_telemark.setVisible	(false);
+		chkb_jeune.setVisible		(false);
+		chkb_adulte.setVisible		(false);
 		
-		txtF_nom = new JTextField();
-		txtF_nom.setToolTipText("Nom");
-		txtF_nom.setBounds(10, 43, 130, 20);
-		contentPane.add(txtF_nom);
-		txtF_nom.setColumns(10);
+		// Set ToolTip
+		chkb_snow.setToolTipText		("Accreditation");
+		chkb_skiFond.setToolTipText		("Accreditation");
+		chkb_skiAlpin.setToolTipText	("Accreditation");
+		chkb_telemark.setToolTipText	("Accreditation");
+		txtF_userName.setToolTipText	("Pseudonyme");
+		txtF_mdp.setToolTipText			("Mot de passe");
+		txtF_nom.setToolTipText			("Nom");
+		txtF_pre.setToolTipText			("Prenom");
+		txtF_adresse.setToolTipText		("Adresse");
 		
-		txtF_pre = new JTextField();
-		txtF_pre.setToolTipText("Prenom");
-		txtF_pre.setBounds(10, 101, 130, 20);
-		contentPane.add(txtF_pre);
-		txtF_pre.setColumns(10);
+		// Set Text 
+		txtF_userName.setText		(login);
+		txtF_mdp.setText			(mdp);
 		
-		txtF_adresse = new JTextField();
-		txtF_adresse.setToolTipText("Adresse");
-		txtF_adresse.setBounds(10, 202, 130, 40);
-		contentPane.add(txtF_adresse);
-		txtF_adresse.setColumns(10);
+		// Set color
+		lbl_errLab.setForeground(Color.RED);
 		
-		JLabel lblNom = new JLabel("Nom");
-		lblNom.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
-		lblNom.setBounds(10, 31, 46, 14);
-		contentPane.add(lblNom);
+		// Fonts
+		lblInscription.setFont	(new Font("Yu Gothic UI", Font.PLAIN, 13));
+		lblNom.setFont			(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblPre.setFont			(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblPseu.setFont			(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblMdp.setFont			(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblDateNaiss.setFont	(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblAdresse.setFont		(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblAdresseFact.setFont	(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblAccred.setFont		(new Font("Yu Gothic UI", Font.PLAIN, 11));
 		
-		JLabel lblPre = new JLabel("Prenom");
-		lblPre.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
-		lblPre.setBounds(10, 84, 130, 14);
-		contentPane.add(lblPre);
-		
-		JLabel lblPseu = new JLabel("Pseudonyme");
-		lblPseu.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
-		lblPseu.setBounds(159, 31, 155, 14);
-		contentPane.add(lblPseu);
-		
-		JLabel lblMdp = new JLabel("Mot de passe");
-		lblMdp.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
-		lblMdp.setBounds(159, 84, 155, 14);
-		contentPane.add(lblMdp);
-		
-		JLabel lblDateNaiss = new JLabel("Date de naissance");
-		lblDateNaiss.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
-		lblDateNaiss.setBounds(10, 132, 130, 14);
-		contentPane.add(lblDateNaiss);
-		
-		JLabel lblAdresse = new JLabel("Adresse");
-		lblAdresse.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
-		lblAdresse.setBounds(10, 185, 130, 14);
-		contentPane.add(lblAdresse);
-		
-		JLabel lblAdresseFact = new JLabel("Adresse de facturation");
-		lblAdresseFact.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
-		lblAdresseFact.setBounds(159, 185, 155, 14);
-		contentPane.add(lblAdresseFact);
-		
-		JLabel lblAccred = new JLabel("Accreditation");
-		lblAccred.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
-		lblAccred.setBounds(159, 185, 155, 14);
-		contentPane.add(lblAccred);
-		
-		txtF_adresseFact = new JTextField();
+		// Bounds 
+		lblInscription.setBounds	(10, 11, 67, 14);
+		lblNom.setBounds			(10, 31, 46, 14);
+		lblPre.setBounds			(10, 84, 130, 14);
+		lblPseu.setBounds			(159, 31, 155, 14);
+		lblMdp.setBounds			(159, 84, 155, 14);
+		lblDateNaiss.setBounds		(10, 132, 130, 14);
+		lblAdresse.setBounds		(10, 185, 130, 14);
+		lblAdresseFact.setBounds	(159, 185, 155, 14);
+		lblAccred.setBounds			(159, 185, 155, 14);
+		rdbtnH.setBounds			(159, 128, 67, 23);
+		rdbtnF.setBounds			(228, 128, 75, 23);
+		chkb_snow.setBounds			(239, 202, 97, 23);
+		chkb_skiFond.setBounds		(239, 221, 97, 23);
+		chkb_skiAlpin.setBounds		(159, 221, 97, 23);
+		chkb_telemark.setBounds		(159, 202, 97, 23);
+		chkb_jeune.setBounds		(159, 247, 67, 23);
+		chkb_adulte.setBounds		(239, 247, 75, 23);
+		lbl_errLab.setBounds		(128, 12, 186, 14);
+		txtF_userName.setBounds		(159, 43, 155, 20);
+		txtF_mdp.setBounds			(159, 101, 155, 20);
+		txtF_nom.setBounds			(10, 43, 130, 20);
+		txtF_pre.setBounds			(10, 101, 130, 20);
+		txtF_adresse.setBounds		(10, 202, 130, 40);
 		txtF_adresseFact.setBounds(159, 203, 155, 39);
-		contentPane.add(txtF_adresseFact);
-		txtF_adresseFact.setColumns(10);
 		
+		// Add
+		contentPane.add(lblInscription);
+		contentPane.add(lblNom);
+		contentPane.add(lblPre);
+		contentPane.add(lblPseu);
+		contentPane.add(lblMdp);
+		contentPane.add(lblDateNaiss);
+		contentPane.add(lblAdresse);
+		contentPane.add(lblAdresseFact);
+		contentPane.add(lblAccred);
+		contentPane.add(rdbtnH);
+		contentPane.add(rdbtnF);
+		contentPane.add(chkb_snow);
+		contentPane.add(chkb_skiFond);
+		contentPane.add(chkb_telemark);
+		contentPane.add(chkb_jeune);
+		contentPane.add(chkb_adulte);
+		contentPane.add(chkb_skiAlpin);
+		contentPane.add(lbl_errLab);
+		contentPane.add(txtF_userName);
+		contentPane.add(txtF_mdp);
+		contentPane.add(txtF_nom);
+		contentPane.add(txtF_pre);
+		contentPane.add(txtF_adresse);
+		contentPane.add(txtF_adresseFact);
+		
+				
+		// Set columns
+		txtF_userName.setColumns(10);
+		txtF_mdp.setColumns(10);
+		txtF_nom.setColumns(10);
+		txtF_pre.setColumns(10);
+		txtF_adresse.setColumns(10);
+		txtF_adresseFact.setColumns(10);
+				
+		
+		// Datepicker
 		SqlDateModel model = new SqlDateModel();
 		Properties p = new Properties();
 		p.put("text.today", "Today");
@@ -181,9 +229,10 @@ public class F_Inscription extends JFrame {
 		datePicker.setBounds(10, 146, 130, 23);
 		contentPane.add(datePicker);
 		
-		JRadioButton rdbtnH = new JRadioButton("Homme");
-		JRadioButton rdbtnF = new JRadioButton("Femme");
+		
 		rdbtnH.setSelected(true);
+		
+		// Action sur les boutons/
 		rdbtnH.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -193,10 +242,6 @@ public class F_Inscription extends JFrame {
 			}
 		});
 		
-		rdbtnH.setBounds(159, 128, 67, 23);
-		contentPane.add(rdbtnH);
-		
-		
 		rdbtnF.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -205,51 +250,7 @@ public class F_Inscription extends JFrame {
 				rdbtnF.setSelected(true);
 			}
 		});
-		rdbtnF.setBounds(228, 128, 75, 23);
-		contentPane.add(rdbtnF);
 		
-		JCheckBox chkb_snow = new JCheckBox("Snowboard");
-		chkb_snow.setToolTipText("Accreditation");
-		chkb_snow.setBounds(239, 202, 97, 23);
-		contentPane.add(chkb_snow);
-		
-		JCheckBox chkb_skiFond = new JCheckBox("Ski fond");
-		chkb_skiFond.setToolTipText("Accreditation");
-		chkb_skiFond.setBounds(239, 221, 97, 23);
-		contentPane.add(chkb_skiFond);
-		
-		JCheckBox chkb_skiAlpin = new JCheckBox("Ski alpin");
-		chkb_skiAlpin.setToolTipText("Accreditation");
-		chkb_skiAlpin.setBounds(159, 221, 97, 23);
-		contentPane.add(chkb_skiAlpin);
-		
-		JCheckBox chkb_telemark = new JCheckBox("T\u00E9l\u00E9mark");
-		chkb_telemark.setToolTipText("Accreditation");
-		chkb_telemark.setBounds(159, 202, 97, 23);
-		contentPane.add(chkb_telemark);
-		
-		JCheckBox chkb_jeune = new JCheckBox("Enfant");
-		chkb_jeune.setBounds(159, 247, 67, 23);
-		contentPane.add(chkb_jeune);
-		
-		JCheckBox chkb_adulte = new JCheckBox("Adulte");
-		chkb_adulte.setBounds(239, 247, 75, 23);
-		contentPane.add(chkb_adulte);
-		
-		JLabel lbl_errLab = new JLabel("");
-		lbl_errLab.setForeground(Color.RED);
-		lbl_errLab.setBounds(128, 12, 186, 14);
-		contentPane.add(lbl_errLab);
-		lblAccred.setVisible		(false);
-		chkb_snow.setVisible		(false);
-		chkb_skiAlpin.setVisible	(false);
-		chkb_skiFond.setVisible		(false);
-		chkb_telemark.setVisible	(false);
-		chkb_jeune.setVisible		(false);
-		chkb_adulte.setVisible		(false);
-		
-		JRadioButton rdbtnMoniteur = new JRadioButton("Moniteur");
-		JRadioButton rdbtnClient = new JRadioButton("Client");
 		rdbtnMoniteur.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -293,7 +294,6 @@ public class F_Inscription extends JFrame {
 		contentPane.add(rdbtnClient);
 		
 		JButton btn_inscrip = new JButton("S'enregistrer");
-		
 		
 		btn_inscrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

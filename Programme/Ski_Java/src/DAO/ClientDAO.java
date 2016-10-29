@@ -124,9 +124,9 @@ public class ClientDAO extends DAO<Client> {
 		return liste;
 	}
 
-	@Override
+	/*@Override
 	public  int verifPseudoMdp(Utilisateur obj){
 		// TODO Auto-generated method stub
 		return -1;
-	}
+	}*/
 }
