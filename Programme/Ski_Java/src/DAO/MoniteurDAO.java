@@ -18,12 +18,11 @@ public class MoniteurDAO extends DAO<Moniteur>{
 
 	public int create(Moniteur obj) {
 		try {
-			AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-			DAO<Personne> PersonneDao = adf.getPersonneDAO();
-			DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
-			int numPersonne = PersonneDao.create(new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()));
+			Personne P = new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance());
+			int numPersonne = P.createPersonne();
 			if (numPersonne != -1){
-				if(UtilisateurDao.create(new Utilisateur(numPersonne, obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur())) != -1){
+				Utilisateur U = new Utilisateur(numPersonne, obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur());
+				if(U.createUtilisateur() != -1){
 					//on l'utilise pour ajouter les données dans la table Moniteur
 					String requete3 = "INSERT INTO Moniteur (anneeDexp, numUtilisateur) VALUES (?, ?)";
 					PreparedStatement pst = connect.prepareStatement(requete3);
@@ -58,7 +57,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 					System.out.println("Ajout d'un moniteur effectue");
 					return numPersonne;
 				} else {
-					PersonneDao.delete(null);
+					P.deletePersonne();
 					return -1;
 					} // utilisateur
 			} else { return -1; } // personne

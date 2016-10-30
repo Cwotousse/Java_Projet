@@ -18,8 +18,6 @@ import DAO.DAO;
 import POJO.Accreditation;
 import POJO.Client;
 import POJO.Moniteur;
-import POJO.Personne;
-import POJO.Utilisateur;
 
 import javax.swing.JLabel;
 import java.awt.Font;

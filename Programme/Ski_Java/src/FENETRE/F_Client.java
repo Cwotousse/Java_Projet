@@ -65,14 +65,18 @@ public class F_Client extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				// S'ajouter en tant qu'élève
 				try {
-					AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-					DAO<Eleve> EleveDao = adf.getEleveDAO();
-					DAO<Client> ClientDao = adf.getClientDAO();
-					Client C = ClientDao.find(idClient);
+					//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+					//DAO<Eleve> EleveDao = adf.getEleveDAO();
+					//DAO<Client> ClientDao = adf.getClientDAO();
+					
+					//Client C = ClientDao.find(idClient);
+					Client C = null;
+					C = C.rechercherClient(idClient);
 					System.out.println(C.getAdresse());
 					if(C != null){
 						System.out.println("F_Client -> ajout eleve");
-						if (EleveDao.create(new Eleve(C.getNumPersonne(), C.getNom(), C.getPre(), C.getAdresse(), C.getSexe(), C.getDateNaissance())) != -1)
+						Eleve E = new Eleve(C.getNumPersonne(), C.getNom(), C.getPre(), C.getAdresse(), C.getSexe(), C.getDateNaissance());
+						if (E.createEleve() != -1)
 							labStatut.setText("Vous avez étés ajoutés en tant qu'élève.");
 						else
 							labStatut.setText("Verifiez vos donnees");

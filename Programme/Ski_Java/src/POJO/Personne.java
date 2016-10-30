@@ -6,6 +6,9 @@ import java.util.Calendar;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
+import DAO.AbstractDAOFactory;
+import DAO.DAO;
+
 public class Personne {
 	// VARIABLES 
 	private String 	nom;
@@ -14,6 +17,8 @@ public class Personne {
 	private String 	sexe;
 	private Date 	dateNaissance;
 	private int 	numPersonne;
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Personne> PersonneDao = adf.getPersonneDAO();
 		
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	// CONSTRUCTEURS
@@ -46,22 +51,13 @@ public class Personne {
 		
 	}
 	
-	public void ajouterPersonne() throws Exception{
-		Scanner sc = new Scanner(System.in);
-//		Scanner nomPersonne = new Scanner(System.in);
-//		Scanner prePersonne = new Scanner(System.in);
-//		Scanner villePersonne = new Scanner(System.in);
-//		Scanner ruePersonne = new Scanner(System.in);
-//		Scanner sexePersonne = new Scanner(System.in);
-//		Scanner dateNaissancePersonne = new Scanner(System.in);
-		do{
-			System.out.println();
-			System.out.println("Nom de la personne : "); setNom(sc.next());
-			System.out.println("Prénom de la personne : "); setPre(sc.next());
-			System.out.println("Sexe de la personne  [m/f]: "); while (!sc.hasNext("[mf]")) { System.out.print("Reponse incorrecte, entrez m ou f.");setSexe(sc.next()); } // Autorise juste h ou f
-			System.out.println("Adresse de la personne: "); setAdresse(sc.next());
-		} while(!sc.hasNext("[a-z]")); // autorise que des caracteres
-		//System.out.println("Date de naissance de la personne [jj/mm/yyyy] : "); while (!sc.hasNext("[/123456789]")) setDateNaissance(Utilitaire.stringToDate(sc.next()));
+	public int createPersonne() {
+		//new Personne(obj.getNumPersonne(), obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance())
+		return PersonneDao.create(this);
+	}
+	
+	public void deletePersonne(){
+		PersonneDao.delete(null);
 	}
 	
 	// METHODE SURCHARGEE

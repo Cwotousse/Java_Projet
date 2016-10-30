@@ -11,7 +11,7 @@ public abstract class DAO<T> {
 	public abstract int create(T obj);
 	public abstract boolean delete(T obj);
 	public abstract boolean update(T obj);
-	public abstract T find(T obj);
+	public abstract T find(int id);
 
 	/*public  int verifPseudoMdp(Utilisateur obj) {
 		return -1;

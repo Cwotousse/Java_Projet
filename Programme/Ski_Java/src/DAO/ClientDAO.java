@@ -19,14 +19,15 @@ public class ClientDAO extends DAO<Client> {
 	@Override
 	public int create(Client obj) {
 		try {
-			AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-			DAO<Personne> PersonneDao = adf.getPersonneDAO();
+			
 			int numPersonne = -1;
-			numPersonne = PersonneDao.create(new Personne(obj.getNumPersonne(), obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()));
+			Personne P = new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance());
+			numPersonne = P.createPersonne();
 			if (numPersonne != -1){
-				DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
+				
 				System.out.println("Client Dao -> " + numPersonne);
-				if(UtilisateurDao.create(new Utilisateur(numPersonne, obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur()))!= -1){
+				Utilisateur U = new Utilisateur(numPersonne, obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur());
+				if(U.createUtilisateur()!= -1){
 					/*String sql0 = "SELECT numPersonne FROM Personne WHERE numPersonne";
 					PreparedStatement pst0 = this.connect.prepareStatement(sql0);
 					ResultSet rs0 = pst0.executeQuery();
@@ -44,7 +45,7 @@ public class ClientDAO extends DAO<Client> {
 					return numPersonne;
 				}
 				else { 
-					PersonneDao.delete(null);
+					P.deletePersonne();
 					return -1;
 				} // utilisateur
 			}

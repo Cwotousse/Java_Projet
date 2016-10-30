@@ -25,17 +25,10 @@ public class EleveDAO extends DAO<Eleve> {
 			Eleve e = find(numPersonne);
 			// La personne n'existe pas
 			if (e == null || numPersonne == -1){
-				AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-				DAO<Personne> PersonneDao = adf.getPersonneDAO();
-				numPersonne = PersonneDao.create(new Personne(-1, obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance()));
-				//				String sql1 = "SELECT numPersonne from Personne where nom = '" + obj.getNom() + "' and prenom = '" + obj.getPre() + 
-				//						"' AND adresse = '"+ obj.getAdresse() + "' AND SEXE ='"+ obj.getSexe() + "' AND dateNaissance = '" + obj.getDateNaissance() + "';";
-				//				PreparedStatement pst1 = this.connect.prepareStatement(sql1);
-				//				ResultSet rs1 = pst1.executeQuery();
-				//				while (rs1.next()) numPersonne = rs1.getInt(1); // On a l'id de l'utilisateur
-
+				Personne P = new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance());
+				numPersonne = P.createPersonne();
 				if (numPersonne == -1){
-					PersonneDao.delete(null);
+					P.deletePersonne();
 					return -1;
 				}
 			}

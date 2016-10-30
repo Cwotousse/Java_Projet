@@ -3,10 +3,15 @@ package POJO;
 import java.sql.Date;
 import java.util.Scanner;
 
+import DAO.AbstractDAOFactory;
+import DAO.DAO;
+
 public class Client extends Utilisateur{
 	// VARIABLES
 	private int numClient;
 	private String adresseFacturation;
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Client> ClientDao = adf.getClientDAO();
 	
 	// CONSTRUCTEURs
 	public Client(){}
@@ -18,14 +23,9 @@ public class Client extends Utilisateur{
 	}
 	
 	// METHODES
-	public void ajouterClient() throws Exception{
-		Scanner numClient = new Scanner(System.in);
-		System.out.println("Ajout d'un client");
-		super.ajouterPersonne();
-		
-		System.out.print("Numéro de client : "); setNom(numClient.next());
+	public Client rechercherClient(int id){
+		return ClientDao.find(id);
 	}
-	
 	
 	// METHODES SURCHARGEES
 	@Override

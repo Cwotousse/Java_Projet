@@ -3,11 +3,16 @@ package POJO;
 import java.sql.Date;
 import java.util.Scanner;
 
+import DAO.AbstractDAOFactory;
+import DAO.DAO;
+
 public class Eleve extends Personne{
 	// VARIABLES
 	private boolean aUneAssurance;
 	private String categorie;
 	private int numEleve;
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Eleve> EleveDao = adf.getEleveDAO();
 	
 	// CONSTRUCTEURS
 	public Eleve(){}
@@ -32,15 +37,9 @@ public class Eleve extends Personne{
 		//
 	}
 	
-	/*public void ajouterEleve() throws Exception{
-		Scanner aUneAssuranceEleve = new Scanner(System.in);
-		Scanner categoriee = new Scanner(System.in);
-		System.out.println("Ajout d'un élève");
-		super.ajouterPersonne();
-		
-		System.out.print("L'elève possède t-il une assurance ? [true/false] "); setNom(aUneAssuranceEleve.next());
-		attributerCategorie();
-	}*/
+	public int createEleve() {
+		return EleveDao.create(this);
+	}
 	
 	// METHODEs SURCHARGEEs
 	@Override

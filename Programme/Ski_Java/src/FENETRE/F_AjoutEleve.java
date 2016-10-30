@@ -72,7 +72,7 @@ public class F_AjoutEleve extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		// News
 		JLabel lblInscription 		= new JLabel("Inscription \u00E9l\u00E8ve");
 		JLabel lblNom 				= new JLabel("Nom");
@@ -82,12 +82,12 @@ public class F_AjoutEleve extends JFrame {
 		JLabel lbl_errLab 			= new JLabel("");
 		JRadioButton rdbtnH 		= new JRadioButton("Homme");
 		JRadioButton rdbtnF 		= new JRadioButton("Femme");
-		
-		
+
+
 		JTextField txtF_nom 		= new JTextField();
 		JTextField txtF_pre 		= new JTextField();
 		JTextField txtF_adresse 	= new JTextField();
-		
+
 		// Set tooltip
 		txtF_nom.setToolTipText		("Nom");
 		txtF_pre.setToolTipText		("Prenom");
@@ -115,7 +115,7 @@ public class F_AjoutEleve extends JFrame {
 		txtF_nom.setBounds			(10, 43, 155, 20);
 		txtF_pre.setBounds			(10, 90, 155, 20);
 		txtF_adresse.setBounds		(10, 187, 155, 40);
-		
+
 
 		// Add
 		contentPane.add(lblInscription);
@@ -176,7 +176,7 @@ public class F_AjoutEleve extends JFrame {
 
 		btn_inscrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+
 				try {
 
 					//Utilisateur u = UtilisateurDao.verifPseudoMdp(txtNomDutilisateur.getText(), pwdPassword.getText());
@@ -187,19 +187,20 @@ public class F_AjoutEleve extends JFrame {
 					java.util.Date ud = df.parse(dateNaissance);
 					java.sql.Date sd = new java.sql.Date(ud.getTime());
 
-					
-						DAO<Eleve> EleveDao = adf.getEleveDAO();
-						int numEleve = EleveDao.create(new Eleve(-1, txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, sd));
-						if (numEleve != -1){
-							// Afficher la fenetre client
-							setVisible(false); //you can't see me!
-							//dispose(); //Destroy the JFrame object
-							F_Client frame = new F_Client(numClient);
-							frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-							frame.setVisible(true);
-						}
-						else { lbl_errLab.setText("Verifiez vos donnees");}
-					
+
+					//DAO<Eleve> EleveDao = adf.getEleveDAO();
+					Eleve E = new Eleve(-1, txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, sd);
+					int numEleve = E.createEleve();
+					if (numEleve != -1){
+						// Afficher la fenetre client
+						setVisible(false); //you can't see me!
+						//dispose(); //Destroy the JFrame object
+						F_Client frame = new F_Client(numClient);
+						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frame.setVisible(true);
+					}
+					else { lbl_errLab.setText("Verifiez vos donnees");}
+
 				} 
 				catch (ParseException e) {
 					// TODO Auto-generated catch block
@@ -211,7 +212,7 @@ public class F_AjoutEleve extends JFrame {
 		btn_inscrip.setBounds(10, 264, 155, 20);
 		contentPane.add(btn_inscrip);
 
-				
+
 		JButton btn_ret = new JButton("Retour");
 		btn_ret.addMouseListener(new MouseAdapter() {
 			@Override
@@ -224,7 +225,7 @@ public class F_AjoutEleve extends JFrame {
 		});
 		btn_ret.setBounds(10, 286, 155, 20);
 		contentPane.add(btn_ret);
-		
+
 
 	}
 

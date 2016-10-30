@@ -81,16 +81,19 @@ public class F_Connexion extends JFrame {
 		btnSeConnecter.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				int numUtilisateur = -1;
+				int typeUtilisateur = -1;
 				try {
-					Utilisateur U = new Utilisateur (-1, txtNomDutilisateur.getText(), pwdPassword.getText(), -1);
 					
+					Utilisateur U = new Utilisateur (-1, txtNomDutilisateur.getText(), pwdPassword.getText(), -1);
+					U = U.returnUser();
+					//numUtilisateur 
 					// 
-					AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-					DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
-					numUtilisateur = UtilisateurDao.find(new Utilisateur(-1, txtNomDutilisateur.getText(), pwdPassword.getText(), -1));
-					/*Utilisateur */ U = UtilisateurDao.find(numUtilisateur);
-					System.out.println(U.getTypeUtilisateur());
+					//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+					//DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
+					// Chercher comment récupérer le numéro d'utilisateur
+					//numUtilisateur = U.returnTypeUser();//.createos(new Utilisateur(-1, txtNomDutilisateur.getText(), pwdPassword.getText(), -1));
+					/*Utilisateur */ //U = U.rechercherUtilisateur(numUtilisateur);
+					//System.out.println(U.getTypeUtilisateur());
 					switch(U.getTypeUtilisateur()){
 					// -1 car le type est inconnu
 					case 1 : // moniteur
@@ -104,7 +107,7 @@ public class F_Connexion extends JFrame {
 					case 2 : 
 						setVisible(false); //you can't see me!
 						//dispose(); //Destroy the JFrame object
-						F_Client frameCli = new F_Client(numUtilisateur);
+						F_Client frameCli = new F_Client(U.getNumPersonne());
 						frameCli.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						frameCli.setVisible(true);
 						break;
@@ -114,7 +117,7 @@ public class F_Connexion extends JFrame {
 				}
 				catch (Exception e) {
 					e.getStackTrace();
-					System.out.println("Erreur : " + numUtilisateur);
+					System.out.println("Erreur : " + typeUtilisateur);
 				}
 			}
 		});

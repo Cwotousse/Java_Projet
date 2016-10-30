@@ -21,18 +21,7 @@ public class Moniteur extends Utilisateur{
 	}
 	
 	// METHODES 
-	public void ajouterMoniteur() throws Exception{
-		Scanner dateDiplomeMoniteur = new Scanner(System.in);
-		Scanner sportPratiqueMoniteur = new Scanner(System.in);
-		Scanner evaluationMoniteur = new Scanner(System.in);
-		System.out.println("Ajout d'un moniteur");
-		super.ajouterPersonne();
 		
-		System.out.print("Date de diplôme du moniteur [jj-mm-yyyy] : "); setNom(dateDiplomeMoniteur.next());
-		System.out.print("Sport enseigné par le moniteur : "); setNom(sportPratiqueMoniteur.next());
-		System.out.print("Evaluation du moniteur (/10) : "); setNom(evaluationMoniteur.next());
-	}
-	
 	// Pour ne pas additionner 2 fois le même moniteur
 	public void addAccreditation(Accreditation ac){
 		if(!listAccreditation.contains(ac))
@@ -53,8 +42,8 @@ public class Moniteur extends Utilisateur{
 	// PROPRIETES
 	public int getAnneeExp		() 			{ return anneeDexp; }
 	public int getNumMoniteur	() 			{ return numMoniteur; }
-	public ArrayList<Accreditation> getAccrediList() { return listAccreditation; }
 	public void setNumMoniteur	(int el) 	{ this.numMoniteur = el;}
 	public void setAnneeExp 	(int el) 	{ this.anneeDexp = el; }
-	public void setAccrediList	(ArrayList<Accreditation> accrediList) { this.listAccreditation = accrediList; 	}
+	public ArrayList<Accreditation> getAccrediList() { return listAccreditation; }
+	public void setAccrediList						(ArrayList<Accreditation> accrediList) { this.listAccreditation = accrediList; 	}
 }
