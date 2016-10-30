@@ -1,0 +1,48 @@
+package POJO;
+
+import java.text.SimpleDateFormat;
+import java.sql.Date;
+
+public class Semaine {
+	// VARIABLES
+	private Date dateDebut;
+	private Date dateFin;
+	//private String descriptif;
+	private boolean congeScolaire;
+	private int numSemaineDansAnnee;
+	private int numSemaine;
+	
+	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	
+	// CONSTRUCTEURS
+	public Semaine(){}
+	public Semaine( boolean congeScolaire, Date dateDebut, Date dateFin, int numSemaineDansAnnee){
+		this.dateDebut 				= dateDebut;
+		this.dateFin 				= dateFin;
+		//this.descriptif 			= descriptif;
+		this.congeScolaire 			= congeScolaire;
+		this.numSemaineDansAnnee 	= numSemaineDansAnnee;
+	}
+	
+	// FONCTION SURCHARGEE
+	@Override
+	public String toString() { 
+		return  //descriptif + System.getProperty("line.separator") 
+				"Période de congé scolaire : " + congeScolaire + System.getProperty("line.separator")
+				+ "Période comprise entre le " + dateFormat.format(dateDebut) + " et le " + dateFormat.format(dateFin) + System.getProperty("line.separator"); 
+	}
+	
+	// PROPRIETE
+	public Date getDateDebut			() { return dateDebut; }
+	public Date getDateFin				() { return dateFin; }
+	//public String getDescriptif			() { return descriptif; }
+	public boolean getCongeScolaire		() { return congeScolaire; }
+	public int getNumSemaineDansAnnee	() { return numSemaineDansAnnee; }
+	public int getNumSemaine			() { return numSemaine; }
+	public void setDateDebut			(Date dateDebut) 			{ this.dateDebut = dateDebut; }
+	public void setDateFin				(Date dateFin) 				{ this.dateFin = dateFin; }
+	//public void setDescriptif			(String descriptif) 		{ this.descriptif = descriptif; }
+	public void setCongeScolaire		(boolean congeScolaire) 	{ this.congeScolaire = congeScolaire; }
+	public void setNumSemaineDansAnnee	(int numSemaineDansAnnee) 	{ this.numSemaineDansAnnee = numSemaineDansAnnee; }
+	public void setNumSemaine			(int numSemaine) 			{ this.numSemaine = numSemaine; }
+}

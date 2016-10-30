@@ -2,3 +2,5 @@
 1477334148526	Encapsulate field 'accrediList'
 1477577004002	Encapsulate field 'numEleve'
 1477581865030	Delete element
+1477832568469	Encapsulate field 'numSemaineDansAnnee'
+1477832571926	Encapsulate field 'numeSemaine'

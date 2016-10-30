@@ -7,6 +7,7 @@ import POJO.Client;
 import POJO.Eleve;
 import POJO.Moniteur;
 import POJO.Personne;
+import POJO.Semaine;
 import POJO.Utilisateur;
 
 public class DAOFactory extends AbstractDAOFactory{
@@ -18,4 +19,5 @@ protected static final Connection conn = SingletonConnection.getInstance();
 	public DAO<Moniteur> 		getMoniteurDAO		() { return new MoniteurDAO(conn); }
 	public DAO<Eleve> 			getEleveDAO			() { return new EleveDAO(conn); }
 	public DAO<Accreditation> 	getAccreditationDAO	() { return new AccreditationDAO(conn); }
+	public DAO<Semaine> 		getSemaineDAO 		() { return new SemaineDAO(conn); }
 }

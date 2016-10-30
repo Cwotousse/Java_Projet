@@ -4,11 +4,16 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import DAO.AbstractDAOFactory;
+import DAO.DAO;
+
 public class Moniteur extends Utilisateur{
 	// VARIABLES 
 	private int anneeDexp;
 	private int numMoniteur;
 	private ArrayList<Accreditation> listAccreditation = new ArrayList<Accreditation>();
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
 	
 	// CONSTRUCTEURS
 	public Moniteur(){}
@@ -29,7 +34,8 @@ public class Moniteur extends Utilisateur{
 	}
 	public void removeAccreditation(Accreditation ac){ this.listAccreditation.remove(ac); }
 	public boolean equals(Moniteur mo){ return this.getNumMoniteur() == mo.getNumMoniteur(); }
-
+	
+	public ArrayList<Moniteur> getListMoniteur(){ return MoniteurDao.getList(); }
 	
 	// METHODE SURCHARGEE
 	@Override

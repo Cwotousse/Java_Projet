@@ -5,6 +5,7 @@ import POJO.Client;
 import POJO.Eleve;
 import POJO.Moniteur;
 import POJO.Personne;
+import POJO.Semaine;
 import POJO.Utilisateur;
 
 public abstract class AbstractDAOFactory {
@@ -17,6 +18,7 @@ public abstract class AbstractDAOFactory {
 	public abstract DAO<Moniteur> 		getMoniteurDAO();
 	public abstract DAO<Eleve> 			getEleveDAO();
 	public abstract DAO<Accreditation> 	getAccreditationDAO();
+	public abstract DAO<Semaine> 		getSemaineDAO();
 	//public abstract DAO<Professeur> getProfesseurDAO();
 	
 	//public abstract DAO<Matiere> getMatiereDAO();

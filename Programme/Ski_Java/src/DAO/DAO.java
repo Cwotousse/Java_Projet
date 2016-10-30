@@ -12,10 +12,10 @@ public abstract class DAO<T> {
 	public abstract boolean delete(T obj);
 	public abstract boolean update(T obj);
 	public abstract T find(int id);
-
+	public abstract ArrayList<T> getList();
 	/*public  int verifPseudoMdp(Utilisateur obj) {
 		return -1;
 	}*/
 
-	public abstract ArrayList<T> getList();
+	
 }

@@ -11,6 +11,7 @@ import DAO.AbstractDAOFactory;
 import DAO.DAO;
 import POJO.Eleve;
 import POJO.Moniteur;
+import POJO.Semaine;
 
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -26,9 +27,10 @@ public class F_AjoutRdv extends JFrame {
 	private JPanel contentPane;
 	private ArrayList<Eleve> listEleve;// = new ArrayList<Eleve>();
 	private ArrayList<Moniteur> listMoniteur;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	private ArrayList<Semaine> listSemaine;
+	/*AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Eleve> EleveDao = adf.getEleveDAO();
-	DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
+	DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();*/
 	/**
 	 * Launch the application.
 	 */
@@ -62,6 +64,7 @@ public class F_AjoutRdv extends JFrame {
 		JLabel lbl_error = new JLabel("");
 		JComboBox cb_nomEleve = new JComboBox();
 		JComboBox cb_nomMoniteur = new JComboBox();
+		JComboBox cb_semaine = new JComboBox();
 		JRadioButton rdbtnCoursCollectif = new JRadioButton("Cours collectif");
 
 		// Font
@@ -75,6 +78,7 @@ public class F_AjoutRdv extends JFrame {
 		separator.setBounds(10, 44, 160, 15);
 		cb_nomEleve.setBounds(10, 147, 160, 20);
 		cb_nomMoniteur.setBounds(10, 92, 160, 20);
+		cb_semaine.setBounds(10, 205, 160, 20);
 		rdbtnCoursCollectif.setBounds(6, 62, 109, 23);
 		lbl_error.setBounds(201, 18, 46, 14);
 
@@ -85,9 +89,11 @@ public class F_AjoutRdv extends JFrame {
 		contentPane.add(cb_nomMoniteur);
 		contentPane.add(rdbtnCoursCollectif);
 		contentPane.add(lbl_error);
+		contentPane.add(cb_semaine);
 
 		// Remplissage de la cb_Eleve avec les données issue de la DB
-		listEleve = EleveDao.getList();
+		Eleve E = new Eleve();
+		listEleve = E.getListEleve();
 		if (listEleve != null)
 			for(Eleve e : listEleve){
 				cb_nomEleve.addItem(e.getNom().toUpperCase() + " " + e.getPre());
@@ -96,12 +102,24 @@ public class F_AjoutRdv extends JFrame {
 			lbl_error.setText("Erreur ajout rdv");
 
 		// Remplissage de la cb_Moniteur avec les données issue de la DB
-		listMoniteur = MoniteurDao.getList();
+		Moniteur M = new Moniteur();
+		listMoniteur = M.getListMoniteur();
 		if (listMoniteur != null)
 			for(Moniteur m : listMoniteur){
 				cb_nomMoniteur.addItem(m.getNom().toUpperCase() + " " + m.getPre());
 			}
 		else
 			lbl_error.setText("Erreur ajout rdv");
+		
+		// Remplissage de la cb_Semaine avec les données issue de la DB
+		Semaine S = new Semaine();
+				listSemaine = S.getListSemaineSelonDateDuJour();
+				if (listSemaine != null)
+					for(Semaine s : listSemaine){
+						if (!s.getCongeScolaire()) // N'affiche que les semaines ou il n'y a pas de congés
+							cb_semaine.addItem(s.getDateDebut().toString());
+					}
+				else
+					lbl_error.setText("Erreur disponibilités");
 	}
 }

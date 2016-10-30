@@ -1,6 +1,7 @@
 package POJO;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import DAO.AbstractDAOFactory;
@@ -37,9 +38,8 @@ public class Eleve extends Personne{
 		//
 	}
 	
-	public int createEleve() {
-		return EleveDao.create(this);
-	}
+	public int createEleve() { return EleveDao.create(this); }
+	public ArrayList<Eleve> getListEleve(){ return EleveDao.getList(); }
 	
 	// METHODEs SURCHARGEEs
 	@Override
