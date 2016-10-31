@@ -71,7 +71,7 @@ public class EleveDAO extends DAO<Eleve> {
 			ResultSet result = pst.executeQuery();
 			// int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance
 			while (result.next()) {
-				eleve = new Eleve(result.getInt("numClient"), result.getString("nom"), result.getString("prenom"), result.getString("adresse"), 
+				eleve = new Eleve(result.getInt("numEleve"), result.getString("nom"), result.getString("prenom"), result.getString("adresse"), 
 						result.getString("sexe"), result.getDate("dateNaissance"));
 			}
 			return eleve;

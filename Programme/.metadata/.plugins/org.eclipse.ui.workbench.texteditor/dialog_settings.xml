@@ -2,30 +2,30 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="Eleve" key="selection"/>
+		<item value="enfant" key="selection"/>
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="Moniteur"/>
+			<item value="enfant"/>
+			<item value="periode"/>
+			<item value="reste"/>
+			<item value="il reste"/>
 			<item value="Semaine"/>
-			<item value="date"/>
-			<item value="numeSemaine"/>
-			<item value="utilisateur"/>
-			<item value="Utilisateur"/>
-			<item value="adf"/>
-			<item value="Personnedao"/>
+			<item value="coursParticulier"/>
+			<item value="CoursParticulier"/>
+			<item value="CoursCollectif"/>
 		</list>
 		<list key="replacehistory">
-			<item value="Eleve"/>
-			<item value="Moniteur"/>
-			<item value="numSemaine"/>
-			<item value="semaine"/>
-			<item value="Semaine"/>
-			<item value="accred"/>
-			<item value="Accreditation"/>
-			<item value="eleve"/>
+			<item value="coursCollectif"/>
+			<item value="CoursCollectif"/>
+			<item value="CoursParticulier"/>
+			<item value="coursParticulier"/>
+			<item value="CoursParticulierDAO"/>
+			<item value="CategorieAge"/>
+			<item value="categorieAge"/>
+			<item value="NombreHeures"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

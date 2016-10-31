@@ -24,9 +24,9 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				Utilisateur U = new Utilisateur(numPersonne, obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur());
 				if(U.createUtilisateur() != -1){
 					//on l'utilise pour ajouter les données dans la table Moniteur
-					String requete3 = "INSERT INTO Moniteur (anneeDexp, numUtilisateur) VALUES (?, ?)";
+					String requete3 = "INSERT INTO Moniteur (anneeDexp, numMoniteur) VALUES (?, ?)";
 					PreparedStatement pst = connect.prepareStatement(requete3);
-					
+
 					pst.setInt(1, 0); // obj.getAnneeExp()
 					pst.setInt(2, numPersonne);
 					pst.executeUpdate();
@@ -59,7 +59,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				} else {
 					P.deletePersonne();
 					return -1;
-					} // utilisateur
+				} // utilisateur
 			} else { return -1; } // personne
 		} 
 		catch (SQLException e) {
@@ -79,7 +79,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 
 	// On cherche une Moniteur grâce à son id
 	public Moniteur find(int id) {
-		Moniteur moniteur = new Moniteur();
+		/*Moniteur moniteur = new Moniteur();
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM Moniteur WHERE numMoniteur = ?";
@@ -97,6 +97,50 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				try {
 					pst.close();
 				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return moniteur;*/
+		//Moniteur liste = new Moniteur>();
+		Moniteur moniteur = null;
+		PreparedStatement pst = null;
+		PreparedStatement pstAccred = null;
+		try {
+			String sql = "SELECT * FROM Moniteur "
+					+ "INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Moniteur.numMoniteur "
+					+ "INNER JOIN Personne ON Utilisateur.numUtilisateur = Personne.numPersonne "
+					+ "WHERE numPersonne = ?";
+			pst = this.connect.prepareStatement(sql);
+			pst.setInt(1, id);
+			ResultSet rs = pst.executeQuery();
+			while (rs.next()) {
+				ArrayList<Accreditation> listeAccred = new ArrayList<Accreditation>();
+				String sqlAccred = "Select * from Accreditation "
+						+ "INNER JOIN LigneAccreditation ON Accreditation.numAccreditation = LigneAccreditation.numAccreditation "
+						+ "WHERE numMoniteur = ?;";
+				pstAccred = this.connect.prepareStatement(sqlAccred);
+				pstAccred.setInt(1, id);
+				ResultSet rsAccred = pstAccred.executeQuery();
+				while(rsAccred.next()){
+					Accreditation a = new Accreditation(rsAccred.getString("nomAccreditation"));
+					listeAccred.add(a);
+				}
+				moniteur = new Moniteur(rs.getInt("numMoniteur"), rs.getString("nom"), rs.getString("prenom"),
+						rs.getString("adresse"), rs.getString("sexe"), rs.getDate("dateNaissance"), rs.getString("pseudo"), rs.getString("mdp"),
+						rs.getInt("typeUtilisateur"), listeAccred);
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (pst != null) {
+				try {
+					pst.close();
+					pstAccred.close();
+				}
+				catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
@@ -121,13 +165,13 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				String sqlAccred = "Select * from Accreditation "
 						+ "INNER JOIN LigneAccreditation ON Accreditation.numAccreditation = LigneAccreditation.numAccreditation "
 						+ "WHERE numMoniteur = ?;";
-						pstAccred = this.connect.prepareStatement(sqlAccred);
-						pstAccred.setInt(1, rs.getInt("numMoniteur"));
-						ResultSet rsAccred = pstAccred.executeQuery();
-						while(rsAccred.next()){
-							Accreditation a = new Accreditation(rsAccred.getString("nomAccreditation"));
-							listeAccred.add(a);
-						}
+				pstAccred = this.connect.prepareStatement(sqlAccred);
+				pstAccred.setInt(1, rs.getInt("numMoniteur"));
+				ResultSet rsAccred = pstAccred.executeQuery();
+				while(rsAccred.next()){
+					Accreditation a = new Accreditation(rsAccred.getString("nomAccreditation"));
+					listeAccred.add(a);
+				}
 				Moniteur moniteur = new Moniteur(rs.getInt("numMoniteur"), rs.getString("nom"), rs.getString("prenom"),
 						rs.getString("adresse"), rs.getString("sexe"), rs.getDate("dateNaissance"), rs.getString("pseudo"), rs.getString("mdp"),
 						rs.getInt("typeUtilisateur"), listeAccred);

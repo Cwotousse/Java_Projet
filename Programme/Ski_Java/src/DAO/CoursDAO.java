@@ -43,7 +43,6 @@ public class CoursDAO extends DAO<Cours> {
 	}
 
 	public ArrayList<Cours> getList() {
-		Cours cours = null;
 		ArrayList<Cours> liste = new ArrayList<Cours>();
 		PreparedStatement pst = null;
 		try {
@@ -51,13 +50,8 @@ public class CoursDAO extends DAO<Cours> {
 			pst = this.connect.prepareStatement(sql);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
-				cours.setNumCours(rs.getInt("numCours"));
-				cours.setNomSport(rs.getString("nomSport"));
-				cours.setPrix(rs.getInt("prix"));
-				cours.setMinEl(rs.getInt("minEleve"));
-				cours.setMaxEl(rs.getInt("maxEleve"));
-				cours.setPeriodeCours(rs.getString("periodeCours"));
-				liste.add(cours);
+				liste.add(new Cours(rs.getInt("numCours"), rs.getString("nomSport"), rs.getInt("prix"), rs.getInt("minEleve"), 
+						rs.getInt("maxEleve"), rs.getString("periodeCours")));
 			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }

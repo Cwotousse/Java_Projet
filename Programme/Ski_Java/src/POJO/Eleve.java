@@ -32,13 +32,14 @@ public class Eleve extends Personne{
 	
 	// METHODEs
 	private void attributerCategorie(){
-		if(this.calculerAge() <= 12 && this.calculerAge() > 4){ this.categorie = "enfant"; }
-		else if (this.calculerAge() > 12){ this.categorie = "adulte"; }
+		if(this.calculerAge() <= 12 && this.calculerAge() > 4){ this.categorie = "Enfant"; }
+		else if (this.calculerAge() > 12){ this.categorie = "Adulte"; }
 		else { this.categorie = "erreur"; }
 		//
 	}
 	
-	public int createEleve() { return EleveDao.create(this); }
+	public int 				createEleve	() { return EleveDao.create(this); }
+	public Eleve 			findEleve	(int id){ return EleveDao.find(id); }
 	public ArrayList<Eleve> getListEleve(){ return EleveDao.getList(); }
 	
 	// METHODEs SURCHARGEEs

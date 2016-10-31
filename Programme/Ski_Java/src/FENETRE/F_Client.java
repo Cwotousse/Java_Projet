@@ -138,9 +138,8 @@ public class F_Client extends JFrame {
 		btn_reserverCours.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				// Affiche F_ajoutEleve
 				setVisible(false);
-				F_AjoutRdv frame = new F_AjoutRdv();
+				F_AjoutRdv frame = new F_AjoutRdv(idClient);
 				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 				frame.setVisible(true);
 			}
