@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
 <fullyQualifiedTypeName name="DAO.UtilisateurDAO"/>
-<fullyQualifiedTypeName name="DAO.DAO"/>
 <fullyQualifiedTypeName name="DAO.AbstractDAOFactory"/>
 <fullyQualifiedTypeName name="org.jdatepicker.impl.UtilDateModel"/>
 <fullyQualifiedTypeName name="org.jdatepicker.impl.JDatePanelImpl"/>
@@ -10,7 +9,6 @@
 <fullyQualifiedTypeName name="javax.swing.JFormattedTextField.AbstractFormatter"/>
 <fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
 <fullyQualifiedTypeName name="java.text.ParseException"/>
-<fullyQualifiedTypeName name="java.util.Calendar"/>
 <fullyQualifiedTypeName name="POJO.Client"/>
 <fullyQualifiedTypeName name="java.text.DateFormat"/>
 <fullyQualifiedTypeName name="org.jdatepicker.impl.SqlDateModel"/>
@@ -18,8 +16,11 @@
 <fullyQualifiedTypeName name="POJO.Personne"/>
 <fullyQualifiedTypeName name="POJO.Utilisateur"/>
 <fullyQualifiedTypeName name="DAO.ClientDAO"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="POJO.Eleve"/>
 <fullyQualifiedTypeName name="POJO.Moniteur"/>
 <fullyQualifiedTypeName name="POJO.Accreditation"/>
+<fullyQualifiedTypeName name="DAO.DAO"/>
+<fullyQualifiedTypeName name="java.util.Calendar"/>
+<fullyQualifiedTypeName name="POJO.Semaine"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 </qualifiedTypeNameHistroy>

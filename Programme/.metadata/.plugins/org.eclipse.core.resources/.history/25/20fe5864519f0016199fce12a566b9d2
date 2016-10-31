@@ -1,0 +1,77 @@
+package DAO;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import POJO.CoursParticulier;
+
+public class CoursParticulierDAO extends DAO<CoursParticulier> {
+	public CoursParticulierParticulierDAO(Connection conn) {
+		super(conn);
+	}
+
+	@Override
+	public int create		(CoursParticulier obj) { return -1; }
+	public boolean delete	(CoursParticulier obj) { return false; }
+	public boolean update	(CoursParticulier obj) { return false; }
+
+	// On cherche une CoursParticulier grâce à son id
+	public CoursParticulier find(int id) {
+		CoursParticulier coursParticulier = new CoursParticulier();
+		PreparedStatement pst = null;
+		try {
+			String sql = "SELECT * FROM CoursParticulier INNER JOIN Utilisateur ON CoursParticulier.numCoursParticulier = Utilisateur.numUtilisateur "
+					+ "INNER JOIN Personne ON Personne.numPersonne = Utilisateur.numUtilisateur WHERE numCoursParticulier = ?;";
+			pst = this.connect.prepareStatement(sql);
+			pst.setInt(1, id);
+			ResultSet result = pst.executeQuery();
+			while (result.next()) {
+				coursParticulier = new CoursParticulier(result.getInt("numCoursParticulier"), result.getString("nomSport"), result.getInt("prix"),
+						result.getInt("minEleve"), result.getInt("maxEleve"),  result.getString("periodeCoursParticulier"));
+			}
+			return coursParticulier;
+		}
+		catch (SQLException e) { e.printStackTrace(); return null; }
+		finally { 
+			if (pst != null) {
+				try {
+					pst.close();
+				}
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public ArrayList<CoursParticulier> getList() {
+		CoursParticulier coursParticulier = null;
+		ArrayList<CoursParticulier> liste = new ArrayList<CoursParticulier>();
+		PreparedStatement pst = null;
+		try {
+			String sql = "SELECT * FROM CoursParticulier";
+			pst = this.connect.prepareStatement(sql);
+			ResultSet rs = pst.executeQuery();
+			while (rs.next()) {
+				coursParticulier.setNumCoursParticulier(rs.getInt("numCoursParticulier"));
+				coursParticulier.setNomSport(rs.getString("nomSport"));
+				coursParticulier.setPrix(rs.getInt("prix"));
+				coursParticulier.setMinEl(rs.getInt("minEleve"));
+				coursParticulier.setMaxEl(rs.getInt("maxEleve"));
+				coursParticulier.setPeriodeCoursParticulier(rs.getString("periodeCoursParticulier"));
+				liste.add(coursParticulier);
+			}
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst != null) {
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return liste;
+	}
+}

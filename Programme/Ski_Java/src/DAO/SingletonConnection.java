@@ -16,9 +16,9 @@ public class SingletonConnection {
 			//Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			Class.forName("org.sqlite.JDBC");
 			connect = DriverManager.getConnection("jdbc:sqlite:./DB_Java_Ski.db");
-		} catch (SQLException ex) {
-			System.out.println("Erreur JDBC: " + ex.getMessage());
-		} catch (ClassNotFoundException ex) {
+		}
+		catch (SQLException ex) { System.out.println("Erreur JDBC: " + ex.getMessage()); }
+		catch (ClassNotFoundException ex) {
 			System.out.println("Classe de driver introuvable : " + ex.getMessage());
 			System.exit(0);
 		}

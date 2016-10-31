@@ -2,8 +2,6 @@ package DAO;
 import java.sql.Connection;
 import java.util.ArrayList;
 
-import POJO.Utilisateur;
-
 public abstract class DAO<T> {
 	protected Connection connect = null;
 	public DAO(Connection conn) { this.connect = conn; }
@@ -13,9 +11,4 @@ public abstract class DAO<T> {
 	public abstract boolean update(T obj);
 	public abstract T find(int id);
 	public abstract ArrayList<T> getList();
-	/*public  int verifPseudoMdp(Utilisateur obj) {
-		return -1;
-	}*/
-
-	
 }

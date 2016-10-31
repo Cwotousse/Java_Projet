@@ -135,17 +135,11 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 				liste.add(utilisateur);
 			}
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
+		catch (SQLException e) { e.printStackTrace(); }
 		finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return liste;

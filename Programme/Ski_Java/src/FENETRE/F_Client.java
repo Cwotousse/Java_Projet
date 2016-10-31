@@ -38,7 +38,7 @@ public class F_Client extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					F_Client frame = new F_Client(105);
+					F_Client frame = new F_Client(-1);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -57,78 +57,72 @@ public class F_Client extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		JLabel labStatut = new JLabel(""+idClient);
 
+		// Instanciation
+		JLabel labStatut = new JLabel(""+idClient);
+		JLabel lblClient = new JLabel("Client");
 		JButton btn_sajouterCli = new JButton("S'ajouter comme eleve");
+		JButton btnNewButton = new JButton("Deconnexion");
+		JSeparator separator = new JSeparator();
+		JButton btn_ajoutEleve = new JButton("Ajouter un \u00E9l\u00E8ve");
+		JButton btn_reserverCours = new JButton("R\u00E9server un cours");
+		JButton btn_afficherFacture = new JButton("Afficher la facture");
+
+		// Fonts
+		lblClient.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
+
+		// Bounds
+		labStatut.setBounds(68, 13, 122, 14);
+		btn_sajouterCli.setBounds(10, 38, 180, 30);
+		lblClient.setBounds(10, 11, 46, 14);
+		btnNewButton.setBounds(10, 210, 180, 30);
+		separator.setBounds(10, 34, 53, 14);
+		btn_afficherFacture.setBounds(12, 167, 178, 30);
+		btn_reserverCours.setBounds(10, 124, 180, 30);
+		btn_ajoutEleve.setBounds(10, 81, 180, 30);
+
+		// ADD
+		contentPane.add(lblClient);
+		contentPane.add(btn_sajouterCli);
+		contentPane.add(labStatut);
+		contentPane.add(btnNewButton);
+		contentPane.add(separator);
+		contentPane.add(btn_ajoutEleve);
+		contentPane.add(btn_reserverCours);
+		contentPane.add(btn_afficherFacture);
+
+		// ONCLICK
+		// S'ajouter en tant qu'élève
 		btn_sajouterCli.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				// S'ajouter en tant qu'élève
+				
 				try {
-					//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-					//DAO<Eleve> EleveDao = adf.getEleveDAO();
-					//DAO<Client> ClientDao = adf.getClientDAO();
-					
-					//Client C = ClientDao.find(idClient);
 					Client C = null;
 					C = C.rechercherClient(idClient);
 					System.out.println(C.getAdresse());
 					if(C != null){
 						System.out.println("F_Client -> ajout eleve");
 						Eleve E = new Eleve(C.getNumPersonne(), C.getNom(), C.getPre(), C.getAdresse(), C.getSexe(), C.getDateNaissance());
-						if (E.createEleve() != -1)
-							labStatut.setText("Vous avez étés ajoutés en tant qu'élève.");
-						else
-							labStatut.setText("Verifiez vos donnees");
+						if (E.createEleve() != -1) labStatut.setText("Vous avez étés ajoutés en tant qu'élève.");
+						else labStatut.setText("Verifiez vos donnees");
 					}
-					else{
-						labStatut.setText("ID relié à aucune personne.");
-					}
+					else{ labStatut.setText("ID relié à aucune personne."); }
 				}
-			catch (Exception e) {
-				labStatut.setText("Verifiez vos donnees");
-				e.printStackTrace();
-			}
+				catch (Exception e) {
+					labStatut.setText("Verifiez vos donnees");
+					e.printStackTrace();
+				}
 
-		}
-	});
-		btn_sajouterCli.addActionListener(new ActionListener() {
+			}
+		});
+		
+		/*btn_sajouterCli.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
-		});
-		btn_sajouterCli.setBounds(10, 38, 180, 30);
-		contentPane.add(btn_sajouterCli);
+		});*/
 
-		JLabel lblClient = new JLabel("Client");
-		lblClient.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
-		lblClient.setBounds(10, 11, 46, 14);
-		contentPane.add(lblClient);
-
-
-		labStatut.setBounds(68, 13, 122, 14);
-		contentPane.add(labStatut);
-
-		;
-
-		JButton btnNewButton = new JButton("Deconnexion");
-		btnNewButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// deconnexion
-				setVisible(false);
-				F_Connexion frame = new F_Connexion();
-				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-				frame.setVisible(true);
-			}
-		});
-		btnNewButton.setBounds(10, 210, 180, 30);
-		contentPane.add(btnNewButton);
-
-		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 34, 53, 14);
-		contentPane.add(separator);
-		
-		JButton btn_ajoutEleve = new JButton("Ajouter un \u00E9l\u00E8ve");
+		// Ajouter un élève
 		btn_ajoutEleve.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -139,15 +133,31 @@ public class F_Client extends JFrame {
 				frame.setVisible(true);
 			}
 		});
-		btn_ajoutEleve.setBounds(10, 81, 180, 30);
-		contentPane.add(btn_ajoutEleve);
 		
-		JButton btn_reserverCours = new JButton("R\u00E9server un cours");
-		btn_reserverCours.setBounds(10, 124, 180, 30);
-		contentPane.add(btn_reserverCours);
+		// Ajouter RDV
+		btn_reserverCours.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// Affiche F_ajoutEleve
+				setVisible(false);
+				F_AjoutRdv frame = new F_AjoutRdv();
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+		});
 		
-		JButton btn_afficherFacture = new JButton("Afficher la facture");
-		btn_afficherFacture.setBounds(12, 167, 178, 30);
-		contentPane.add(btn_afficherFacture);
-}
+		
+		
+		// Deconnexion
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// deconnexion
+				setVisible(false);
+				F_Connexion frame = new F_Connexion();
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+		});
+	}
 }
