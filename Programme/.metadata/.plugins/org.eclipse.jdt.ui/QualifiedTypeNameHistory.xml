@@ -29,4 +29,5 @@
 <fullyQualifiedTypeName name="POJO.CoursCollectif"/>
 <fullyQualifiedTypeName name="java.util.Arrays"/>
 <fullyQualifiedTypeName name="java.util.HashSet"/>
+<fullyQualifiedTypeName name="POJO.Reservation"/>
 </qualifiedTypeNameHistroy>

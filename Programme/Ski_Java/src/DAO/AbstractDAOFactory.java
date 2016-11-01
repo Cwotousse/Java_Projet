@@ -8,6 +8,7 @@ import POJO.CoursParticulier;
 import POJO.Eleve;
 import POJO.Moniteur;
 import POJO.Personne;
+import POJO.Reservation;
 import POJO.Semaine;
 import POJO.Utilisateur;
 
@@ -25,6 +26,7 @@ public abstract class AbstractDAOFactory {
 	public abstract DAO<Cours> 				getCoursDAO();
 	public abstract DAO<CoursParticulier> 	getCoursParticulierDAO();
 	public abstract DAO<CoursCollectif> 	getCoursCollectifDAO();
+	public abstract DAO<Reservation> 		getReservationDAO();
 
 	public static AbstractDAOFactory getFactory(int type){
 		switch(type){

@@ -2,6 +2,7 @@ package POJO;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 import DAO.AbstractDAOFactory;
@@ -41,6 +42,23 @@ public class Eleve extends Personne{
 	public int 				createEleve	() { return EleveDao.create(this); }
 	public Eleve 			findEleve	(int id){ return EleveDao.find(id); }
 	public ArrayList<Eleve> getListEleve(){ return EleveDao.getList(); }
+	
+	public HashSet<Eleve> getListEleveSelonAccredProf(int numMoniteur){
+		HashSet<Eleve> listeFiltree = new HashSet<Eleve>();
+		ArrayList<Eleve> listeFull =  EleveDao.getList(); 
+		Moniteur M = new Moniteur();
+		M = M.findMoniteur(numMoniteur);
+		ArrayList<Accreditation> listeAccredMoniteur = M.getAccrediList();
+		//System.out.println(M.getNom());
+		for(Accreditation A : listeAccredMoniteur)
+			for(Eleve eFull : listeFull){
+				//System.out.println("Nom accred : " + A.getNom());
+				if(A.getNom().equals(eFull.getCategorie()))
+					listeFiltree.add(eFull);
+			}
+			
+		return listeFiltree;
+	}
 	
 	// METHODEs SURCHARGEEs
 	@Override

@@ -10,6 +10,7 @@ import POJO.CoursParticulier;
 import POJO.Eleve;
 import POJO.Moniteur;
 import POJO.Personne;
+import POJO.Reservation;
 import POJO.Semaine;
 import POJO.Utilisateur;
 
@@ -26,4 +27,5 @@ protected static final Connection conn = SingletonConnection.getInstance();
 	public DAO<Cours> 				getCoursDAO 			() { return new CoursDAO(conn); }
 	public DAO<CoursParticulier>	getCoursParticulierDAO 	() { return new CoursParticulierDAO(conn); }
 	public DAO<CoursCollectif> 		getCoursCollectifDAO 	() { return new CoursCollectifDAO(conn); }
+	public DAO<Reservation> 		getReservationDAO 		() { return new ReservationDAO(conn); }
 }

@@ -34,8 +34,8 @@ public class CoursCollectif extends Cours{
 	public CoursCollectif rechercherCoursCollectif	(int id){ return CoursCollectifDao.find(id); }
 	public ArrayList<CoursCollectif> getListCoursCollectif()		{ return CoursCollectifDao.getList(); }
 
-	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, HashSet<String> periode){
-		System.out.println("Entree fonc");
+	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, String periode){
+		//System.out.println("Entree fonc");
 		ArrayList<Cours> listCours = super.getListCoursSelonId(idMoniteur, idEleve);
 		ArrayList<CoursCollectif> listFull = getListCoursCollectif();
 		ArrayList<CoursCollectif> listSelonId = new ArrayList<CoursCollectif>();
@@ -44,14 +44,14 @@ public class CoursCollectif extends Cours{
 		for (CoursCollectif CC : listFull){
 			for (Cours C : listCours){
 				if (CC.getNumCours() == C.getNumCours() && E.getCategorie().equals(CC.getCategorieAge())){
-					System.out.println("For String de taille " + periode.size());
-					for(String S : periode){
-						System.out.println(S + " / " + CC.getPeriodeCours());
-						if(CC.getPeriodeCours().equals(S)){
-							System.out.println("Ajout Cours Collectif");
+					//System.out.println("For String de taille " + periode.size());
+					//for(String S : periode){
+						//System.out.println(S + " / " + CC.getPeriodeCours());
+						if(CC.getPeriodeCours().equals(periode)){
+							//System.out.println("Ajout Cours Collectif");
 							listSelonId.add(CC);
 						}
-					}
+					//}
 				}
 			}
 		}

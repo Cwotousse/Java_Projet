@@ -40,7 +40,44 @@ public class F_AjoutRdv extends JFrame {
 	private int numMoniteur;
 	private int numCours;
 	private int numEleve;
-	private HashSet <String> periode = new HashSet <String>();
+	private String periode = "09-12";
+	private Boolean pageChargee = false;
+
+	JSeparator separator = new JSeparator();
+	JSeparator separator_1 = new JSeparator();
+	JLabel lbl_Reserv = new JLabel("R\u00E9servation");
+	JLabel lbl_error = new JLabel("");
+	JLabel lbl_moniteur = new JLabel("Moniteur");
+	JLabel lbl_eleve = new JLabel("El\u00E8ve");
+	JLabel lbl_horaire = new JLabel("Horaire");
+	JLabel lbl_cours = new JLabel("Cours");
+	JLabel lbl_infoCours = new JLabel("Il reste x places pour ce cours");
+
+	JComboBox cb_nomEleve = new JComboBox();
+	JComboBox cb_nomMoniteur = new JComboBox();
+	JComboBox cb_semaine = new JComboBox();
+	JComboBox cb_cours = new JComboBox();
+	JRadioButton rdbtnCoursCollectif = new JRadioButton("Cours collectif");
+	JRadioButton radbtn_touteLaJournee = new JRadioButton("x");
+	JRadioButton rdbtnCoursParticulier = new JRadioButton("Cours particulier");
+	JRadioButton rdbtnCoursMatin = new JRadioButton("Cours matin");
+	JRadioButton rdbtnCoursAprem = new JRadioButton("Cours apree");
+	JButton btn_ret = new JButton("Retour");
+	JButton btn_inscrip = new JButton("R\u00E9server");
+
+	// lISTES UTILES AUX COMBOBOXS
+	Eleve E 							= new Eleve();
+	Moniteur M 							= new Moniteur();
+	Semaine S 							= new Semaine();
+	Cours C 							= new Cours();
+	CoursParticulier CP 				= new CoursParticulier();
+	CoursCollectif CC 					= new CoursCollectif();
+	HashSet<Eleve> listEleve			= null;
+	ArrayList<Moniteur> listMoniteur	= M.getListMoniteur();
+	ArrayList<Semaine> listSemaine		= S.getListSemaineSelonDateDuJour();	
+	ArrayList<CoursParticulier> listCoursPartic		= CP.getListCoursParticulier();	
+	ArrayList<CoursCollectif> listCoursColl			= CC.getListCoursCollectif();
+
 	/**
 	 * Launch the application.
 	 */
@@ -50,18 +87,19 @@ public class F_AjoutRdv extends JFrame {
 				try {
 					F_AjoutRdv frame = new F_AjoutRdv(-1);
 					frame.setVisible(true);
+					//this.loadComboBox();
 				}
 				catch (Exception e) { e.printStackTrace(); }
 			}
 		});
+
+
 	}
 
 	/**
 	 * Create the frame.
 	 */
 	public F_AjoutRdv(int idClient) {
-		periode.add("09-12");
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 540, 417);
 		contentPane = new JPanel();
@@ -70,26 +108,10 @@ public class F_AjoutRdv extends JFrame {
 		contentPane.setLayout(null);
 
 		// New
-		JSeparator separator = new JSeparator();
-		JSeparator separator_1 = new JSeparator();
-		JLabel lbl_Reserv = new JLabel("R\u00E9servation");
-		JLabel lbl_error = new JLabel("");
-		JLabel lbl_moniteur = new JLabel("Moniteur");
-		JLabel lbl_eleve = new JLabel("El\u00E8ve");
-		JLabel lbl_horaire = new JLabel("Horaire");
-		JLabel lbl_cours = new JLabel("Cours");
-		JLabel lbl_infoCours = new JLabel("Il reste x places pour ce cours");
-		JComboBox cb_nomEleve = new JComboBox();
-		JComboBox cb_nomMoniteur = new JComboBox();
-		JComboBox cb_semaine = new JComboBox();
-		JComboBox cb_cours = new JComboBox();
-		JRadioButton rdbtnCoursCollectif = new JRadioButton("Cours collectif");
+		lbl_infoCours.setVerticalAlignment(SwingConstants.TOP);
 		rdbtnCoursCollectif.setSelected(true);
-		JRadioButton rdbtnCoursParticulier = new JRadioButton("Cours particulier");
-		JCheckBox rdbtnCoursMatin = new JCheckBox("Cours matin");
-		JCheckBox rdbtnCoursAprem = new JCheckBox("Cours apr\u00E8s-midi");
-		JButton btn_ret = new JButton("Retour");
-		JButton btn_inscrip = new JButton("Inscrire");
+		rdbtnCoursMatin.setSelected(true);
+		radbtn_touteLaJournee.setVisible(false);
 
 		// Alignement
 		lbl_moniteur.setHorizontalAlignment(SwingConstants.CENTER);
@@ -118,12 +140,13 @@ public class F_AjoutRdv extends JFrame {
 		lbl_horaire.setBounds			(224, 165, 250, 14);
 		lbl_cours.setBounds				(214, 221, 250, 14);
 		cb_cours.setBounds				(214, 246, 250, 20);
-		lbl_infoCours.setBounds			(214, 277, 250, 14);
-		rdbtnCoursAprem.setBounds		(6, 161, 109, 23);
-		rdbtnCoursMatin.setBounds		(6, 133, 109, 23);
+		lbl_infoCours.setBounds			(214, 277, 250, 37);
+		rdbtnCoursAprem.setBounds		(6, 161, 150, 23);
+		rdbtnCoursMatin.setBounds		(6, 133, 150, 23);
 		btn_inscrip.setBounds			(10, 310, 105, 23);
 		btn_ret.setBounds				(10, 344, 105, 23);
 		separator_1.setBounds			(10, 299, 105, 15);
+		radbtn_touteLaJournee.setBounds	(6, 189, 150, 23);
 
 		// Add
 		contentPane.add(lbl_Reserv);
@@ -145,18 +168,16 @@ public class F_AjoutRdv extends JFrame {
 		contentPane.add(btn_inscrip);
 		contentPane.add(btn_ret);
 		contentPane.add(separator_1);
-
-		rdbtnCoursMatin.setSelected(true);
-
-
-
-
+		contentPane.add(radbtn_touteLaJournee);
 
 		// EVENEMENT CLICK SUR RADIOBUTTON
-		// Valider l'inscritpion
-		btn_inscrip.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
+		// Valider la réservation
+		btn_inscrip.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(cb_nomEleve.getSelectedItem() != "" && cb_nomMoniteur.getSelectedItem() != "" && cb_semaine.getSelectedItem() != "" && cb_cours.getSelectedItem() != ""){
+					System.out.println("Réservation effectué");
+				}
 			}
 		});
 
@@ -177,17 +198,19 @@ public class F_AjoutRdv extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				rdbtnCoursParticulier.setSelected(false);
 				rdbtnCoursCollectif.setSelected	(true);
-				
+
 				// Visible
 				lbl_infoCours.setVisible		(true);
-				//lbl_cours.setVisible			(true);
-				//cb_cours.setVisible				(true);
-				rdbtnCoursMatin.setVisible		(true);
-				rdbtnCoursAprem.setVisible		(true);
-				
+
 				// Clear le hashset
-				periode.clear();
-				periode.add("09-12");
+				periode = "";
+				//periode.add("09-12");
+
+				rdbtnCoursMatin.setText("Cours matin");
+				rdbtnCoursAprem.setText("Cours apres-midi");
+				//radbtn_touteLaJournee.setText("Matin et apres-midi");
+				radbtn_touteLaJournee.setVisible(false);
+				if (pageChargee) loadCbCours();
 			}
 		});
 
@@ -200,14 +223,16 @@ public class F_AjoutRdv extends JFrame {
 
 				// Visible
 				lbl_infoCours.setVisible		(false);
-				//lbl_cours.setVisible			(false);
-				//cb_cours.setVisible			(false);
-				rdbtnCoursMatin.setVisible		(false);
-				rdbtnCoursAprem.setVisible		(false);
-				
+
 				// Clear le hashset
-				periode.clear();
-				periode.add("12-13");
+				periode = "";
+				//periode.add("12-13");
+
+				rdbtnCoursMatin.setText("Cours de 12 à 13");
+				rdbtnCoursAprem.setText("Cours de 13 à 14");
+				radbtn_touteLaJournee.setText("Cours de 12 à 14");
+				radbtn_touteLaJournee.setVisible(true);
+				if (pageChargee) loadCbCours();
 			}
 		});
 
@@ -215,12 +240,25 @@ public class F_AjoutRdv extends JFrame {
 		rdbtnCoursMatin.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!rdbtnCoursAprem.isSelected()){
-					//rdbtnCoursMatin.setSelected(true);
-					rdbtnCoursMatin.setSelected(true);
-				
-					periode.add("09-12");
+				if (rdbtnCoursMatin.isSelected()){
+					rdbtnCoursAprem.setSelected(false);
+					radbtn_touteLaJournee.setSelected(false);
+					switch(rdbtnCoursMatin.getText()){
+					case "Cours de 12 à 13" : 
+						periode = "12-13";
+						break;
+					case "Cours matin" : 
+						periode = "09-12";
+						break;
+					}
 				}
+				/*else{
+					if (!rdbtnCoursAprem.isSelected()){ rdbtnCoursMatin.setSelected(true); }
+					else if(rdbtnCoursMatin.isSelected()) { periode.clear(); periode.add("12-14");}
+				}*/
+
+
+				if (pageChargee) loadCbCours();
 			}
 		});
 
@@ -228,29 +266,44 @@ public class F_AjoutRdv extends JFrame {
 		rdbtnCoursAprem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (!rdbtnCoursMatin.isSelected()){
-					//rdbtnCoursMatin.setSelected(true);
-					rdbtnCoursAprem.setSelected(true);
-				//rdbtnCoursMatin.setSelected(false);
-				//rdbtnCoursAprem.setSelected(true);
-					
-					periode.add("14-17");
+				if (rdbtnCoursAprem.isSelected()){
+					rdbtnCoursMatin.setSelected(false);
+					radbtn_touteLaJournee.setSelected(false);
+					switch(rdbtnCoursAprem.getText()){
+					case "Cours de 13 à 14" : 
+						periode = "13-14";
+						break;
+					case "Cours apres-midi" : 
+						periode = "14-17";
+						break;
+					}
 				}
+
+				if (pageChargee) { loadCbCours(); }
 			}
 		});
-		// lISTES UTILES AUX COMBOBOXS
-		Eleve E 							= new Eleve();
-		Moniteur M 						= new Moniteur();
-		Semaine S 							= new Semaine();
-		Cours C 							= new Cours();
-		CoursParticulier CP 				= new CoursParticulier();
-		CoursCollectif CC 					= new CoursCollectif();
-		ArrayList<Eleve> listEleve			= E.getListEleve();
-		ArrayList<Moniteur> listMoniteur	= M.getListMoniteur();
-		ArrayList<Semaine> listSemaine		= S.getListSemaineSelonDateDuJour();	
-		ArrayList<Cours> listCours = null;//						= C.getListCoursSelonId(numMoniteur, numEleve);//C.getListCours();	
-		//ArrayList<CoursParticulier> listCoursPartic		= CP.getListCours();	
-		ArrayList<CoursCollectif> listCoursColl			= CC.getListCoursCollectif();	
+
+		// LES DEUX HEURES
+		radbtn_touteLaJournee.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (radbtn_touteLaJournee.isSelected()){
+					rdbtnCoursMatin.setSelected(false);
+					rdbtnCoursAprem.setSelected(false);
+					switch(radbtn_touteLaJournee.getText()){
+					case "Cours de 12 à 14" : 
+						periode = "12-14";
+						break;
+					/*case "Matin et apres-midi" : 
+						periode = "09-17";
+						break;*/
+					}
+				}
+
+				if (pageChargee) { loadCbCours(); }
+			}
+		});
+
 		// ON CHOISI IN NOUVEAU MONITEUR
 		// -> Il faut charger les cours correspondants
 		//Cours C = new Cours();
@@ -261,10 +314,11 @@ public class F_AjoutRdv extends JFrame {
 					int value = ((ComboItem)item).getValue();
 					numEleve = value;
 					System.out.println("Num élève : " + value);
+					if (pageChargee) loadCbCours();
 				}
 			}
 		});
-		
+
 		cb_nomMoniteur.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				if (arg0.getStateChange() == ItemEvent.SELECTED) {
@@ -272,11 +326,10 @@ public class F_AjoutRdv extends JFrame {
 					int value = ((ComboItem)item).getValue();
 					numMoniteur = value;
 					System.out.println("Num moniteur : " + value);
-					//listCours = C.getListCoursSelonId(value, 0);
+					if (pageChargee) { loadCbCours(); loadCbEleve(); }
 				}
 			}
 		});
-		
 		cb_semaine.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				if (arg0.getStateChange() == ItemEvent.SELECTED) {
@@ -284,10 +337,11 @@ public class F_AjoutRdv extends JFrame {
 					int value = ((ComboItem)item).getValue();
 					//numSemaine = value;
 					System.out.println("Num semaine : " + value);
+					//if (pageChargee) loadComboBox(); pageChargee = false;
 				}
 			}
 		});
-		
+
 		cb_cours.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				if (arg0.getStateChange() == ItemEvent.SELECTED) {
@@ -295,82 +349,95 @@ public class F_AjoutRdv extends JFrame {
 					int value = ((ComboItem)item).getValue();
 					numCours = value;
 					System.out.println("Num cours : " + value);
+					//if (pageChargee) loadComboBox(); pageChargee = false;
 				}
 			}
 		});
 
-		// REMPLISSAGE DES COMBOBOX
-		
+		loadComboBox();
+		pageChargee = true;
+	}
+
+	public void loadComboBox(){
+		try{
+			// REMPLISSAGE DES COMBOBOX
+			loadCbMoniteur();
+			loadCbEleve();
+			loadCbSemaine();
+			loadCbCours();
+		}
+		catch(Exception Ex){
+			Ex.getStackTrace();
+		}
+	}
+
+	public void loadCbEleve(){
 		// ELEVES
-		if (listEleve != null)
-			for(Eleve e : listEleve){
-				//cb_nomEleve.addItem(e.getNom().toUpperCase() + " " + e.getPre());
-				cb_nomEleve.addItem (new ComboItem(e.getNom().toUpperCase() + " " + e.getPre(), e.getNumPersonne()));
-				//cb_nomEleve.add
-			}
-		else
-			lbl_error.setText("Erreur ajout rdv");
+		listEleve = E.getListEleveSelonAccredProf(numMoniteur);
+		if (listEleve != null){
+			cb_nomEleve.removeAllItems();
+			for(Eleve e : listEleve) cb_nomEleve.addItem (new ComboItem(e.getNom().toUpperCase() + " " + e.getPre(), e.getNumPersonne()));
+		}
+		else lbl_error.setText("Erreur ajout rdv");
+	}
 
+	public void loadCbMoniteur(){
 		// MONITEUR
-		if (listMoniteur != null)
-			for(Moniteur m : listMoniteur){
-				//String [] arr = new String[] { m.getNumPersonne() + "", m.getNom().toUpperCase(), m.getNom()};
-				//cb_nomMoniteur.addItem(arr);
-				cb_nomMoniteur.addItem (new ComboItem(m.getNom().toUpperCase() + " " + m.getPre(), m.getNumPersonne()));
-			}
-		else
-			lbl_error.setText("Erreur ajout rdv");
+		if (listMoniteur != null){
+			cb_nomMoniteur.removeAllItems();
+			for(Moniteur m : listMoniteur) cb_nomMoniteur.addItem (new ComboItem(m.getNom().toUpperCase() + " " + m.getPre(), m.getNumPersonne()));
+		}
+		else lbl_error.setText("Erreur ajout rdv");
+	}
 
+	public void loadCbSemaine(){
 		// SEMAINE		
-		if (listSemaine != null)
-			for(Semaine s : listSemaine){
-				if (!s.getCongeScolaire()) // N'affiche que les semaines ou il n'y a pas de congés
-					//cb_semaine.addItem();
-				cb_semaine.addItem (new ComboItem(s.getDateDebut().toString(), s.getNumSemaine()));
+		if (listSemaine != null){
+			cb_semaine.removeAllItems();
+			for(Semaine s : listSemaine) 
+				if (!s.getCongeScolaire()) cb_semaine.addItem (new ComboItem(s.getDateDebut().toString(), s.getNumSemaine()));
+				else lbl_error.setText("Erreur disponibilités");
+		}
+	}
 
-			}
-		else
-			lbl_error.setText("Erreur disponibilités");
-
-		//rdbtnCoursCollectif
+	public void loadCbCours(){
 		// COURS
-		//listCours = C.getListCoursSelonId(numMoniteur, numEleve);
-		listCoursColl = CC.getListCoursCollectifSelonId(numMoniteur, numEleve, periode);
-		if (listCoursColl != null){
+		if(rdbtnCoursCollectif.isSelected()){ // Cours collectif
 			cb_cours.removeAllItems();
-			if(rdbtnCoursCollectif.isSelected()){ // Cours collectif
-				//for(Cours cc : listCours){
-				for(CoursCollectif cc : listCoursColl){
-					cb_cours.addItem (new ComboItem("Niveau " + cc.getNiveauCours() + ", " + cc.getCategorieAge() + " (" + cc.getNomSport() + ") ", cc.getNumCoursCollectif()));
-					//cb_cours.addItem (new ComboItem(cc.getNomSport(), cc.getNumCours()));
-					//cb_cours.addItem(cc.getNomSport() + " " + cc.getCategorieAge() + " " + cc.getNiveauCours());
-					lbl_infoCours.setText("Il reste " + (cc.getMaxEl()-cc.getMinEl()) + " places disponibles.");
-				}
-			}
-			else if(rdbtnCoursParticulier.isSelected()){ // Cours particulier
-				lbl_infoCours.setText("Pas de cours dispo.");
+			listCoursColl = CC.getListCoursCollectifSelonId(numMoniteur, numEleve, periode);
+			//for(Cours cc : listCours){
+			for(CoursCollectif cc : listCoursColl){
+				cb_cours.addItem (new ComboItem("Niveau " + cc.getNiveauCours() + ", " + cc.getCategorieAge() + " (" + cc.getNomSport() + ") ", cc.getNumCours()));
+				lbl_infoCours.setText("Il reste " + cc.getMaxEl() + " places disponibles." + System.getProperty("line.separator")
+				+ " Il manque " + cc.getMinEl() + " personnes pour que les cours ait lieu.");
 			}
 		}
-		else
-			lbl_error.setText("Erreur disponibilités");
+		else if(rdbtnCoursParticulier.isSelected()){ // Cours particulier
+			cb_cours.removeAllItems();
+			listCoursPartic = CP.getListCoursParticulierSelonId(numMoniteur, numEleve, periode);
+			for(CoursParticulier cp : listCoursPartic){
+				cb_cours.addItem (new ComboItem(cp.getNombreHeures() + " heure(s) de " + cp.getNomSport() + " (" + cp.getPeriodeCours() + ")", cp.getNumCours()));
+				lbl_infoCours.setText("Il reste " + cp.getMaxEl() + " places disponibles.");
+			}
+		}
+		else lbl_error.setText("Erreur disponibilités");
 	}
+}
 
-	// CLASSE UTILISEE POUR RECUPERER LID DE LA PERSONNE
-	class ComboItem
+// CLASSE UTILISEE POUR RECUPERER LID DE LA PERSONNE
+class ComboItem
+{
+	private String key;
+	private int value;
+
+	public ComboItem(String key, int value)
 	{
-	    private String key;
-	    private int value;
-
-	    public ComboItem(String key, int value)
-	    {
-	        this.key 	= key;
-	        this.value 	= value;
-	    }
-
-	    @Override
-	    public String toString	() { return key; } 
-	    public String getKey	() { return key; }
-	    public int getValue		() { return value; }
+		this.key 	= key;
+		this.value 	= value;
 	}
-	
+
+	@Override
+	public String toString	() { return key; } 
+	public String getKey	() { return key; }
+	public int getValue		() { return value; }
 }

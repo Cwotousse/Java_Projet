@@ -1,5 +1,8 @@
 package POJO;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 import DAO.AbstractDAOFactory;
 import DAO.DAO;
 
@@ -28,7 +31,31 @@ public class CoursParticulier extends Cours{
 	public int createCoursParticulier					() 		 { return CoursParticulierDao.create(this); }
 	public void deleteCoursParticulier					()		 { CoursParticulierDao.delete(null); }
 	public CoursParticulier rechercherCoursParticulier	(int id) { return CoursParticulierDao.find(id); }
+	public ArrayList<CoursParticulier> getListCoursParticulier()		{ return CoursParticulierDao.getList(); }
 	
+	public ArrayList<CoursParticulier> getListCoursParticulierSelonId(int idMoniteur, int idEleve, String periode){
+		//System.out.println("Entree fonc");
+		ArrayList<Cours> listCours = super.getListCoursSelonId(idMoniteur, idEleve);
+		ArrayList<CoursParticulier> listFull = getListCoursParticulier();
+		ArrayList<CoursParticulier> listSelonId = new ArrayList<CoursParticulier>();
+		Eleve E = new Eleve();
+		E = E.findEleve(idEleve);
+		for (CoursParticulier CP : listFull){
+			for (Cours C : listCours){
+				if (CP.getNumCours() == C.getNumCours()){
+					//System.out.println("For String de taille " + periode.size());
+					//for(String S : periode){
+						//System.out.println(S + " / " + CP.getPeriodeCours());
+						if(CP.getPeriodeCours().equals(periode)){
+							//System.out.println("Ajout Cours Collectif");
+							listSelonId.add(CP);
+						}
+					//}
+				}
+			}
+		}
+		return listSelonId;
+	}
 	// FONCTION SURCHARGEE
 		@Override
 		public String toString() { 
