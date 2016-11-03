@@ -51,14 +51,8 @@ public class Personne {
 		
 	}
 	
-	public int createPersonne() {
-		//new Personne(obj.getNumPersonne(), obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance())
-		return PersonneDao.create(this);
-	}
-	
-	public void deletePersonne(){
-		PersonneDao.delete(null);
-	}
+	public int createPersonne() { return PersonneDao.create(this); }
+	public void deletePersonne(){ PersonneDao.delete(null); }
 	
 	// METHODE SURCHARGEE
 	@Override

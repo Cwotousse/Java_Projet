@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import POJO.Accreditation;
 import POJO.Moniteur;
 import POJO.Personne;
+import POJO.Reservation;
 import POJO.Utilisateur;
 
 public class MoniteurDAO extends DAO<Moniteur>{
@@ -123,8 +124,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				pstAccred.setInt(1, id);
 				ResultSet rsAccred = pstAccred.executeQuery();
 				while(rsAccred.next()){
-					Accreditation a = new Accreditation(rsAccred.getString("nomAccreditation"));
-					listeAccred.add(a);
+					listeAccred.add(new Accreditation(rsAccred.getString("nomAccreditation")));
 				}
 				moniteur = new Moniteur(rs.getInt("numMoniteur"), rs.getString("nom"), rs.getString("prenom"),
 						rs.getString("adresse"), rs.getString("sexe"), rs.getDate("dateNaissance"), rs.getString("pseudo"), rs.getString("mdp"),
@@ -195,9 +195,6 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		return liste;
 	}
 
-	/*@Override
-	public  int verifPseudoMdp(Utilisateur obj){
-		// TODO Auto-generated method stub
-		return -1;
-	}*/
+	@Override
+	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
 }

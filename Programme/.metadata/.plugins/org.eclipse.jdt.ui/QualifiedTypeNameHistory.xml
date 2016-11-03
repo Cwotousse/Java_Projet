@@ -9,7 +9,6 @@
 <fullyQualifiedTypeName name="javax.swing.JFormattedTextField.AbstractFormatter"/>
 <fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
 <fullyQualifiedTypeName name="java.text.ParseException"/>
-<fullyQualifiedTypeName name="POJO.Client"/>
 <fullyQualifiedTypeName name="java.text.DateFormat"/>
 <fullyQualifiedTypeName name="org.jdatepicker.impl.SqlDateModel"/>
 <fullyQualifiedTypeName name="java.sql.Date"/>
@@ -22,12 +21,16 @@
 <fullyQualifiedTypeName name="DAO.DAO"/>
 <fullyQualifiedTypeName name="java.util.Calendar"/>
 <fullyQualifiedTypeName name="POJO.Semaine"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="POJO.Cours"/>
 <fullyQualifiedTypeName name="javax.swing.JCheckBox"/>
 <fullyQualifiedTypeName name="POJO.CoursParticulier"/>
 <fullyQualifiedTypeName name="POJO.CoursCollectif"/>
 <fullyQualifiedTypeName name="java.util.Arrays"/>
 <fullyQualifiedTypeName name="java.util.HashSet"/>
+<fullyQualifiedTypeName name="POJO.Client"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="POJO.Reservation"/>
+<fullyQualifiedTypeName name="javax.swing.JScrollPane"/>
+<fullyQualifiedTypeName name="javax.swing.table.DefaultTableModel"/>
+<fullyQualifiedTypeName name="javax.swing.table.JTableHeader"/>
 </qualifiedTypeNameHistroy>

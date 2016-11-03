@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import POJO.Personne;
+import POJO.Reservation;
 import POJO.Utilisateur;
 
 public class PersonneDAO  extends DAO<Personne> {
@@ -143,9 +144,6 @@ public class PersonneDAO  extends DAO<Personne> {
 		return liste;
 	}*/
 
-	/*@Override
-	public  int verifPseudoMdp(Utilisateur obj){
-		// TODO Auto-generated method stub
-		return -1;
-	}*/
+	@Override
+	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
 }

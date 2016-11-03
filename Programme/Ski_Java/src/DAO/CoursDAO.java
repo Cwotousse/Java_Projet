@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import POJO.Cours;
+import POJO.Reservation;
 
 public class CoursDAO extends DAO<Cours> {
 	public CoursDAO(Connection conn) {
@@ -23,7 +24,7 @@ public class CoursDAO extends DAO<Cours> {
 		Cours cours = new Cours();
 		PreparedStatement pst = null;
 		try {
-			String sql = "SELECT * FROM Cours numCours = ?;";
+			String sql = "SELECT * FROM Cours WHERE numCours = ?;";
 			pst = this.connect.prepareStatement(sql);
 			pst.setInt(1, id);
 			ResultSet result = pst.executeQuery();
@@ -63,4 +64,7 @@ public class CoursDAO extends DAO<Cours> {
 		}
 		return liste;
 	}
+	
+	@Override
+	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
 }

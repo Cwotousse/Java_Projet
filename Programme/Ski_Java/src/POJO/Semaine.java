@@ -136,7 +136,7 @@ public class Semaine {
 	public String toString() { 
 		return  //descriptif + System.getProperty("line.separator") 
 				"Période de congé scolaire : " + congeScolaire + System.getProperty("line.separator")
-				+ "Période comprise entre le " + dateFormat.format(dateDebut) + " et le " + dateFormat.format(dateFin) + System.getProperty("line.separator"); 
+				+ "Période comprise entre le " + dateDebut.toString() + " et le " + dateFin.toString() + System.getProperty("line.separator"); 
 	}
 
 

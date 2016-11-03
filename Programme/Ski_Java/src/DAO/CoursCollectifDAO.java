@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import POJO.CoursCollectif;
+import POJO.Reservation;
 
 public class CoursCollectifDAO extends DAO<CoursCollectif> {
 	public CoursCollectifDAO(Connection conn) {
@@ -71,5 +72,8 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		}
 		return liste;
 	}
+	
+	@Override
+	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
 }
 

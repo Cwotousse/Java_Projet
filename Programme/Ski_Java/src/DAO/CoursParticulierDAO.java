@@ -11,6 +11,7 @@ import POJO.Cours;
 import POJO.CoursCollectif;
 import POJO.CoursParticulier;
 import POJO.Eleve;
+import POJO.Reservation;
 
 public class CoursParticulierDAO extends DAO<CoursParticulier> {
 	public CoursParticulierDAO(Connection conn) {
@@ -74,4 +75,7 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 		}
 		return liste;
 	}
+	
+	@Override
+	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
 }

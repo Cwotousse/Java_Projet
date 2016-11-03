@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import POJO.Reservation;
 import POJO.Semaine;
 public class SemaineDAO extends DAO<Semaine> {
 	public SemaineDAO(Connection conn) {
@@ -27,8 +28,15 @@ public class SemaineDAO extends DAO<Semaine> {
 
 			pst2.executeUpdate();
 			pst2.close();
-			//System.out.println("Ajout d'un moniteur effectue");
-			System.out.println("SemaineDao -> " + obj.getNumSemaineDansAnnee());
+
+
+			PreparedStatement pst_numReserv;
+			String selectNumReserv = "SELECT MAX(numSemaine) FROM Semaine";
+			pst_numReserv = this.connect.prepareStatement(selectNumReserv);
+			ResultSet rs = pst_numReserv.executeQuery();
+			while (rs.next()) { obj.setNumSemaine(rs.getInt(1)); }
+			System.out.println("ReservationDao -> " + obj.getNumSemaine());
+			
 			return obj.getNumSemaine();
 		}
 
@@ -60,6 +68,7 @@ public class SemaineDAO extends DAO<Semaine> {
 				semaine.setDateDebut(rs.getDate("dateDebut"));
 				semaine.setDateFin(rs.getDate("dateFin"));
 				semaine.setNumSemaineDansAnnee(rs.getInt("numSemaineDansAnnee"));
+				semaine.setNumSemaine(rs.getInt("numSemaine"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -103,5 +112,8 @@ public class SemaineDAO extends DAO<Semaine> {
 		}
 		return liste;
 	}
+	
+	@Override
+	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
 }
 

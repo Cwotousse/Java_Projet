@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import POJO.Eleve;
+import POJO.Reservation;
 import POJO.Utilisateur;
 public class UtilisateurDAO extends DAO<Utilisateur> {
 	public UtilisateurDAO(Connection conn) {
@@ -144,4 +145,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		}
 		return liste;
 	}
+	
+	@Override
+	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
 }

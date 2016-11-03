@@ -10,6 +10,7 @@ import java.util.Date;
 import POJO.Client;
 import POJO.Eleve;
 import POJO.Personne;
+import POJO.Reservation;
 import POJO.Utilisateur;
 
 public class EleveDAO extends DAO<Eleve> {
@@ -128,9 +129,6 @@ public class EleveDAO extends DAO<Eleve> {
 		return liste;
 	}
 
-	/*@Override
-	public  int verifPseudoMdp(Utilisateur obj){
-		// TODO Auto-generated method stub
-		return -1;
-	}*/
+	@Override
+	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
 }

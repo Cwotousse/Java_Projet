@@ -1,0 +1,60 @@
+package FENETRE;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JSeparator;
+
+public class F_AfficherRDV extends JFrame {
+
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					F_AfficherRDV frame = new F_AfficherRDV();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public F_AfficherRDV() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(10, 97, 414, 20);
+		contentPane.add(comboBox);
+		
+		JLabel lblVosCours = new JLabel("Vos cours");
+		lblVosCours.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
+		lblVosCours.setBounds(10, 11, 76, 20);
+		contentPane.add(lblVosCours);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(10, 37, 76, 20);
+		contentPane.add(separator);
+		
+		
+	}
+}

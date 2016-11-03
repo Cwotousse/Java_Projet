@@ -9,6 +9,7 @@ import java.util.Date;
 
 import POJO.Client;
 import POJO.Personne;
+import POJO.Reservation;
 import POJO.Utilisateur;
 
 public class ClientDAO extends DAO<Client> {
@@ -78,7 +79,7 @@ public class ClientDAO extends DAO<Client> {
 			pst.setInt(1, id);
 			ResultSet result = pst.executeQuery();
 			while (result.next()) {
-				client = new Client(result.getInt("numClient"), result.getString("nom"), result.getString("prenom"), result.getString("adresse"), 
+				client = new Client(result.getInt("numPersonne"), result.getString("nom"), result.getString("prenom"), result.getString("adresse"), 
 						result.getString("sexe"), result.getDate("dateNaissance"), result.getString("pseudo"),
 						result.getString("mdp"), result.getInt("typeUtilisateur"), result.getString("adresseFacturation"));
 			}
@@ -125,9 +126,6 @@ public class ClientDAO extends DAO<Client> {
 		return liste;
 	}
 
-	/*@Override
-	public  int verifPseudoMdp(Utilisateur obj){
-		// TODO Auto-generated method stub
-		return -1;
-	}*/
+	@Override
+	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
 }

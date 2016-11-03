@@ -7,11 +7,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import DAO.AbstractDAOFactory;
+import DAO.DAO;
+import POJO.Client;
 import POJO.Cours;
 import POJO.CoursCollectif;
 import POJO.CoursParticulier;
 import POJO.Eleve;
 import POJO.Moniteur;
+import POJO.Reservation;
 import POJO.Semaine;
 
 import javax.swing.JLabel;
@@ -40,6 +44,7 @@ public class F_AjoutRdv extends JFrame {
 	private int numMoniteur;
 	private int numCours;
 	private int numEleve;
+	private int numSemaine;
 	private String periode = "09-12";
 	private Boolean pageChargee = false;
 
@@ -77,6 +82,15 @@ public class F_AjoutRdv extends JFrame {
 	ArrayList<Semaine> listSemaine		= S.getListSemaineSelonDateDuJour();	
 	ArrayList<CoursParticulier> listCoursPartic		= CP.getListCoursParticulier();	
 	ArrayList<CoursCollectif> listCoursColl			= CC.getListCoursCollectif();
+	
+	// ADF
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Reservation> 	ReservationDAO 	= adf.getReservationDAO();
+	DAO<Client> 		ClientDAO 		= adf.getClientDAO();
+	DAO<Eleve> 			EleveDAO 		= adf.getEleveDAO();
+	DAO<Moniteur> 		MoniteurDAO 	= adf.getMoniteurDAO();
+	DAO<Cours> 			CoursDAO 		= adf.getCoursDAO();
+	DAO<Semaine> 		SemaineDAO 		= adf.getSemaineDAO();
 
 	/**
 	 * Launch the application.
@@ -172,11 +186,18 @@ public class F_AjoutRdv extends JFrame {
 
 		// EVENEMENT CLICK SUR RADIOBUTTON
 		// Valider la réservation
+		System.out.println("Num client : " + idClient);
 		btn_inscrip.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if(cb_nomEleve.getSelectedItem() != "" && cb_nomMoniteur.getSelectedItem() != "" && cb_semaine.getSelectedItem() != "" && cb_cours.getSelectedItem() != ""){
-					System.out.println("Réservation effectué");
+					//System.out.println("Réservation effectué");
+					String[] parts = periode.split("-");
+					String heureDebut = parts[0];
+					String heureFin = parts[1];
+					int numReservation =ReservationDAO.create(new Reservation(Integer.parseInt(heureDebut), Integer.parseInt(heureFin), -1, SemaineDAO.find(numSemaine),
+							CoursDAO.find(numCours), EleveDAO.find(numEleve), ClientDAO.find(idClient), MoniteurDAO.find(numMoniteur)));
+					System.out.println("Num reserv : " + numReservation);
 				}
 			}
 		});
@@ -335,7 +356,7 @@ public class F_AjoutRdv extends JFrame {
 				if (arg0.getStateChange() == ItemEvent.SELECTED) {
 					Object item = cb_semaine.getSelectedItem();
 					int value = ((ComboItem)item).getValue();
-					//numSemaine = value;
+					numSemaine = value;
 					System.out.println("Num semaine : " + value);
 					//if (pageChargee) loadComboBox(); pageChargee = false;
 				}

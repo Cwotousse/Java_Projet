@@ -1,0 +1,151 @@
+package FENETRE;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+
+import DAO.AbstractDAOFactory;
+import DAO.DAO;
+import POJO.Moniteur;
+import POJO.Reservation;
+
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.util.ArrayList;
+
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class F_AfficherRDV extends JFrame {
+
+	private JPanel contentPane;
+	private JTable table;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					F_AfficherRDV frame = new F_AfficherRDV();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public F_AfficherRDV() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 791, 503);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(10, 44, 414, 20);
+		contentPane.add(comboBox);
+
+		// ADF
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<Reservation> ReservationDAO = adf.getReservationDAO();
+
+		// New
+		JLabel lblVosCours = new JLabel("Vos cours");
+		JSeparator separator = new JSeparator();
+		JLabel lbl_error = new JLabel("Error label");
+
+		// Font
+		lblVosCours.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
+
+		// SetBound
+		lblVosCours.setBounds(10, 11, 76, 20);
+		separator.setBounds(10, 37, 76, 20);
+		lbl_error.setBounds(401, 422, 203, 16);
+
+		// Add
+		contentPane.add(lblVosCours);
+		contentPane.add(separator);
+		contentPane.add(lbl_error);
+		
+		JButton btn_fr = new JButton("D\u00E9connexion");
+		btn_fr.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// Deconnexion
+				setVisible(false);
+				F_Connexion frame = new F_Connexion();
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+		});
+		btn_fr.setBounds(10, 418, 125, 25);
+		contentPane.add(btn_fr);
+
+
+		// Liste RDV
+		ArrayList<Reservation> listReserv = ReservationDAO.getList();
+
+		if (listReserv != null){
+			comboBox.removeAllItems();
+			for(Reservation r : listReserv) 
+				comboBox.addItem (/*r.getNumReservation() + " "  + -*/r.getSemaine().getDateDebut() + " " + r.getEleve().getNom() + " " + r.getMoniteur().getNom() /*+ " " + r.getCours().getNomSport()*/);
+		}
+		else lbl_error.setText("Erreur ajout rdv");
+
+		
+		//headers for the table
+        String[] columns = new String[] {
+            "N°","Période", "Horaire", "Libellé", "Niveau", "Moniteur", "Eleve", "Titutlaire", "Prix"
+        };
+         
+        //actual data for the table in a 2d array
+        Object[][] data  = new Object[listReserv.size()][9];
+        
+        for (int i = 0; i < listReserv.size(); i++) {
+        	data[i][0] = listReserv.get(i).getNumReservation();
+        	data[i][1] = listReserv.get(i).getSemaine().getDateDebut() + " à " + listReserv.get(i).getSemaine().getDateFin();
+        	data[i][2] = listReserv.get(i).getHeureDebut() + " à " + listReserv.get(i).getHeureFin() + "h";
+        	data[i][3] = listReserv.get(i).getCours().getNomSport();
+        	data[i][4] = "niveau";
+        	data[i][5] = listReserv.get(i).getMoniteur().getNom().toUpperCase() + " " + listReserv.get(i).getMoniteur().getPre();
+        	data[i][6] = listReserv.get(i).getEleve().getNom().toUpperCase() + " " + listReserv.get(i).getEleve().getPre();
+        	data[i][7] = listReserv.get(i).getClient().getNom().toUpperCase() + " " + listReserv.get(i).getClient().getPre();
+        	data[i][8] = listReserv.get(i).getCours().getPrix() + "€";
+		}
+        
+        //create table with data
+        
+         
+        //add the table to the frame
+        //this.add(new JScrollPane(table));
+         
+        this.setTitle("Table Example");
+
+        JTableHeader header = table.getTableHeader();
+        
+        
+        
+		DefaultTableModel model = new DefaultTableModel(data, columns);
+		JTable table = new JTable(model);
+		table.setBounds(10, 150, 751, 255);
+		contentPane.add(header, BorderLayout.NORTH);
+        contentPane.add(table, BorderLayout.CENTER);
+	}
+}

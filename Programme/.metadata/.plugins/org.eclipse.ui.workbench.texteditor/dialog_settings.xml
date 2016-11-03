@@ -2,22 +2,23 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="int" key="selection"/>
+		<item value="listReserv" key="selection"/>
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="listReservReserv"/>
+			<item value="list"/>
 			<item value="Date"/>
 			<item value="utilisateur"/>
 			<item value="Utilisateur"/>
 			<item value="loadCbEleve"/>
 			<item value="CC"/>
 			<item value="enfant"/>
-			<item value="periode"/>
-			<item value="reste"/>
 		</list>
 		<list key="replacehistory">
+			<item value="listReserv"/>
 			<item value="int"/>
 			<item value="reservation"/>
 			<item value="Reservation"/>
@@ -25,13 +26,12 @@
 			<item value="coursCollectif"/>
 			<item value="CoursCollectif"/>
 			<item value="CoursParticulier"/>
-			<item value="coursParticulier"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item value="284" key="DIALOG_WIDTH"/>
-		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
-		<item value="391" key="DIALOG_HEIGHT"/>
+		<item value="336" key="DIALOG_WIDTH"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="454" key="DIALOG_HEIGHT"/>
 		<item value="706" key="DIALOG_X_ORIGIN"/>
 		<item value="258" key="DIALOG_Y_ORIGIN"/>
 	</section>
