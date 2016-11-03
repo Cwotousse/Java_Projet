@@ -6,9 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 import POJO.Accreditation;
 import POJO.Client;
+import POJO.Cours;
+import POJO.CoursCollectif;
+import POJO.CoursParticulier;
+import POJO.Eleve;
 import POJO.Accreditation;
 import POJO.Personne;
 import POJO.Reservation;
@@ -129,6 +134,10 @@ public class AccreditationDAO extends DAO<Accreditation> {
 		return liste;
 	}
 
-	@Override
-	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
+	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public ArrayList<Accreditation> getListCoursSelonId(int idMoniteur, int idEleve) { return null; }
+	@Override public ArrayList<Accreditation> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public ArrayList<Accreditation> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public HashSet<Accreditation> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public ArrayList<Accreditation> getMyList(int idPersonne) { return null; }
 }

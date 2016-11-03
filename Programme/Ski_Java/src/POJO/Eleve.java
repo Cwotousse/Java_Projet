@@ -3,7 +3,6 @@ package POJO;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Scanner;
 
 import DAO.AbstractDAOFactory;
 import DAO.DAO;
@@ -13,8 +12,6 @@ public class Eleve extends Personne{
 	private boolean aUneAssurance;
 	private String categorie;
 	private int numEleve;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Eleve> EleveDao = adf.getEleveDAO();
 	
 	// CONSTRUCTEURS
 	public Eleve(){}
@@ -39,27 +36,6 @@ public class Eleve extends Personne{
 		//
 	}
 	
-	public int 				createEleve	() { return EleveDao.create(this); }
-	public Eleve 			findEleve	(int id){ return EleveDao.find(id); }
-	public ArrayList<Eleve> getListEleve(){ return EleveDao.getList(); }
-	
-	public HashSet<Eleve> getListEleveSelonAccredProf(int numMoniteur){
-		HashSet<Eleve> listeFiltree = new HashSet<Eleve>();
-		ArrayList<Eleve> listeFull =  EleveDao.getList(); 
-		Moniteur M = new Moniteur();
-		M = M.findMoniteur(numMoniteur);
-		ArrayList<Accreditation> listeAccredMoniteur = M.getAccrediList();
-		//System.out.println(M.getNom());
-		for(Accreditation A : listeAccredMoniteur)
-			for(Eleve eFull : listeFull){
-				//System.out.println("Nom accred : " + A.getNom());
-				if(A.getNom().equals(eFull.getCategorie()))
-					listeFiltree.add(eFull);
-			}
-			
-		return listeFiltree;
-	}
-	
 	// METHODEs SURCHARGEEs
 	@Override
 	public String toString() { 
@@ -70,12 +46,12 @@ public class Eleve extends Personne{
 	}
 	
 	// PROPRIETE
-	public boolean getAUneAssurance		() { return aUneAssurance; }
-	public String getCategorie			() { return categorie; }
-	public int getNumEleve				() { return numEleve; }
-	public void setAUneAssurance		(boolean aUneAssurance) 	{ this.aUneAssurance = aUneAssurance; }
-	public void setCategorie			(String categorie) 			{ this.categorie = categorie; }
-	public void setNumEleve				(int numEleve) 				{ this.numEleve = numEleve; }
+	public boolean 	getAUneAssurance	() 							{ return aUneAssurance; }
+	public String 	getCategorie		() 							{ return categorie; }
+	public int 		getNumEleve			() 							{ return numEleve; }
+	public void 	setAUneAssurance	(boolean aUneAssurance) 	{ this.aUneAssurance = aUneAssurance; }
+	public void 	setCategorie		(String categorie) 			{ this.categorie = categorie; }
+	public void 	setNumEleve			(int numEleve) 				{ this.numEleve = numEleve; }
 	
 
 	

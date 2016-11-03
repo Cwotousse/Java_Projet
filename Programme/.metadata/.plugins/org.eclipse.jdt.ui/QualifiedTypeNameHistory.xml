@@ -20,7 +20,6 @@
 <fullyQualifiedTypeName name="POJO.Accreditation"/>
 <fullyQualifiedTypeName name="DAO.DAO"/>
 <fullyQualifiedTypeName name="java.util.Calendar"/>
-<fullyQualifiedTypeName name="POJO.Semaine"/>
 <fullyQualifiedTypeName name="POJO.Cours"/>
 <fullyQualifiedTypeName name="javax.swing.JCheckBox"/>
 <fullyQualifiedTypeName name="POJO.CoursParticulier"/>
@@ -33,4 +32,6 @@
 <fullyQualifiedTypeName name="javax.swing.JScrollPane"/>
 <fullyQualifiedTypeName name="javax.swing.table.DefaultTableModel"/>
 <fullyQualifiedTypeName name="javax.swing.table.JTableHeader"/>
+<fullyQualifiedTypeName name="DAO.CoursCollectifDAO"/>
+<fullyQualifiedTypeName name="POJO.Semaine"/>
 </qualifiedTypeNameHistroy>

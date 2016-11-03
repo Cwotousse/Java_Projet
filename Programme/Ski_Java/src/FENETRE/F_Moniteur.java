@@ -27,11 +27,10 @@ public class F_Moniteur extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					F_Moniteur frame = new F_Moniteur();
+					F_Moniteur frame = new F_Moniteur(-1);
 					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				catch (Exception e) { e.printStackTrace(); }
 			}
 		});
 	}
@@ -39,7 +38,7 @@ public class F_Moniteur extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public F_Moniteur() {
+	public F_Moniteur(int idMoniteur) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -69,8 +68,22 @@ public class F_Moniteur extends JFrame {
 				frame.setVisible(true);
 			}
 		});
-		btnDeco.setBounds(166, 227, 117, 23);
+		btnDeco.setBounds(10, 227, 117, 23);
 		contentPane.add(btnDeco);
+		
+		JButton btn_cours = new JButton("Mes cours");
+		btn_cours.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// Affiche F_AfficherRDV
+				setVisible(false);
+				F_AfficherRDV frame = new F_AfficherRDV(idMoniteur);
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+		});
+		btn_cours.setBounds(10, 58, 117, 23);
+		contentPane.add(btn_cours);
 		
 		
 	}

@@ -5,8 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
+import POJO.Accreditation;
 import POJO.Cours;
+import POJO.CoursCollectif;
+import POJO.CoursParticulier;
+import POJO.Eleve;
+import POJO.Moniteur;
 import POJO.Reservation;
 
 public class CoursDAO extends DAO<Cours> {
@@ -65,6 +71,77 @@ public class CoursDAO extends DAO<Cours> {
 		return liste;
 	}
 	
-	@Override
-	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
+	public ArrayList<Cours> getListCoursSelonId(int idMoniteur, int idEleve){
+		System.out.println("Id moniteur : " + idMoniteur);
+		ArrayList<Cours> listFull = getList(); 
+		ArrayList<Cours> listSelonId = new ArrayList<Cours>();
+		// new ArrayList<Accreditation>();
+		Moniteur M = new Moniteur();
+		M = M.findMoniteur(idMoniteur);
+		ArrayList<Accreditation> listAccred = M.getAccrediList(); // Liste des accreditations du moniteur
+		for(Cours C : listFull){
+			for(Accreditation A : listAccred){
+				if(A.getNom().equals(C.getNomSport())){
+					// Si l'accreditation du moniteur correspond à celle du cours proposé, on l'ajoute dans la liste triée
+					listSelonId.add(C);
+				}
+			}
+		}
+		return listSelonId;
+	}
+	
+	public String calculerPlaceCours(int idCours, int idSemaine){
+		PreparedStatement pst_rec_cou = null;
+		PreparedStatement pst_cpt_cou = null;
+		try {
+			int min = 0;
+			int max = 0;
+			int placeActuelle = 0;
+			String sql_rec_cou = "SELECT * FROM Cours WHERE numCours = ?";
+			String sql_cpt_res = "SELECT Count(*) AS total FROM ReservationCours "
+					+ "INNER JOIN Cours ON Cours.numCours = ReservationCours.numCours "
+					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
+					+ "WHERE ReservationCours.numCours = ? AND CoursSemaine.numSemaine = ?;";
+			
+			pst_rec_cou = this.connect.prepareStatement(sql_rec_cou);
+			pst_cpt_cou = this.connect.prepareStatement(sql_cpt_res);
+			
+			pst_rec_cou.setInt(1, idCours);
+			pst_cpt_cou.setInt(1, idCours);
+			pst_cpt_cou.setInt(2, idSemaine);
+			
+			ResultSet res_rec_cou = pst_rec_cou.executeQuery();
+			ResultSet res_cpt_cou = pst_cpt_cou.executeQuery();
+			
+			while (res_rec_cou.next()) {
+				min = res_rec_cou.getInt("minEleve");
+				max = res_rec_cou.getInt("maxEleve");
+			}
+			
+			while (res_cpt_cou.next()) {
+				placeActuelle = res_cpt_cou.getInt("total");
+			}
+			int seuilMini = min - placeActuelle;
+			if (seuilMini < 0){
+				seuilMini = 0;
+			}
+			return (max - placeActuelle) + "-" + seuilMini;
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst_rec_cou != null || pst_cpt_cou != null) {
+				try { 
+					pst_rec_cou.close();
+					pst_cpt_cou.close();
+					}
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return -1 + "";
+	}
+	
+	@Override public ArrayList<Cours> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public ArrayList<Cours> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public HashSet<Cours> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public ArrayList<Cours> getMyList(int idPersonne) { return null; }
 }

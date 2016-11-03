@@ -1,11 +1,9 @@
 package POJO;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
 import DAO.AbstractDAOFactory;
 import DAO.DAO;
@@ -40,12 +38,12 @@ public class Semaine {
 	// Juste faire tourner une fois pour ajouter les semaines dans la DB 
 	public void AjouterSemainesDansDB(){
 		// Date de début d'ajout
-		int jour = 03;
-		int mois = 12;
-		int annee = 2016;
+		//int jour = 03;
+		//int mois = 12;
+		//int annee = 2016;
 		try{
 			// date du jour
-			java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+			//java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
 
 			// test internet 
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

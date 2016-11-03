@@ -5,11 +5,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
+import POJO.Client;
+import POJO.Cours;
 import POJO.CoursCollectif;
+import POJO.CoursParticulier;
+import POJO.Eleve;
 import POJO.Reservation;
 
 public class CoursCollectifDAO extends DAO<CoursCollectif> {
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Eleve> EleveDAO = adf.getEleveDAO();
+	DAO<Cours> CoursDAO = adf.getCoursDAO();
+	
 	public CoursCollectifDAO(Connection conn) {
 		super(conn);
 	}
@@ -73,7 +82,33 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		return liste;
 	}
 	
-	@Override
-	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
+	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, String periode){
+		//System.out.println("Entree fonc");
+		ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur, idEleve);
+		ArrayList<CoursCollectif> listFull = getList();
+		ArrayList<CoursCollectif> listSelonId = new ArrayList<CoursCollectif>();
+		Eleve E = EleveDAO.find(idEleve);
+		for (CoursCollectif CC : listFull){
+			for (Cours C : listCours){
+				if (CC.getNumCours() == C.getNumCours() && E.getCategorie().equals(CC.getCategorieAge())){
+					//System.out.println("For String de taille " + periode.size());
+					//for(String S : periode){
+						//System.out.println(S + " / " + CC.getPeriodeCours());
+						if(CC.getPeriodeCours().equals(periode)){
+							//System.out.println("Ajout Cours Collectif");
+							listSelonId.add(CC);
+						}
+					//}
+				}
+			}
+		}
+		return listSelonId;
+	}
+	
+	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public ArrayList<CoursCollectif> getListCoursSelonId(int idMoniteur, int idEleve) { return null; }
+	@Override public ArrayList<CoursCollectif> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public HashSet<CoursCollectif> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public ArrayList<CoursCollectif> getMyList(int idPersonne) { return null; }
 }
 

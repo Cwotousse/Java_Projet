@@ -1,7 +1,6 @@
 package POJO;
 
 import java.sql.Date;
-import java.util.Scanner;
 
 import DAO.AbstractDAOFactory;
 import DAO.DAO;
@@ -10,8 +9,6 @@ public class Client extends Utilisateur{
 	// VARIABLES
 	private int numClient;
 	private String adresseFacturation;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Client> ClientDao = adf.getClientDAO();
 	
 	// CONSTRUCTEURs
 	public Client(){}
@@ -20,11 +17,6 @@ public class Client extends Utilisateur{
 		super(numPersonne, nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
 		//this.numClient = numClient;
 		this.adresseFacturation = adresseFacturation;
-	}
-	
-	// METHODES
-	public Client rechercherClient(int id){
-		return ClientDao.find(id);
 	}
 	
 	// METHODES SURCHARGEES

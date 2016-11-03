@@ -5,15 +5,24 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 
-import POJO.Client;
+import POJO.Accreditation;
+import POJO.Cours;
+import POJO.CoursCollectif;
+import POJO.CoursParticulier;
 import POJO.Eleve;
+import POJO.Moniteur;
 import POJO.Personne;
 import POJO.Reservation;
-import POJO.Utilisateur;
+import POJO.Semaine;
 
 public class EleveDAO extends DAO<Eleve> {
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Moniteur> MoniteurDAO = adf.getMoniteurDAO();
+	DAO<Semaine> SemaineDAO = adf.getSemaineDAO();
+	DAO<Reservation> ReservationDAO = adf.getReservationDAO();
+	
 	public EleveDAO(Connection conn) {
 		super(conn);
 	}
@@ -53,13 +62,8 @@ public class EleveDAO extends DAO<Eleve> {
 		}
 	}
 
-	public boolean delete(Eleve obj) {
-		return false;
-	}
-
-	public boolean update(Eleve obj) {
-		return false;
-	}
+	public boolean delete(Eleve obj) { return false; }
+	public boolean update(Eleve obj) { return false; }
 
 	// On cherche une Eleve grâce à son id
 	public Eleve find(int id) {
@@ -104,12 +108,6 @@ public class EleveDAO extends DAO<Eleve> {
 			while (rs.next()) {
 				//int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance
 				Eleve eleve = new Eleve(rs.getInt("numEleve"), rs.getString("nom"), rs.getString("prenom"), rs.getString("adresse"), rs.getString("sexe"), rs.getDate("dateNaissance"));
-				//				eleve.setNumEleve(rs.getInt("numEleve"));
-				//				eleve.setNom(rs.getString("nom"));
-				//				eleve.setPre(rs.getString("prenom"));
-				//				eleve.setDateNaissance(rs.getDate("dateNaissance"));
-				//				eleve.setSexe(rs.getString("sexe"));
-				//				eleve.setAdresse(rs.getString("adresse"));
 				liste.add(eleve);
 			}
 		}
@@ -128,7 +126,31 @@ public class EleveDAO extends DAO<Eleve> {
 		}
 		return liste;
 	}
+	
+	public HashSet<Eleve> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode){
+		// La personne ne peut pas être visible si elle a déjà été sélectionnée pour un cours (attention aux horaires)
+		HashSet<Eleve> listeFiltree = new HashSet<Eleve>();
+		ArrayList<Eleve> listeFull =  getList(); 
+		Moniteur M = MoniteurDAO.find(numMoniteur);
+		ArrayList<Accreditation> listeAccredMoniteur = M.getAccrediList();
+		
+		Semaine semaine = SemaineDAO.find(numSemaine);
+		ArrayList<Reservation> listReservation = ReservationDAO.getList();
+		for(Reservation R : listReservation)
+			for(Accreditation A : listeAccredMoniteur)
+				for(Eleve eFull : listeFull)
+					if(A.getNom().equals(eFull.getCategorie()))
+						// Si la période est != ou la semaine
+						if (eFull.getNumPersonne() != R.getEleve().getNumEleve() || ((!((R.getHeureDebut() + "-" + R.getHeureFin()).equals(periode)) || R.getSemaine().getNumSemaine() != numSemaine)))
+							listeFiltree.add(eFull);
+		
+		
+		return listeFiltree;
+	}
 
-	@Override
-	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
+	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public ArrayList<Eleve> getListCoursSelonId(int idMoniteur, int idEleve) { return null; }
+	@Override public ArrayList<Eleve> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public ArrayList<Eleve> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public ArrayList<Eleve> getMyList(int idPersonne) { return null; }
 }

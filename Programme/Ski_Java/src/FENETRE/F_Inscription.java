@@ -334,7 +334,7 @@ public class F_Inscription extends JFrame {
 					if (numUtilisateur != -1){
 						setVisible(false); //you can't see me!
 						//dispose(); //Destroy the JFrame object
-						F_Moniteur frame = new F_Moniteur();
+						F_Moniteur frame = new F_Moniteur(numUtilisateur);
 						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						frame.setVisible(true);
 					}

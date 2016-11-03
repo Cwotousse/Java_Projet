@@ -11,7 +11,11 @@ import DAO.AbstractDAOFactory;
 import DAO.ClientDAO;
 import DAO.DAO;
 import POJO.Client;
+import POJO.Cours;
 import POJO.Eleve;
+import POJO.Moniteur;
+import POJO.Reservation;
+import POJO.Semaine;
 import POJO.Utilisateur;
 
 import javax.swing.JButton;
@@ -30,7 +34,16 @@ import javax.swing.JCheckBox;
 public class F_Client extends JFrame {
 
 	private JPanel contentPane;
-
+	
+	// ADF
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Reservation> 	ReservationDAO 	= adf.getReservationDAO();
+	DAO<Client> 		ClientDAO 		= adf.getClientDAO();
+	DAO<Eleve> 			EleveDAO 		= adf.getEleveDAO();
+	DAO<Moniteur> 		MoniteurDAO 	= adf.getMoniteurDAO();
+	DAO<Cours> 			CoursDAO 		= adf.getCoursDAO();
+	DAO<Semaine> 		SemaineDAO 		= adf.getSemaineDAO();
+	
 	/**
 	 * Launch the application.
 	 */
@@ -116,13 +129,12 @@ public class F_Client extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				
 				try {
-					Client C = null;
-					C = C.rechercherClient(idClient);
+					Client C = ClientDAO.find(idClient);
 					System.out.println(C.getAdresse());
 					if(C != null){
 						System.out.println("F_Client -> ajout eleve");
 						Eleve E = new Eleve(C.getNumPersonne(), C.getNom(), C.getPre(), C.getAdresse(), C.getSexe(), C.getDateNaissance());
-						if (E.createEleve() != -1) labStatut.setText("Vous avez étés ajoutés en tant qu'élève.");
+						if (EleveDAO.create(E) != -1) labStatut.setText("Vous avez étés ajoutés en tant qu'élève.");
 						else labStatut.setText("Verifiez vos donnees");
 					}
 					else{ labStatut.setText("ID relié à aucune personne."); }

@@ -2,7 +2,6 @@ package POJO;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import DAO.AbstractDAOFactory;
 import DAO.DAO;
@@ -37,6 +36,7 @@ public class Moniteur extends Utilisateur{
 	
 	public			 	ArrayList<Moniteur> getListMoniteur(){ return MoniteurDao.getList(); }
 	public 				Moniteur findMoniteur(int id){ return MoniteurDao.find(id); }
+	
 	// METHODE SURCHARGEE
 	@Override
 	public String toString() { 

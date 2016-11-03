@@ -102,7 +102,7 @@ public class F_Connexion extends JFrame {
 					case 1 : // moniteur
 						setVisible(false); //you can't see me!
 						//dispose(); //Destroy the JFrame object
-						F_Moniteur frameMoni = new F_Moniteur();
+						F_Moniteur frameMoni = new F_Moniteur(U.getNumPersonne());
 						frameMoni.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						frameMoni.setVisible(true);
 						//F_Moniteur.

@@ -7,7 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
+import POJO.Cours;
+import POJO.CoursCollectif;
+import POJO.CoursParticulier;
+import POJO.Eleve;
 import POJO.Personne;
 import POJO.Reservation;
 import POJO.Utilisateur;
@@ -144,6 +149,10 @@ public class PersonneDAO  extends DAO<Personne> {
 		return liste;
 	}*/
 
-	@Override
-	public ArrayList<Reservation> getMyList(int idPersonne) { return null; }
+	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public ArrayList<Personne> getListCoursSelonId(int idMoniteur, int idEleve) { return null; }
+	@Override public ArrayList<Personne> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public ArrayList<Personne> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public HashSet<Personne> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public ArrayList<Personne> getMyList(int idPersonne) { return null; }
 }

@@ -33,25 +33,6 @@ public class Cours {
 	public Cours rechercherCours		(int id){ return CoursDao.find(id); }
 	public ArrayList<Cours> getListCours()		{ return CoursDao.getList(); }
 	
-	public ArrayList<Cours> getListCoursSelonId(int idMoniteur, int idEleve){
-		System.out.println("Id moniteur : " + idMoniteur);
-		ArrayList<Cours> listFull = CoursDao.getList(); 
-		ArrayList<Cours> listSelonId = new ArrayList<Cours>();
-		// new ArrayList<Accreditation>();
-		Moniteur M = new Moniteur();
-		M = M.findMoniteur(idMoniteur);
-		ArrayList<Accreditation> listAccred = M.getAccrediList(); // Liste des accreditations du moniteur
-		for(Cours C : listFull){
-			for(Accreditation A : listAccred){
-				if(A.getNom().equals(C.getNomSport())){
-					// Si l'accreditation du moniteur correspond à celle du cours proposé, on l'ajoute dans la liste triée
-					listSelonId.add(C);
-				}
-			}
-		}
-		return listSelonId;
-	}
-	
 	// FONCTION SURCHARGEE
 		@Override
 		public String toString() { 

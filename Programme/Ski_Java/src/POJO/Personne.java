@@ -3,7 +3,6 @@ package POJO;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
 import java.util.Calendar;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import DAO.AbstractDAOFactory;

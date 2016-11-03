@@ -48,6 +48,7 @@ public class F_AjoutRdv extends JFrame {
 	private String periode = "09-12";
 	private Boolean pageChargee = false;
 
+
 	JSeparator separator = new JSeparator();
 	JSeparator separator_1 = new JSeparator();
 	JLabel lbl_Reserv = new JLabel("R\u00E9servation");
@@ -57,11 +58,12 @@ public class F_AjoutRdv extends JFrame {
 	JLabel lbl_horaire = new JLabel("Horaire");
 	JLabel lbl_cours = new JLabel("Cours");
 	JLabel lbl_infoCours = new JLabel("Il reste x places pour ce cours");
+	JLabel lbl_placeMin = new JLabel("Il manque x places pour ce cours");
 
-	JComboBox cb_nomEleve = new JComboBox();
-	JComboBox cb_nomMoniteur = new JComboBox();
-	JComboBox cb_semaine = new JComboBox();
-	JComboBox cb_cours = new JComboBox();
+	JComboBox<ComboItem> cb_nomEleve = new JComboBox<ComboItem>();
+	JComboBox<ComboItem> cb_nomMoniteur = new JComboBox<ComboItem>();
+	JComboBox<ComboItem> cb_semaine = new JComboBox<ComboItem>();
+	JComboBox<ComboItem> cb_cours = new JComboBox<ComboItem>();
 	JRadioButton rdbtnCoursCollectif = new JRadioButton("Cours collectif");
 	JRadioButton radbtn_touteLaJournee = new JRadioButton("x");
 	JRadioButton rdbtnCoursParticulier = new JRadioButton("Cours particulier");
@@ -82,15 +84,17 @@ public class F_AjoutRdv extends JFrame {
 	ArrayList<Semaine> listSemaine		= S.getListSemaineSelonDateDuJour();	
 	ArrayList<CoursParticulier> listCoursPartic		= CP.getListCoursParticulier();	
 	ArrayList<CoursCollectif> listCoursColl			= CC.getListCoursCollectif();
-	
+
 	// ADF
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Reservation> 	ReservationDAO 	= adf.getReservationDAO();
-	DAO<Client> 		ClientDAO 		= adf.getClientDAO();
-	DAO<Eleve> 			EleveDAO 		= adf.getEleveDAO();
-	DAO<Moniteur> 		MoniteurDAO 	= adf.getMoniteurDAO();
-	DAO<Cours> 			CoursDAO 		= adf.getCoursDAO();
-	DAO<Semaine> 		SemaineDAO 		= adf.getSemaineDAO();
+	DAO<Reservation> 		ReservationDAO 		= adf.getReservationDAO();
+	DAO<Client> 			ClientDAO 			= adf.getClientDAO();
+	DAO<Eleve> 				EleveDAO 			= adf.getEleveDAO();
+	DAO<Moniteur> 			MoniteurDAO 		= adf.getMoniteurDAO();
+	DAO<Cours> 				CoursDAO 			= adf.getCoursDAO();
+	DAO<Semaine> 			SemaineDAO 			= adf.getSemaineDAO();
+	DAO<CoursCollectif> 	CoursCollectifDAO 	= adf.getCoursCollectifDAO();
+	DAO<CoursParticulier> 	CoursParticulierDAO = adf.getCoursParticulierDAO();
 
 	/**
 	 * Launch the application.
@@ -154,13 +158,14 @@ public class F_AjoutRdv extends JFrame {
 		lbl_horaire.setBounds			(224, 165, 250, 14);
 		lbl_cours.setBounds				(214, 221, 250, 14);
 		cb_cours.setBounds				(214, 246, 250, 20);
-		lbl_infoCours.setBounds			(214, 277, 250, 37);
+		lbl_infoCours.setBounds			(214, 277, 250, 15);
 		rdbtnCoursAprem.setBounds		(6, 161, 150, 23);
 		rdbtnCoursMatin.setBounds		(6, 133, 150, 23);
 		btn_inscrip.setBounds			(10, 310, 105, 23);
 		btn_ret.setBounds				(10, 344, 105, 23);
 		separator_1.setBounds			(10, 299, 105, 15);
 		radbtn_touteLaJournee.setBounds	(6, 189, 150, 23);
+		lbl_placeMin.setBounds(214, 303, 250, 15);
 
 		// Add
 		contentPane.add(lbl_Reserv);
@@ -183,6 +188,7 @@ public class F_AjoutRdv extends JFrame {
 		contentPane.add(btn_ret);
 		contentPane.add(separator_1);
 		contentPane.add(radbtn_touteLaJournee);
+		contentPane.add(lbl_placeMin);
 
 		// EVENEMENT CLICK SUR RADIOBUTTON
 		// Valider la réservation
@@ -191,13 +197,19 @@ public class F_AjoutRdv extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if(cb_nomEleve.getSelectedItem() != "" && cb_nomMoniteur.getSelectedItem() != "" && cb_semaine.getSelectedItem() != "" && cb_cours.getSelectedItem() != ""){
-					//System.out.println("Réservation effectué");
-					String[] parts = periode.split("-");
-					String heureDebut = parts[0];
-					String heureFin = parts[1];
-					int numReservation =ReservationDAO.create(new Reservation(Integer.parseInt(heureDebut), Integer.parseInt(heureFin), -1, SemaineDAO.find(numSemaine),
-							CoursDAO.find(numCours), EleveDAO.find(numEleve), ClientDAO.find(idClient), MoniteurDAO.find(numMoniteur)));
-					System.out.println("Num reserv : " + numReservation);
+					String string = CoursDAO.calculerPlaceCours(numCours, numSemaine);
+					String[] parts = string.split("-");
+					String part1 = parts[0];
+					if(Integer.parseInt(part1) > 1){
+						//System.out.println("Réservation effectué");
+						String[] partsPer = periode.split("-");
+						String heureDebut = partsPer[0];
+						String heureFin = partsPer[1];
+						int numReservation =ReservationDAO.create(new Reservation(Integer.parseInt(heureDebut), Integer.parseInt(heureFin), -1, SemaineDAO.find(numSemaine),
+								CoursDAO.find(numCours), EleveDAO.find(numEleve), ClientDAO.find(idClient), MoniteurDAO.find(numMoniteur)));
+						System.out.println("Num reserv : " + numReservation);
+					}
+					System.out.println("Erreur inscription : " + part1);
 				}
 			}
 		});
@@ -213,15 +225,13 @@ public class F_AjoutRdv extends JFrame {
 				frame.setVisible(true);
 			}
 		});
+
 		// COURS COLLECTIF SELECTIONNE
 		rdbtnCoursCollectif.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				rdbtnCoursParticulier.setSelected(false);
 				rdbtnCoursCollectif.setSelected	(true);
-
-				// Visible
-				lbl_infoCours.setVisible		(true);
 
 				// Clear le hashset
 				periode = "";
@@ -241,9 +251,6 @@ public class F_AjoutRdv extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				rdbtnCoursCollectif.setSelected	(false);
 				rdbtnCoursParticulier.setSelected(true);
-
-				// Visible
-				lbl_infoCours.setVisible		(false);
 
 				// Clear le hashset
 				periode = "";
@@ -300,7 +307,7 @@ public class F_AjoutRdv extends JFrame {
 					}
 				}
 
-				if (pageChargee) { loadCbCours(); }
+				if (pageChargee) { loadCbCours(); loadCbEleve();}
 			}
 		});
 
@@ -315,13 +322,13 @@ public class F_AjoutRdv extends JFrame {
 					case "Cours de 12 à 14" : 
 						periode = "12-14";
 						break;
-					/*case "Matin et apres-midi" : 
+						/*case "Matin et apres-midi" : 
 						periode = "09-17";
 						break;*/
 					}
 				}
 
-				if (pageChargee) { loadCbCours(); }
+				if (pageChargee) { loadCbCours(); loadCbEleve();}
 			}
 		});
 
@@ -358,7 +365,7 @@ public class F_AjoutRdv extends JFrame {
 					int value = ((ComboItem)item).getValue();
 					numSemaine = value;
 					System.out.println("Num semaine : " + value);
-					//if (pageChargee) loadComboBox(); pageChargee = false;
+					if (pageChargee) loadCbEleve();
 				}
 			}
 		});
@@ -370,7 +377,8 @@ public class F_AjoutRdv extends JFrame {
 					int value = ((ComboItem)item).getValue();
 					numCours = value;
 					System.out.println("Num cours : " + value);
-					//if (pageChargee) loadComboBox(); pageChargee = false;
+
+					if (pageChargee) loadInfoCoursText();
 				}
 			}
 		});
@@ -386,6 +394,7 @@ public class F_AjoutRdv extends JFrame {
 			loadCbEleve();
 			loadCbSemaine();
 			loadCbCours();
+			loadInfoCoursText();
 		}
 		catch(Exception Ex){
 			Ex.getStackTrace();
@@ -394,7 +403,7 @@ public class F_AjoutRdv extends JFrame {
 
 	public void loadCbEleve(){
 		// ELEVES
-		listEleve = E.getListEleveSelonAccredProf(numMoniteur);
+		listEleve = EleveDAO.getListEleveSelonAccredProfEtCours(numMoniteur, numSemaine, periode);
 		if (listEleve != null){
 			cb_nomEleve.removeAllItems();
 			for(Eleve e : listEleve) cb_nomEleve.addItem (new ComboItem(e.getNom().toUpperCase() + " " + e.getPre(), e.getNumPersonne()));
@@ -425,23 +434,29 @@ public class F_AjoutRdv extends JFrame {
 		// COURS
 		if(rdbtnCoursCollectif.isSelected()){ // Cours collectif
 			cb_cours.removeAllItems();
-			listCoursColl = CC.getListCoursCollectifSelonId(numMoniteur, numEleve, periode);
+			listCoursColl = CoursCollectifDAO.getListCoursCollectifSelonId(numMoniteur, numEleve, periode);
 			//for(Cours cc : listCours){
 			for(CoursCollectif cc : listCoursColl){
 				cb_cours.addItem (new ComboItem("Niveau " + cc.getNiveauCours() + ", " + cc.getCategorieAge() + " (" + cc.getNomSport() + ") ", cc.getNumCours()));
-				lbl_infoCours.setText("Il reste " + cc.getMaxEl() + " places disponibles." + System.getProperty("line.separator")
-				+ " Il manque " + cc.getMinEl() + " personnes pour que les cours ait lieu.");
 			}
 		}
 		else if(rdbtnCoursParticulier.isSelected()){ // Cours particulier
 			cb_cours.removeAllItems();
-			listCoursPartic = CP.getListCoursParticulierSelonId(numMoniteur, numEleve, periode);
+			listCoursPartic = CoursParticulierDAO.getListCoursParticulierSelonId(numMoniteur, numEleve, periode);
 			for(CoursParticulier cp : listCoursPartic){
 				cb_cours.addItem (new ComboItem(cp.getNombreHeures() + " heure(s) de " + cp.getNomSport() + " (" + cp.getPeriodeCours() + ")", cp.getNumCours()));
-				lbl_infoCours.setText("Il reste " + cp.getMaxEl() + " places disponibles.");
 			}
 		}
 		else lbl_error.setText("Erreur disponibilités");
+	}
+
+	public void loadInfoCoursText(){
+		String string = CoursDAO.calculerPlaceCours(numCours, numSemaine);
+		String[] parts = string.split("-");
+		String part1 = parts[0];
+		String part2 = parts[1]; 
+		lbl_infoCours.setText("Il reste " + part1 + " places disponibles.");
+		lbl_placeMin.setText("Il manque " + part2 + " places pour que ce cours soit presté.");
 	}
 }
 

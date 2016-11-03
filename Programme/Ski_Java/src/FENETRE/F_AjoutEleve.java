@@ -35,8 +35,11 @@ import DAO.DAO;
 import FENETRE.F_Inscription.DateLabelFormatter;
 import POJO.Accreditation;
 import POJO.Client;
+import POJO.Cours;
 import POJO.Eleve;
 import POJO.Moniteur;
+import POJO.Reservation;
+import POJO.Semaine;
 
 public class F_AjoutEleve extends JFrame {
 
@@ -46,6 +49,16 @@ public class F_AjoutEleve extends JFrame {
 	private JTextField txtF_adresse;
 	private String sexe = "H"; 
 	private JTable table;
+
+	// ADF
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Reservation> 	ReservationDAO 	= adf.getReservationDAO();
+	DAO<Client> 		ClientDAO 		= adf.getClientDAO();
+	DAO<Eleve> 			EleveDAO 		= adf.getEleveDAO();
+	DAO<Moniteur> 		MoniteurDAO 	= adf.getMoniteurDAO();
+	DAO<Cours> 			CoursDAO 		= adf.getCoursDAO();
+	DAO<Semaine> 		SemaineDAO 		= adf.getSemaineDAO();
+
 	/**
 	 * Launch the application.
 	 */
@@ -190,7 +203,7 @@ public class F_AjoutEleve extends JFrame {
 
 					//DAO<Eleve> EleveDao = adf.getEleveDAO();
 					Eleve E = new Eleve(-1, txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, sd);
-					int numEleve = E.createEleve();
+					int numEleve = EleveDAO.create(E);
 					if (numEleve != -1){
 						// Afficher la fenetre client
 						setVisible(false); //you can't see me!

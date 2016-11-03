@@ -7,10 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import POJO.Accreditation;
 import POJO.Client;
 import POJO.Cours;
+import POJO.CoursCollectif;
+import POJO.CoursParticulier;
 import POJO.Eleve;
 import POJO.Moniteur;
 import POJO.Reservation;
@@ -287,15 +290,32 @@ public class ReservationDAO extends DAO<Reservation> {
 			Eleve E 	= new Eleve();
 			Client Cli 	= new Client();
 			Moniteur M 	= new Moniteur();
-
+			
+			String innerTypePersonne = "INNER JOIN Personne On Personne.numPersonne = ReservationClient.numClient ";
+			
+			// IL FAUT SAVOIR SI LA PERSONNE ENTREE EN PARAM EST UN CLIENT OU UN MONITEUR
+			String rechercheMon = "SELECT * FROM Moniteur WHERE numMoniteur = ?";
+			//String rechercheCli = "SELECT * FROM Client WHERE numClient = ?";
+			
+			PreparedStatement pst_Rec_Mon = this.connect.prepareStatement(rechercheMon);
+			//PreparedStatement pst_Rec_Cli = this.connect.prepareStatement(rechercheCli);
+			
+			pst_Rec_Mon.setInt(1, idPersonne);
+			//pst_Rec_Cli.setInt(1, idPersonne);
+			
+			ResultSet res_Rec_Mon = pst_Rec_Mon.executeQuery();
+			//ResultSet res_Rec_Cli = pst_Rec_Cli.executeQuery();
+			
+			if (res_Rec_Mon.isBeforeFirst() ) { innerTypePersonne = "INNER JOIN Personne On Personne.numPersonne = CoursMoniteur.numMoniteur "; } 
+			
 			String sql = "SELECT * FROM Cours "
 					+ "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = Cours.numCours "
 					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
-					+ "INNER JOIN Personne On Personne.numPersonne = CoursMoniteur.numMoniteur "
 					+ "INNER JOIN ReservationCours ON ReservationCours.numCours = Cours.numCours "
 					+ "INNER JOIN Reservation ON Reservation.numReservation = ReservationCours.numReservation "
 					+ "INNER JOIN ReservationClient ON ReservationClient.numReservation = Reservation.numReservation "
-					+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation"
+					+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
+					+ innerTypePersonne
 					+ "WHERE Personne.numPersonne = ? ;";
 
 			pst = this.connect.prepareStatement(sql);
@@ -367,5 +387,11 @@ public class ReservationDAO extends DAO<Reservation> {
 		}
 		return liste;
 	}
+	
+	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public ArrayList<Reservation> getListCoursSelonId(int idMoniteur, int idEleve) { return null; }
+	@Override public ArrayList<Reservation> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public ArrayList<Reservation> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public HashSet<Reservation> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode) { return null; }
 }
 
