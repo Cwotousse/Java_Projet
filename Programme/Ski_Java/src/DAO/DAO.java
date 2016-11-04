@@ -2,6 +2,8 @@ package DAO;
 import java.sql.Connection;
 import java.util.ArrayList;
 
+import POJO.Moniteur;
+
 public abstract class DAO<T> {
 	protected Connection connect = null;
 	public DAO(Connection conn) { this.connect = conn; }
@@ -31,6 +33,11 @@ public abstract class DAO<T> {
 	public abstract ArrayList<T> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours);
 
 	// DisponibiliteMoniteur
-	public void creerTouteDisponibilites() { }
-	public void creerTouteDisponibilitesSelonMoniteur(int i) { }
+	public abstract void creerTouteDisponibilites();
+	public abstract void creerTouteDisponibilitesSelonMoniteur(int i);
+	public abstract boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur);
+
+	// Moniteur
+	public abstract ArrayList<T> getListDispo(int numSemaine);
+	
 }

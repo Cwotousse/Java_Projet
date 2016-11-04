@@ -69,7 +69,7 @@ public class F_Connexion extends JFrame {
 
 		txtNomDutilisateur = new JTextField();
 		txtNomDutilisateur.setToolTipText("Nom d'utilisateur");
-		txtNomDutilisateur.setText("adri");
+		txtNomDutilisateur.setText("chelsea");
 		txtNomDutilisateur.setBounds(10, 39, 139, 20);
 		getContentPane().add(txtNomDutilisateur);
 		txtNomDutilisateur.setColumns(10);

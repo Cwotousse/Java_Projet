@@ -92,7 +92,7 @@ public class F_AjoutRdv extends JFrame {
 	//CoursParticulier CP 				= new CoursParticulier();
 	//CoursCollectif CC 					= new CoursCollectif();
 	ArrayList<Eleve> listEleve			= new ArrayList<Eleve>();
-	ArrayList<Moniteur> listMoniteur	= MoniteurDAO.getList();//new ArrayList<Moniteur>(); //M.getListMoniteur();
+	//MoniteurDAO.getList();//new ArrayList<Moniteur>(); //M.getListMoniteur();
 	ArrayList<Semaine> listSemaine		= S.getListSemaineSelonDateDuJour(); //ArrayList<Semaine>();//S.getListSemaineSelonDateDuJour();	
 
 	
@@ -396,8 +396,9 @@ public class F_AjoutRdv extends JFrame {
 	public void loadComboBox(){
 		try{
 			// REMPLISSAGE DES COMBOBOX
-			loadCbMoniteur();
 			loadCbSemaine();
+			loadCbMoniteur();
+			
 			loadCbEleve();
 			loadCbCours();
 			
@@ -425,6 +426,7 @@ public class F_AjoutRdv extends JFrame {
 
 	public void loadCbMoniteur(){
 		// MONITEUR
+		ArrayList<Moniteur> listMoniteur	= MoniteurDAO.getListDispo(numSemaine);
 		if (listMoniteur != null){
 			cb_nomMoniteur.removeAllItems();
 			for(Moniteur m : listMoniteur) cb_nomMoniteur.addItem (new ComboItem(m.getNom().toUpperCase() + " " + m.getPre(), m.getNumPersonne()));

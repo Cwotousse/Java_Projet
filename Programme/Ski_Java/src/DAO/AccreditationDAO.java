@@ -130,4 +130,8 @@ public class AccreditationDAO extends DAO<Accreditation> {
 	@Override public ArrayList<Accreditation> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Accreditation> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
+	@Override public void creerTouteDisponibilites() { }
+	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
+	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
+	@Override public ArrayList<Accreditation> getListDispo(int numSemaine) { return null; }
 }

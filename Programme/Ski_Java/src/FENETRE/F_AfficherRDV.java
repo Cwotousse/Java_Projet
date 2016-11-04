@@ -12,17 +12,24 @@ import javax.swing.table.JTableHeader;
 
 import DAO.AbstractDAOFactory;
 import DAO.DAO;
+import POJO.ButtonColumn;
 import POJO.Moniteur;
 import POJO.Reservation;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.util.ArrayList;
 
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
+
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -108,10 +115,10 @@ public class F_AfficherRDV extends JFrame {
 			int somme = 0;
 			// TABLEAU -> https://tips4java.wordpress.com/2010/01/24/table-row-rendering/
 			//headers for the table
-			String[] columns = new String[] { "N°","Période", "Horaire", "Libellé", "Niveau", "Moniteur", "Eleve", "Titutlaire", "Prix" };
+			String[] columns = new String[] { "N°","Période", "Horaire", "Libellé", "Niveau", "Moniteur", "Eleve", "Titutlaire", "Prix", "Annuler" };
 
 			//actual data for the table in a 2d array
-			Object[][] data  = new Object[listReserv.size()][9];
+			Object[][] data  = new Object[listReserv.size()][10];
 
 			for (int i = 0; i < listReserv.size(); i++) {
 				data[i][0] = listReserv.get(i).getNumReservation();
@@ -123,14 +130,34 @@ public class F_AfficherRDV extends JFrame {
 				data[i][6] = listReserv.get(i).getEleve().getNom().toUpperCase() + " " + listReserv.get(i).getEleve().getPre();
 				data[i][7] = listReserv.get(i).getClient().getNom().toUpperCase() + " " + listReserv.get(i).getClient().getPre();
 				data[i][8] = listReserv.get(i).getCours().getPrix() + "€";
+				data[i][9] = "Del"; //listReserv.get(i).getCours().getPrix() + "€";
 				somme += listReserv.get(i).getCours().getPrix();
 				if(listReserv.get(i).getAUneAssurance()){ somme += 15; }
 			}
 			lbl_somme.setText("La somme totale est de : " + somme + " €.");
 			
-			JScrollPane scrollPane = new JScrollPane(new JTable(new DefaultTableModel(data, columns)));
-			scrollPane.setBounds(10, 42, 751, 255);
-			contentPane.add(scrollPane);
+			DefaultTableModel model = new DefaultTableModel(data, columns);
+			JTable table = new JTable( model );
+
+			// Action de modification
+			final Action changerValeur = new AbstractAction() 
+			{
+				@Override
+				public void actionPerformed(ActionEvent e) 
+				{
+					JTable mytableClicked = (JTable)e.getSource();
+					int numRes = Integer.parseInt((String) mytableClicked.getModel().getValueAt(mytableClicked.getSelectedRow(), 0));
+					//DisponibiliteMoniteurDAO.changeDispoSelonIdSemaine(Integer.parseInt(parts[0]), F_Moniteur.numMoniteur);
+					JOptionPane.showMessageDialog(null, "Cours supprimé.");
+				}
+			};
+
+			ButtonColumn buttonColumn = new ButtonColumn(table, changerValeur, 9);
+
+			JScrollPane pane = new JScrollPane(table);
+			
+			pane.setBounds(10, 42, 751, 255);
+			contentPane.add(pane);
 
 		}
 		catch(Exception E){ E.getStackTrace(); }

@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import POJO.Accreditation;
 import POJO.Cours;
 import POJO.DisponibiliteMoniteur;
 import POJO.Eleve;
@@ -143,6 +145,45 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 			create(new DisponibiliteMoniteur(numMoniteur, i, true));
 		}
 	}
+	
+	public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur){
+		PreparedStatement pst_get_val = null;
+		try {
+			boolean resBool = false;
+			String sql_getValue = "Select disponible from DisponibiliteMoniteur wHERE numSemaine = ? and numMoniteur = ?;";
+			String sql_update = "Update DisponibiliteMoniteur SET disponible=? WHERE numSemaine = ? and numMoniteur = ?;";
+			
+			pst_get_val = connect.prepareStatement(sql_getValue);
+
+			pst_get_val.setInt(1, numSemaine);
+			pst_get_val.setInt(2, numMoniteur);
+
+			ResultSet res_get_val = pst_get_val.executeQuery();
+			while (res_get_val.next()) { resBool = res_get_val.getBoolean("disponible"); }
+			
+			PreparedStatement pst_upt = connect.prepareStatement(sql_update);
+			
+			pst_upt.setBoolean(1, !resBool); // L'inverse qu'actuellement
+			pst_upt.setInt(2, numSemaine);
+			pst_upt.setInt(3, numMoniteur);
+			
+			pst_upt.executeUpdate();
+			pst_upt.close();
+			return true;
+		} 
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			
+		}
+		finally {
+			if (pst_get_val != null) {
+				try { pst_get_val.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return false;
+	}
 
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
 	@Override public ArrayList<DisponibiliteMoniteur> getListCoursSelonId(int idMoniteur) { return null; }
@@ -151,6 +192,7 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 	@Override public ArrayList<DisponibiliteMoniteur> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 	@Override public ArrayList<DisponibiliteMoniteur> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public ArrayList<DisponibiliteMoniteur> getListDispo(int numSemaine) { return null; }
 }
 
 

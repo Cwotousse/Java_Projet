@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import POJO.Accreditation;
 import POJO.Client;
 import POJO.Personne;
 import POJO.Utilisateur;
@@ -131,4 +133,8 @@ public class ClientDAO extends DAO<Client> {
 	@Override public ArrayList<Client> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Client> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
+	@Override public void creerTouteDisponibilites() { }
+	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
+	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
+	@Override public ArrayList<Client> getListDispo(int numSemaine) { return null; }
 }

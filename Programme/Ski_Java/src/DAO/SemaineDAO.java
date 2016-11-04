@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import POJO.Accreditation;
 import POJO.Semaine;
 public class SemaineDAO extends DAO<Semaine> {
 	public SemaineDAO(Connection conn) {
@@ -143,5 +145,9 @@ public class SemaineDAO extends DAO<Semaine> {
 	@Override public ArrayList<Semaine> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Semaine> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
+	@Override public void creerTouteDisponibilites() { }
+	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
+	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
+	@Override public ArrayList<Semaine> getListDispo(int numSemaine) { return null; }
 }
 

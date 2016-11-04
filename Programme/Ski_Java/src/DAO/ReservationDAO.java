@@ -90,6 +90,7 @@ public class ReservationDAO extends DAO<Reservation> {
 		}
 	}
 	public boolean delete(Reservation obj) {
+		
 		return false;
 	}
 
@@ -515,5 +516,9 @@ public class ReservationDAO extends DAO<Reservation> {
 	@Override public ArrayList<Reservation> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
 	@Override public ArrayList<Reservation> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Reservation> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
+	@Override public void creerTouteDisponibilites() { }
+	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
+	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
+	@Override public ArrayList<Reservation> getListDispo(int numSemaine) { return null; }
 }
 

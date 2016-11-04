@@ -151,44 +151,84 @@ public class MoniteurDAO extends DAO<Moniteur>{
 
 	public ArrayList<Moniteur> getList() {
 		ArrayList<Moniteur> liste = new ArrayList<Moniteur>();
-		PreparedStatement pst = null;
+		PreparedStatement pst_mon = null;
 		PreparedStatement pstAccred = null;
 		try {
-			String sql = "SELECT * FROM Moniteur "
+			String sql_mon = "SELECT * FROM Moniteur "
 					+ "INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Moniteur.numMoniteur "
 					+ "INNER JOIN Personne ON Utilisateur.numUtilisateur = Personne.numPersonne";
-			pst = this.connect.prepareStatement(sql);
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
+			pst_mon = this.connect.prepareStatement(sql_mon);
+			ResultSet res_mon = pst_mon.executeQuery();
+			while (res_mon.next()) {
 				ArrayList<Accreditation> listeAccred = new ArrayList<Accreditation>();
 				String sqlAccred = "Select * from Accreditation "
 						+ "INNER JOIN LigneAccreditation ON Accreditation.numAccreditation = LigneAccreditation.numAccreditation "
 						+ "WHERE numMoniteur = ?;";
 				pstAccred = this.connect.prepareStatement(sqlAccred);
-				pstAccred.setInt(1, rs.getInt("numMoniteur"));
+				pstAccred.setInt(1, res_mon.getInt("numMoniteur"));
 				ResultSet rsAccred = pstAccred.executeQuery();
 				while(rsAccred.next()){
 					Accreditation a = new Accreditation(rsAccred.getString("nomAccreditation"));
 					listeAccred.add(a);
 				}
-				Moniteur moniteur = new Moniteur(rs.getInt("numMoniteur"), rs.getString("nom"), rs.getString("prenom"),
-						rs.getString("adresse"), rs.getString("sexe"), rs.getDate("dateNaissance"), rs.getString("pseudo"), rs.getString("mdp"),
-						rs.getInt("typeUtilisateur"), listeAccred);
+				Moniteur moniteur = new Moniteur(res_mon.getInt("numMoniteur"), res_mon.getString("nom"), res_mon.getString("prenom"),
+						res_mon.getString("adresse"), res_mon.getString("sexe"), res_mon.getDate("dateNaissance"), res_mon.getString("pseudo"), res_mon.getString("mdp"),
+						res_mon.getInt("typeUtilisateur"), listeAccred);
 				liste.add(moniteur);
 			}
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
+		catch (SQLException e) { e.printStackTrace(); }
 		finally {
-			if (pst != null) {
+			if (pst_mon != null || pstAccred != null) {
 				try {
-					pst.close();
+					pst_mon.close();
 					pstAccred.close();
 				}
-				catch (SQLException e) {
-					e.printStackTrace();
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return liste;
+	}
+	
+	public ArrayList<Moniteur> getListDispo(int numSemaine) {
+		ArrayList<Moniteur> liste = new ArrayList<Moniteur>();
+		PreparedStatement pst_mon = null;
+		PreparedStatement pstAccred = null;
+		try {
+			String sql_mon = "SELECT * FROM Moniteur "
+					+ "INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Moniteur.numMoniteur "
+					+ "INNER JOIN Personne ON Utilisateur.numUtilisateur = Personne.numPersonne "
+					+ "INNER JOIN DisponibiliteMoniteur ON DisponibiliteMoniteur.numMoniteur = Personne.numPersonne "
+					+ "WHERE numSemaine = ? AND disponible = 1 ";
+			pst_mon = this.connect.prepareStatement(sql_mon);
+			pst_mon.setInt(1, numSemaine);
+			ResultSet res_mon = pst_mon.executeQuery();
+			while (res_mon.next()) {
+				ArrayList<Accreditation> listeAccred = new ArrayList<Accreditation>();
+				String sqlAccred = "Select * from Accreditation "
+						+ "INNER JOIN LigneAccreditation ON Accreditation.numAccreditation = LigneAccreditation.numAccreditation "
+						+ "WHERE numMoniteur = ?;";
+				pstAccred = this.connect.prepareStatement(sqlAccred);
+				pstAccred.setInt(1, res_mon.getInt("numMoniteur"));
+				ResultSet rsAccred = pstAccred.executeQuery();
+				while(rsAccred.next()){
+					Accreditation a = new Accreditation(rsAccred.getString("nomAccreditation"));
+					listeAccred.add(a);
 				}
+				Moniteur moniteur = new Moniteur(res_mon.getInt("numMoniteur"), res_mon.getString("nom"), res_mon.getString("prenom"),
+						res_mon.getString("adresse"), res_mon.getString("sexe"), res_mon.getDate("dateNaissance"), res_mon.getString("pseudo"), res_mon.getString("mdp"),
+						res_mon.getInt("typeUtilisateur"), listeAccred);
+				liste.add(moniteur);
+			}
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst_mon != null || pstAccred != null) {
+				try {
+					pst_mon.close();
+					pstAccred.close();
+				}
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return liste;
@@ -202,4 +242,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 	@Override public ArrayList<Moniteur> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Moniteur> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
+	@Override public void creerTouteDisponibilites() { }
+	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
+	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
 }
