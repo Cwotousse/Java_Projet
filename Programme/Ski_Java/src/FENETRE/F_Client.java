@@ -65,7 +65,7 @@ public class F_Client extends JFrame {
 	 */
 	public F_Client(int idClient) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 220, 340);
+		setBounds(100, 100, 220, 284);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -79,11 +79,6 @@ public class F_Client extends JFrame {
 		JSeparator separator = new JSeparator();
 		JButton btn_ajoutEleve = new JButton("Ajouter un \u00E9l\u00E8ve");
 		JButton btn_reserverCours = new JButton("R\u00E9server un cours");
-		JButton btn_afficherFacture = new JButton("Afficher la facture");
-		btn_afficherFacture.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
 
 		// Fonts
 		lblClient.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
@@ -92,9 +87,8 @@ public class F_Client extends JFrame {
 		labStatut.setBounds(68, 13, 122, 14);
 		btn_sajouterCli.setBounds(10, 38, 180, 30);
 		lblClient.setBounds(10, 11, 46, 14);
-		btnNewButton.setBounds(10, 250, 180, 30);
+		btnNewButton.setBounds(10, 208, 180, 30);
 		separator.setBounds(10, 34, 53, 14);
-		btn_afficherFacture.setBounds(12, 207, 178, 30);
 		btn_reserverCours.setBounds(10, 124, 180, 30);
 		btn_ajoutEleve.setBounds(10, 81, 180, 30);
 
@@ -106,7 +100,6 @@ public class F_Client extends JFrame {
 		contentPane.add(separator);
 		contentPane.add(btn_ajoutEleve);
 		contentPane.add(btn_reserverCours);
-		contentPane.add(btn_afficherFacture);
 		
 		JButton btnAfficherMesCours = new JButton("Afficher mes cours");
 		btnAfficherMesCours.addMouseListener(new MouseAdapter() {
@@ -146,11 +139,6 @@ public class F_Client extends JFrame {
 
 			}
 		});
-		
-		/*btn_sajouterCli.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});*/
 
 		// Ajouter un élève
 		btn_ajoutEleve.addMouseListener(new MouseAdapter() {

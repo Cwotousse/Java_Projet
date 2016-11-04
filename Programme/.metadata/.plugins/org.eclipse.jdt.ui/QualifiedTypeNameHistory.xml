@@ -34,4 +34,5 @@
 <fullyQualifiedTypeName name="javax.swing.table.JTableHeader"/>
 <fullyQualifiedTypeName name="DAO.CoursCollectifDAO"/>
 <fullyQualifiedTypeName name="POJO.Semaine"/>
+<fullyQualifiedTypeName name="DAO.ReservationDAO"/>
 </qualifiedTypeNameHistroy>

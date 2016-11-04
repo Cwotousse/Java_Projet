@@ -84,7 +84,7 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 	
 	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, String periode){
 		//System.out.println("Entree fonc");
-		ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur, idEleve);
+		ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur);
 		ArrayList<CoursCollectif> listFull = getList();
 		ArrayList<CoursCollectif> listSelonId = new ArrayList<CoursCollectif>();
 		Eleve E = EleveDAO.find(idEleve);
@@ -106,9 +106,11 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 	}
 	
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
-	@Override public ArrayList<CoursCollectif> getListCoursSelonId(int idMoniteur, int idEleve) { return null; }
-	@Override public ArrayList<CoursCollectif> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public HashSet<CoursCollectif> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public ArrayList<CoursCollectif> getListCoursSelonId(int idMoniteur) { return null; }
+	@Override public ArrayList<CoursCollectif> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<CoursCollectif> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
 	@Override public ArrayList<CoursCollectif> getMyList(int idPersonne) { return null; }
+	@Override public ArrayList<CoursCollectif> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 }
 

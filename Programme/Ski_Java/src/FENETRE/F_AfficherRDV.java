@@ -52,7 +52,7 @@ public class F_AfficherRDV extends JFrame {
 	public F_AfficherRDV(int idPersonne) {
 		try{
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			setBounds(100, 100, 791, 503);
+			setBounds(100, 100, 791, 375);
 			contentPane = new JPanel();
 			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 			setContentPane(contentPane);
@@ -67,6 +67,8 @@ public class F_AfficherRDV extends JFrame {
 			JSeparator separator = new JSeparator();
 			JLabel lbl_error = new JLabel("Error label");
 			JButton btn_fr = new JButton("D\u00E9connexion");
+			JLabel lbl_somme = new JLabel("");
+			
 
 			// Font
 			lblVosCours.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
@@ -74,15 +76,17 @@ public class F_AfficherRDV extends JFrame {
 			// SetBound
 			lblVosCours.setBounds(10, 11, 76, 20);
 			separator.setBounds(10, 37, 76, 20);
-			lbl_error.setBounds(401, 422, 203, 16);
-			btn_fr.setBounds(10, 418, 125, 25);
+			lbl_error.setBounds(166, 16, 203, 16);
+			btn_fr.setBounds(10, 308, 125, 25);
+			lbl_somme.setBounds(166, 313, 203, 14);
+			
 
 			// Add
 			contentPane.add(lblVosCours);
 			contentPane.add(separator);
 			contentPane.add(lbl_error);
 			contentPane.add(btn_fr);
-
+			contentPane.add(lbl_somme);
 
 			// Deconnexion
 			btn_fr.addMouseListener(new MouseAdapter() {
@@ -101,7 +105,7 @@ public class F_AfficherRDV extends JFrame {
 
 			// Liste RDV
 			ArrayList<Reservation> listReserv = ReservationDAO.getMyList(idPersonne);
-
+			int somme = 0;
 			// TABLEAU -> https://tips4java.wordpress.com/2010/01/24/table-row-rendering/
 			//headers for the table
 			String[] columns = new String[] { "N°","Période", "Horaire", "Libellé", "Niveau", "Moniteur", "Eleve", "Titutlaire", "Prix" };
@@ -119,17 +123,17 @@ public class F_AfficherRDV extends JFrame {
 				data[i][6] = listReserv.get(i).getEleve().getNom().toUpperCase() + " " + listReserv.get(i).getEleve().getPre();
 				data[i][7] = listReserv.get(i).getClient().getNom().toUpperCase() + " " + listReserv.get(i).getClient().getPre();
 				data[i][8] = listReserv.get(i).getCours().getPrix() + "€";
+				somme += listReserv.get(i).getCours().getPrix();
+				if(listReserv.get(i).getAUneAssurance()){ somme += 15; }
 			}
-
+			lbl_somme.setText("La somme totale est de : " + somme + " €.");
+			
 			JScrollPane scrollPane = new JScrollPane(new JTable(new DefaultTableModel(data, columns)));
-			scrollPane.setBounds(10, 150, 751, 255);
+			scrollPane.setBounds(10, 42, 751, 255);
 			contentPane.add(scrollPane);
 
-
 		}
-		catch(Exception E){
-			E.getStackTrace();
-		}
+		catch(Exception E){ E.getStackTrace(); }
 	}
 }
 

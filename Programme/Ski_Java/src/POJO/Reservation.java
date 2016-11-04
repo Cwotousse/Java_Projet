@@ -13,15 +13,17 @@ public class Reservation {
 	private int heureDebut;
 	private int heureFin;
 	private int numReservation;
+	private boolean aUneAssurance;
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Reservation> ReservationDAO = adf.getReservationDAO();
 	
 	// CONSTRUCTEURS
 	public Reservation(){}
-	public Reservation(int heureDebut, int heureFin, int numReservation, Semaine S, Cours C, Eleve E, Client Cli, Moniteur M){
+	public Reservation(int heureDebut, int heureFin, int numReservation, boolean aUneAssurance, Semaine S, Cours C, Eleve E, Client Cli, Moniteur M){
 		this.heureDebut 		= heureDebut;
 		this.heureFin 			= heureFin;
 		this.numReservation 	= numReservation;
+		this.aUneAssurance 		= aUneAssurance;
 		this.C 					= C;
 		this.S 					= S;
 		this.E 					= E;
@@ -54,8 +56,11 @@ public class Reservation {
 	public Eleve 	getEleve			() { return E;}
 	public Client 	getClient			() { return Cli;}
 	public Moniteur getMoniteur			() { return M;}
+	public boolean 	getAUneAssurance() { return aUneAssurance; }
 	public void setHeureDebut		(int heureDebut) 			{ this.heureDebut = heureDebut; }
 	public void setHeureFin			(int heureFin) 			{ this.heureFin = heureFin; }
 	public void setNumReservation	(int numReservation) 	{ this.numReservation = numReservation; }
 	//public void serMoniteur(Moniteur M)  { this.M = M;}
+	
+	public void setAUneAssurance(boolean aUneAssurance) { this.aUneAssurance = aUneAssurance; }
 }

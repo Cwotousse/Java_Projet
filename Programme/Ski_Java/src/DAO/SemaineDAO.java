@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 
 import POJO.Cours;
@@ -118,11 +119,37 @@ public class SemaineDAO extends DAO<Semaine> {
 		return liste;
 	}
 	
+	/*public ArrayList<Semaine> getListSemaineSelonDateDuJour(){
+		//AjouterSemainesDansDB();
+		// ATTENTION SEMAINE NUMANNEE 44 A 47 SONT A SUPPRIMER
+		Semaine S = new Semaine();
+		ArrayList<Semaine> listeRetour = new ArrayList<Semaine>();
+		ArrayList<Semaine> listSemaine = S.getListSemaine();
+		//  Aujourd'hui
+		java.sql.Date today = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+		int jourDelaisMax = EstEnPeriodeDeConge(today) ? 7 : 31; 
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(today); 
+		// 1 mois si période scolaire, sinon 7 jours.
+		c.add(Calendar.DATE, jourDelaisMax); // Ajout d'un mois ou d'un jour si c'est un période de congé ou pas.
+		java.util.Date maxDateToDisplay = c.getTime();
+		
+		if (listSemaine != null)
+			for(Semaine s : listSemaine){
+				// N'affiche que les semaines ou il n'y a pas de congés et qui ne sont pas passées.
+				if (!s.getCongeScolaire() && s.dateDebut.after(today) && s.dateDebut.before(maxDateToDisplay)) 
+					listeRetour.add(s);
+			}
+		return listeRetour;
+	}*/
+	
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
-	@Override public ArrayList<Semaine> getListCoursSelonId(int idMoniteur, int idEleve) { return null; }
+	@Override public ArrayList<Semaine> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<Semaine> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Semaine> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public HashSet<Semaine> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public ArrayList<Semaine> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<Semaine> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
 	@Override public ArrayList<Semaine> getMyList(int idPersonne) { return null; }
+	@Override public ArrayList<Semaine> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 }
 

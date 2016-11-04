@@ -16,6 +16,9 @@ import POJO.Moniteur;
 import POJO.Reservation;
 
 public class CoursDAO extends DAO<Cours> {
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Moniteur> MoniteurDAO = adf.getMoniteurDAO();
+	
 	public CoursDAO(Connection conn) {
 		super(conn);
 	}
@@ -71,13 +74,11 @@ public class CoursDAO extends DAO<Cours> {
 		return liste;
 	}
 	
-	public ArrayList<Cours> getListCoursSelonId(int idMoniteur, int idEleve){
-		System.out.println("Id moniteur : " + idMoniteur);
-		ArrayList<Cours> listFull = getList(); 
+	public ArrayList<Cours> getListCoursSelonId(int idMoniteur){
+		/*ArrayList<Cours> listFull = getList(); 
 		ArrayList<Cours> listSelonId = new ArrayList<Cours>();
 		// new ArrayList<Accreditation>();
-		Moniteur M = new Moniteur();
-		M = M.findMoniteur(idMoniteur);
+		Moniteur M = MoniteurDAO.find(idMoniteur);
 		ArrayList<Accreditation> listAccred = M.getAccrediList(); // Liste des accreditations du moniteur
 		for(Cours C : listFull){
 			for(Accreditation A : listAccred){
@@ -85,6 +86,33 @@ public class CoursDAO extends DAO<Cours> {
 					// Si l'accreditation du moniteur correspond à celle du cours proposé, on l'ajoute dans la liste triée
 					listSelonId.add(C);
 				}
+			}
+		}
+		return listSelonId;*/
+		PreparedStatement pst_rec_cou = null;
+		ArrayList<Cours> listSelonId = new ArrayList<Cours>();
+		try {
+
+			String sql_rec_cou = "SELECT * FROM Cours WHERE nomSport IN "
+					+ "( SELECT nomAccreditation FROM Accreditation WHERE numAccreditation IN "
+					+ "( SELECT numAccreditation FROM LigneAccreditation WHERE numMoniteur =  ?));";
+			
+			pst_rec_cou = this.connect.prepareStatement(sql_rec_cou);
+			
+			pst_rec_cou.setInt(1, idMoniteur);
+			
+			ResultSet res_rec_cou = pst_rec_cou.executeQuery();
+			
+			while (res_rec_cou.next()) {
+				listSelonId.add(new Cours(res_rec_cou.getInt("numCours"), res_rec_cou.getString("nomSport"), res_rec_cou.getInt("prix"),
+						res_rec_cou.getInt("minEleve"), res_rec_cou.getInt("maxEleve"), res_rec_cou.getString("periodeCours")));
+			}
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst_rec_cou != null) {
+				try { pst_rec_cou.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return listSelonId;
@@ -141,7 +169,9 @@ public class CoursDAO extends DAO<Cours> {
 	}
 	
 	@Override public ArrayList<Cours> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Cours> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public HashSet<Cours> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public ArrayList<Cours> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<Cours> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
 	@Override public ArrayList<Cours> getMyList(int idPersonne) { return null; }
+	@Override public ArrayList<Cours> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 }

@@ -71,19 +71,7 @@ public class F_AjoutRdv extends JFrame {
 	JRadioButton rdbtnCoursAprem = new JRadioButton("Cours apree");
 	JButton btn_ret = new JButton("Retour");
 	JButton btn_inscrip = new JButton("R\u00E9server");
-
-	// lISTES UTILES AUX COMBOBOXS
-	Eleve E 							= new Eleve();
-	Moniteur M 							= new Moniteur();
-	Semaine S 							= new Semaine();
-	Cours C 							= new Cours();
-	CoursParticulier CP 				= new CoursParticulier();
-	CoursCollectif CC 					= new CoursCollectif();
-	HashSet<Eleve> listEleve			= null;
-	ArrayList<Moniteur> listMoniteur	= M.getListMoniteur();
-	ArrayList<Semaine> listSemaine		= S.getListSemaineSelonDateDuJour();	
-	ArrayList<CoursParticulier> listCoursPartic		= CP.getListCoursParticulier();	
-	ArrayList<CoursCollectif> listCoursColl			= CC.getListCoursCollectif();
+	JCheckBox chkb_assur = new JCheckBox("Assurance (15\u20AC)");
 
 	// ADF
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
@@ -95,6 +83,19 @@ public class F_AjoutRdv extends JFrame {
 	DAO<Semaine> 			SemaineDAO 			= adf.getSemaineDAO();
 	DAO<CoursCollectif> 	CoursCollectifDAO 	= adf.getCoursCollectifDAO();
 	DAO<CoursParticulier> 	CoursParticulierDAO = adf.getCoursParticulierDAO();
+	
+	// lISTES UTILES AUX COMBOBOXS
+	//Eleve E 							= new Eleve();
+	//Moniteur M 							= new Moniteur();
+	Semaine S 							= new Semaine();
+	//Cours C 							= new Cours();
+	//CoursParticulier CP 				= new CoursParticulier();
+	//CoursCollectif CC 					= new CoursCollectif();
+	ArrayList<Eleve> listEleve			= new ArrayList<Eleve>();
+	ArrayList<Moniteur> listMoniteur	= MoniteurDAO.getList();//new ArrayList<Moniteur>(); //M.getListMoniteur();
+	ArrayList<Semaine> listSemaine		= S.getListSemaineSelonDateDuJour(); //ArrayList<Semaine>();//S.getListSemaineSelonDateDuJour();	
+
+	
 
 	/**
 	 * Launch the application.
@@ -166,6 +167,7 @@ public class F_AjoutRdv extends JFrame {
 		separator_1.setBounds			(10, 299, 105, 15);
 		radbtn_touteLaJournee.setBounds	(6, 189, 150, 23);
 		lbl_placeMin.setBounds(214, 303, 250, 15);
+		chkb_assur.setBounds(6, 245, 150, 23);
 
 		// Add
 		contentPane.add(lbl_Reserv);
@@ -189,6 +191,7 @@ public class F_AjoutRdv extends JFrame {
 		contentPane.add(separator_1);
 		contentPane.add(radbtn_touteLaJournee);
 		contentPane.add(lbl_placeMin);
+		contentPane.add(chkb_assur);
 
 		// EVENEMENT CLICK SUR RADIOBUTTON
 		// Valider la réservation
@@ -200,16 +203,28 @@ public class F_AjoutRdv extends JFrame {
 					String string = CoursDAO.calculerPlaceCours(numCours, numSemaine);
 					String[] parts = string.split("-");
 					String part1 = parts[0];
-					if(Integer.parseInt(part1) > 1){
+					if(Integer.parseInt(part1) > 0){
 						//System.out.println("Réservation effectué");
 						String[] partsPer = periode.split("-");
 						String heureDebut = partsPer[0];
 						String heureFin = partsPer[1];
-						int numReservation =ReservationDAO.create(new Reservation(Integer.parseInt(heureDebut), Integer.parseInt(heureFin), -1, SemaineDAO.find(numSemaine),
+						boolean assurance = chkb_assur.isSelected();
+						System.out.println("Assurance : " + assurance );
+						int numReservation = ReservationDAO.create(new Reservation(Integer.parseInt(heureDebut), Integer.parseInt(heureFin), -1, assurance, SemaineDAO.find(numSemaine),
 								CoursDAO.find(numCours), EleveDAO.find(numEleve), ClientDAO.find(idClient), MoniteurDAO.find(numMoniteur)));
+						// Update -> décoche toutes les assurances précédemment sélectionnées, pour faciliter le calcul d'assurance final.
+						ReservationDAO.updateAssurance(numEleve, numSemaine, periode);
 						System.out.println("Num reserv : " + numReservation);
+						
+						// Retour à l'ancien écran
+						setVisible(false);
+						F_Client frame = new F_Client(idClient);
+						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frame.setVisible(true);
 					}
-					System.out.println("Erreur inscription : " + part1);
+					else {
+						lbl_infoCours.setText("Vous ne pouvez plus réserver pour ce cours.");
+					}
 				}
 			}
 		});
@@ -232,16 +247,14 @@ public class F_AjoutRdv extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				rdbtnCoursParticulier.setSelected(false);
 				rdbtnCoursCollectif.setSelected	(true);
-
-				// Clear le hashset
-				periode = "";
-				//periode.add("09-12");
+				
+				periode = "09-12";
 
 				rdbtnCoursMatin.setText("Cours matin");
 				rdbtnCoursAprem.setText("Cours apres-midi");
 				//radbtn_touteLaJournee.setText("Matin et apres-midi");
 				radbtn_touteLaJournee.setVisible(false);
-				if (pageChargee) loadCbCours();
+				if (pageChargee) { loadCbEleve(); loadCbCours();  }
 			}
 		});
 
@@ -252,15 +265,13 @@ public class F_AjoutRdv extends JFrame {
 				rdbtnCoursCollectif.setSelected	(false);
 				rdbtnCoursParticulier.setSelected(true);
 
-				// Clear le hashset
-				periode = "";
-				//periode.add("12-13");
+				periode = "12-13";
 
 				rdbtnCoursMatin.setText("Cours de 12 à 13");
 				rdbtnCoursAprem.setText("Cours de 13 à 14");
 				radbtn_touteLaJournee.setText("Cours de 12 à 14");
 				radbtn_touteLaJournee.setVisible(true);
-				if (pageChargee) loadCbCours();
+				if (pageChargee) { loadCbEleve(); loadCbCours();  }
 			}
 		});
 
@@ -280,13 +291,8 @@ public class F_AjoutRdv extends JFrame {
 						break;
 					}
 				}
-				/*else{
-					if (!rdbtnCoursAprem.isSelected()){ rdbtnCoursMatin.setSelected(true); }
-					else if(rdbtnCoursMatin.isSelected()) { periode.clear(); periode.add("12-14");}
-				}*/
 
-
-				if (pageChargee) loadCbCours();
+				if (pageChargee) {  loadCbEleve(); loadCbCours();}
 			}
 		});
 
@@ -307,7 +313,7 @@ public class F_AjoutRdv extends JFrame {
 					}
 				}
 
-				if (pageChargee) { loadCbCours(); loadCbEleve();}
+				if (pageChargee) {  loadCbEleve(); loadCbCours();}
 			}
 		});
 
@@ -328,7 +334,7 @@ public class F_AjoutRdv extends JFrame {
 					}
 				}
 
-				if (pageChargee) { loadCbCours(); loadCbEleve();}
+				if (pageChargee) { loadCbEleve(); loadCbCours(); }
 			}
 		});
 
@@ -342,7 +348,7 @@ public class F_AjoutRdv extends JFrame {
 					int value = ((ComboItem)item).getValue();
 					numEleve = value;
 					System.out.println("Num élève : " + value);
-					if (pageChargee) loadCbCours();
+					//if (pageChargee) loadCbCours();
 				}
 			}
 		});
@@ -354,7 +360,7 @@ public class F_AjoutRdv extends JFrame {
 					int value = ((ComboItem)item).getValue();
 					numMoniteur = value;
 					System.out.println("Num moniteur : " + value);
-					if (pageChargee) { loadCbCours(); loadCbEleve(); }
+					if (pageChargee) {  loadCbEleve(); loadCbCours();}
 				}
 			}
 		});
@@ -378,12 +384,12 @@ public class F_AjoutRdv extends JFrame {
 					numCours = value;
 					System.out.println("Num cours : " + value);
 
-					if (pageChargee) loadInfoCoursText();
+					if (pageChargee) { loadInfoCoursText(); loadCbEleve(); }
 				}
 			}
 		});
 
-		loadComboBox();
+		if (!pageChargee) { loadComboBox(); }
 		pageChargee = true;
 	}
 
@@ -391,9 +397,10 @@ public class F_AjoutRdv extends JFrame {
 		try{
 			// REMPLISSAGE DES COMBOBOX
 			loadCbMoniteur();
-			loadCbEleve();
 			loadCbSemaine();
+			loadCbEleve();
 			loadCbCours();
+			
 			loadInfoCoursText();
 		}
 		catch(Exception Ex){
@@ -403,12 +410,17 @@ public class F_AjoutRdv extends JFrame {
 
 	public void loadCbEleve(){
 		// ELEVES
-		listEleve = EleveDAO.getListEleveSelonAccredProfEtCours(numMoniteur, numSemaine, periode);
-		if (listEleve != null){
+		listEleve = EleveDAO.getListEleveSelonAccredProfEtCours(numSemaine, numMoniteur, periode, numCours);
+		if (listEleve == null || listEleve.size() == 0){
 			cb_nomEleve.removeAllItems();
-			for(Eleve e : listEleve) cb_nomEleve.addItem (new ComboItem(e.getNom().toUpperCase() + " " + e.getPre(), e.getNumPersonne()));
+			lbl_error.setText("Pas d'élèves disponible");
 		}
-		else lbl_error.setText("Erreur ajout rdv");
+		else
+		{
+			cb_nomEleve.removeAllItems();
+			lbl_error.setText("");
+			for(Eleve e : listEleve) { cb_nomEleve.addItem (new ComboItem(e.getNom().toUpperCase() + " " + e.getPre(), e.getNumPersonne())); }
+		}
 	}
 
 	public void loadCbMoniteur(){
@@ -417,7 +429,7 @@ public class F_AjoutRdv extends JFrame {
 			cb_nomMoniteur.removeAllItems();
 			for(Moniteur m : listMoniteur) cb_nomMoniteur.addItem (new ComboItem(m.getNom().toUpperCase() + " " + m.getPre(), m.getNumPersonne()));
 		}
-		else lbl_error.setText("Erreur ajout rdv");
+		else lbl_error.setText("Erreur ajout moniteur");
 	}
 
 	public void loadCbSemaine(){
@@ -426,7 +438,7 @@ public class F_AjoutRdv extends JFrame {
 			cb_semaine.removeAllItems();
 			for(Semaine s : listSemaine) 
 				if (!s.getCongeScolaire()) cb_semaine.addItem (new ComboItem(s.getDateDebut().toString(), s.getNumSemaine()));
-				else lbl_error.setText("Erreur disponibilités");
+				else lbl_error.setText("Erreur semaine");
 		}
 	}
 
@@ -434,7 +446,8 @@ public class F_AjoutRdv extends JFrame {
 		// COURS
 		if(rdbtnCoursCollectif.isSelected()){ // Cours collectif
 			cb_cours.removeAllItems();
-			listCoursColl = CoursCollectifDAO.getListCoursCollectifSelonId(numMoniteur, numEleve, periode);
+			
+			ArrayList<CoursCollectif> listCoursColl = CoursCollectifDAO.getListCoursCollectifSelonId(numMoniteur, numEleve, periode);
 			//for(Cours cc : listCours){
 			for(CoursCollectif cc : listCoursColl){
 				cb_cours.addItem (new ComboItem("Niveau " + cc.getNiveauCours() + ", " + cc.getCategorieAge() + " (" + cc.getNomSport() + ") ", cc.getNumCours()));
@@ -442,12 +455,13 @@ public class F_AjoutRdv extends JFrame {
 		}
 		else if(rdbtnCoursParticulier.isSelected()){ // Cours particulier
 			cb_cours.removeAllItems();
-			listCoursPartic = CoursParticulierDAO.getListCoursParticulierSelonId(numMoniteur, numEleve, periode);
+			ArrayList<CoursParticulier>  listCoursPartic = CoursParticulierDAO.getListCoursParticulierSelonId(numMoniteur, periode);
 			for(CoursParticulier cp : listCoursPartic){
 				cb_cours.addItem (new ComboItem(cp.getNombreHeures() + " heure(s) de " + cp.getNomSport() + " (" + cp.getPeriodeCours() + ")", cp.getNumCours()));
 			}
 		}
 		else lbl_error.setText("Erreur disponibilités");
+		loadInfoCoursText();
 	}
 
 	public void loadInfoCoursText(){

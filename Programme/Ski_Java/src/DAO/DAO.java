@@ -21,19 +21,25 @@ public abstract class DAO<T> {
 
 	// Réservation
 	public abstract ArrayList<T> getMyList(int idPersonne);
-
+	public abstract ArrayList<T> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode);
+	public abstract boolean updateAssurance(int numEleve, int numSemaine, String periode);
+	
 	// Cours
 	public abstract String calculerPlaceCours(int numCours, int numSemaine);
-	public abstract ArrayList<T> getListCoursSelonId(int idMoniteur, int idEleve);
+	public abstract ArrayList<T> getListCoursSelonId(int idMoniteur);
 	
 	// Cours Collectif
 	public abstract ArrayList<T> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode);
 	
 	// Cours Particulier
-	public abstract ArrayList<T> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode);
+	public abstract ArrayList<T> getListCoursParticulierSelonId(int numMoniteur, String periode);
 
 	// Eleve
-	public abstract HashSet<T> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode);
+	public abstract ArrayList<T> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours);
+
+	
+
+	
 
 
 }

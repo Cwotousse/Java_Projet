@@ -150,9 +150,11 @@ public class PersonneDAO  extends DAO<Personne> {
 	}*/
 
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
-	@Override public ArrayList<Personne> getListCoursSelonId(int idMoniteur, int idEleve) { return null; }
+	@Override public ArrayList<Personne> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<Personne> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Personne> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public HashSet<Personne> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public ArrayList<Personne> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<Personne> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
 	@Override public ArrayList<Personne> getMyList(int idPersonne) { return null; }
+	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
+	@Override public ArrayList<Personne> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 }

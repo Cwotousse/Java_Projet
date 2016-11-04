@@ -17,7 +17,7 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Eleve> EleveDAO = adf.getEleveDAO();
 	DAO<Cours> CoursDAO = adf.getCoursDAO();
-	
+
 	public CoursParticulierDAO(Connection conn) {
 		super(conn);
 	}
@@ -58,7 +58,7 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 
 	public ArrayList<CoursParticulier> getList() {
 		ArrayList<CoursParticulier> liste = new ArrayList<CoursParticulier>();
-		
+
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM CoursParticulier INNER JOIN Cours ON Cours.numCours = CoursParticulier.numCoursParticulier";
@@ -79,33 +79,29 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 		}
 		return liste;
 	}
-	
-	public ArrayList<CoursParticulier> getListCoursParticulierSelonId(int idMoniteur, int idEleve, String periode){
+
+	public ArrayList<CoursParticulier> getListCoursParticulierSelonId(int idMoniteur, String periode){
 		//System.out.println("Entree fonc");
-		ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur, idEleve);
+		ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur);
 		ArrayList<CoursParticulier> listFull = getList();
 		ArrayList<CoursParticulier> listSelonId = new ArrayList<CoursParticulier>();
-		Eleve E = EleveDAO.find(idEleve);
 		for (CoursParticulier CP : listFull){
 			for (Cours C : listCours){
 				if (CP.getNumCours() == C.getNumCours()){
-					//System.out.println("For String de taille " + periode.size());
-					//for(String S : periode){
-						//System.out.println(S + " / " + CP.getPeriodeCours());
-						if(CP.getPeriodeCours().equals(periode)){
-							//System.out.println("Ajout Cours Collectif");
-							listSelonId.add(CP);
-						}
-					//}
+					if(CP.getPeriodeCours().equals(periode)){
+						listSelonId.add(CP);
+					}
 				}
 			}
 		}
 		return listSelonId;
 	}
-	
+
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
-	@Override public ArrayList<CoursParticulier> getListCoursSelonId(int idMoniteur, int idEleve) { return null; }
+	@Override public ArrayList<CoursParticulier> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<CoursParticulier> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public HashSet<CoursParticulier> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public ArrayList<CoursParticulier> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
 	@Override public ArrayList<CoursParticulier> getMyList(int idPersonne) { return null; }
+	@Override public ArrayList<CoursParticulier> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 }

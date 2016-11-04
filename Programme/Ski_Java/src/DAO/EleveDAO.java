@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import POJO.Accreditation;
 import POJO.Cours;
@@ -22,7 +23,7 @@ public class EleveDAO extends DAO<Eleve> {
 	DAO<Moniteur> MoniteurDAO = adf.getMoniteurDAO();
 	DAO<Semaine> SemaineDAO = adf.getSemaineDAO();
 	DAO<Reservation> ReservationDAO = adf.getReservationDAO();
-	
+
 	public EleveDAO(Connection conn) {
 		super(conn);
 	}
@@ -126,31 +127,91 @@ public class EleveDAO extends DAO<Eleve> {
 		}
 		return liste;
 	}
-	
-	public HashSet<Eleve> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode){
+
+	/*public HashSet<Eleve> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, String periode){
 		// La personne ne peut pas être visible si elle a déjà été sélectionnée pour un cours (attention aux horaires)
+		boolean aDejaItere = false;
 		HashSet<Eleve> listeFiltree = new HashSet<Eleve>();
 		ArrayList<Eleve> listeFull =  getList(); 
 		Moniteur M = MoniteurDAO.find(numMoniteur);
 		ArrayList<Accreditation> listeAccredMoniteur = M.getAccrediList();
-		
-		Semaine semaine = SemaineDAO.find(numSemaine);
-		ArrayList<Reservation> listReservation = ReservationDAO.getList();
-		for(Reservation R : listReservation)
-			for(Accreditation A : listeAccredMoniteur)
-				for(Eleve eFull : listeFull)
-					if(A.getNom().equals(eFull.getCategorie()))
-						// Si la période est != ou la semaine
-						if (eFull.getNumPersonne() != R.getEleve().getNumEleve() || ((!((R.getHeureDebut() + "-" + R.getHeureFin()).equals(periode)) || R.getSemaine().getNumSemaine() != numSemaine)))
+		ArrayList<Reservation> listReservation = ReservationDAO.getListSemainePerdiodeMoniteur(numMoniteur, numSemaine, periode);
+
+		for(Accreditation A : listeAccredMoniteur){
+			for(Reservation R : listReservation){
+				if(!aDejaItere){
+					for(Eleve eFull : listeFull){
+						if(A.getNom().equals(eFull.getCategorie())){
 							listeFiltree.add(eFull);
-		
-		
+						}
+					}
+				} // if bool
+				
+			}
+			
+		}
+		aDejaItere = true;
+		Iterator<Reservation> res = listReservation.iterator();
+		while (res.hasNext()) {
+			Reservation resNext = res.next();
+			Iterator<Eleve> el = listeFiltree.iterator();
+			while (el.hasNext()) {
+				Eleve elNext = el.next();
+				if (elNext.getNumPersonne() == resNext.getEleve().getNumPersonne()) { el.remove(); } 
+			}
+		}
 		return listeFiltree;
+	}*/
+	
+	public ArrayList<Eleve> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours){
+		ArrayList<Eleve> liste = new ArrayList<Eleve>();
+		PreparedStatement pst = null;
+		try {
+			String sql = "SELECT * from Eleve "
+				+ "INNER JOIN Personne ON Eleve.numEleve = Personne.numPersonne "
+				+ "WHERE numEleve NOT IN "
+				+ "(Select numEleve from ReservationEleve "
+				+ "INNER JOIN ReservationCours ON ReservationCours.numReservation = ReservationEleve.numReservation "
+				+ "INNER JOIN Cours ON Cours.numCours = ReservationCours.numCours "
+				+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
+				+ "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = Cours.numCours "
+				+ "WHERE CoursSemaine.numSemaine = ? AND CoursMoniteur.numMoniteur = ? AND Cours.PeriodeCours = ? AND Cours.numCours = ?)"
+				+ "AND categorie IN " 
+				+ "(SELECT NomAccreditation FROM Accreditation WHERE numAccreditation IN "
+				+ "(SELECT numAccreditation FROM LigneAccreditation WHERE numMoniteur =  ?));";
+			pst = this.connect.prepareStatement(sql);
+			pst.setInt(1, numSemaine);
+			pst.setInt(2, numMoniteur);
+			pst.setString(3, periode);
+			pst.setInt(4, cours);
+			pst.setInt(5, numMoniteur);
+			ResultSet result = pst.executeQuery();
+			// int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance
+			while (result.next()) {
+				liste.add(new Eleve(result.getInt("numEleve"), result.getString("nom"), result.getString("prenom"), result.getString("adresse"), 
+						result.getString("sexe"), result.getDate("dateNaissance")));
+			}
+			return liste;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (pst != null) {
+				try {
+					pst.close();
+				}
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
-	@Override public ArrayList<Eleve> getListCoursSelonId(int idMoniteur, int idEleve) { return null; }
+	@Override public ArrayList<Eleve> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<Eleve> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Eleve> getListCoursParticulierSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public ArrayList<Eleve> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Eleve> getMyList(int idPersonne) { return null; }
+	@Override public ArrayList<Eleve> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 }
