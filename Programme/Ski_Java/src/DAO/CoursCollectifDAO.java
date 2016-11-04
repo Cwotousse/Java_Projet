@@ -5,14 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
-
-import POJO.Client;
 import POJO.Cours;
 import POJO.CoursCollectif;
-import POJO.CoursParticulier;
 import POJO.Eleve;
-import POJO.Reservation;
 
 public class CoursCollectifDAO extends DAO<CoursCollectif> {
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);

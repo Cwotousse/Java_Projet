@@ -5,19 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-
 import POJO.Accreditation;
-import POJO.Client;
-import POJO.Cours;
-import POJO.CoursCollectif;
-import POJO.CoursParticulier;
-import POJO.Eleve;
-import POJO.Accreditation;
-import POJO.Personne;
-import POJO.Reservation;
-import POJO.Utilisateur;
 
 public class AccreditationDAO extends DAO<Accreditation> {
 	public AccreditationDAO(Connection conn) {

@@ -16,7 +16,6 @@
 <fullyQualifiedTypeName name="POJO.Utilisateur"/>
 <fullyQualifiedTypeName name="DAO.ClientDAO"/>
 <fullyQualifiedTypeName name="POJO.Eleve"/>
-<fullyQualifiedTypeName name="POJO.Moniteur"/>
 <fullyQualifiedTypeName name="POJO.Accreditation"/>
 <fullyQualifiedTypeName name="DAO.DAO"/>
 <fullyQualifiedTypeName name="java.util.Calendar"/>
@@ -33,6 +32,8 @@
 <fullyQualifiedTypeName name="javax.swing.table.DefaultTableModel"/>
 <fullyQualifiedTypeName name="javax.swing.table.JTableHeader"/>
 <fullyQualifiedTypeName name="DAO.CoursCollectifDAO"/>
-<fullyQualifiedTypeName name="POJO.Semaine"/>
 <fullyQualifiedTypeName name="DAO.ReservationDAO"/>
+<fullyQualifiedTypeName name="POJO.Semaine"/>
+<fullyQualifiedTypeName name="POJO.Moniteur"/>
+<fullyQualifiedTypeName name="POJO.DisponibiliteMoniteur"/>
 </qualifiedTypeNameHistroy>

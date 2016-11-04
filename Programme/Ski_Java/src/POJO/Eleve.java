@@ -1,11 +1,6 @@
 package POJO;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
 
 public class Eleve extends Personne{
 	// VARIABLES

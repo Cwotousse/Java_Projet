@@ -1,0 +1,117 @@
+package DAO;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import POJO.Cours;
+import POJO.DisponibiliteMoniteur;
+import POJO.Eleve;
+
+public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Eleve> EleveDAO = adf.getEleveDAO();
+	DAO<Cours> CoursDAO = adf.getCoursDAO();
+	
+	public DisponibiliteMoniteurDAO(Connection conn) { super(conn); }
+
+	@Override
+	public int create		(DisponibiliteMoniteur obj) { 
+		try {
+			String requete = "INSERT INTO DisponibiliteMoniteur (numMoniteur, numSemaine, disponible) VALUES (?,?,?)";
+			PreparedStatement pst = connect.prepareStatement(requete);
+
+			pst.setInt(1, obj.getNumMoniteur());
+			pst.setInt(2, obj.getNumSemaine());
+			pst.setBoolean(3, obj.getDisponible());
+
+			pst.executeUpdate();
+			pst.close();
+
+			PreparedStatement rechNumPersPst;
+			String sql = "SELECT MAX(numPersonne) FROM Personne";
+			rechNumPersPst = this.connect.prepareStatement(sql);
+			ResultSet rs = rechNumPersPst.executeQuery();
+			while (rs.next()) {
+				obj.setNumPersonne(rs.getInt(1));
+			}
+			System.out.println("personneDao -> " + obj.getNumPersonne());
+			return obj.getNumPersonne();
+		} 
+		catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			return -1;
+		}
+		}
+	public boolean delete	(DisponibiliteMoniteur obj) { return false; }
+	public boolean update	(DisponibiliteMoniteur obj) { return false; }
+
+	// On cherche une DisponibiliteMoniteur grâce à son id
+	public DisponibiliteMoniteur find(int id) { return null;
+		/*DisponibiliteMoniteur coursCollectif = new DisponibiliteMoniteur();
+		PreparedStatement pst = null;
+		try {
+			String sql = "SELECT * FROM DisponibiliteMoniteur INNER JOIN Cours ON DisponibiliteMoniteur.numDisponibiliteMoniteur = Cours.numCours WHERE numDisponibiliteMoniteur = ?;";
+			pst = this.connect.prepareStatement(sql);
+			pst.setInt(1, id);
+			ResultSet result = pst.executeQuery();
+			while (result.next()) {
+				// int numCours, String nomSport, double prix, int minEleve, int maxEleve, String periodeCours, String categorieAge, String niveauCours
+				coursCollectif = new DisponibiliteMoniteur(result.getInt("numCours"), result.getString("nomSport"), result.getInt("prix"),
+						result.getInt("minEleve"), result.getInt("maxEleve"), result.getString("periodeCours"), 
+						result.getString("categorieAge"), result.getString("niveauCours"));
+			}
+			return coursCollectif;
+		}
+		catch (SQLException e) { e.printStackTrace(); return null; }
+		finally { 
+			if (pst != null) {
+				try {
+					pst.close();
+				}
+				catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}*/
+	}
+
+	public ArrayList<DisponibiliteMoniteur> getList() { return null;
+		/*ArrayList<DisponibiliteMoniteur> liste = new ArrayList<DisponibiliteMoniteur>();
+		
+		PreparedStatement pst = null;
+		try {
+			String sql = "SELECT * FROM DisponibiliteMoniteur INNER JOIN Cours ON Cours.numCours = DisponibiliteMoniteur.numDisponibiliteMoniteur";
+			pst = this.connect.prepareStatement(sql);
+			ResultSet rs = pst.executeQuery();
+			while (rs.next()) {
+				DisponibiliteMoniteur coursCollectif = new DisponibiliteMoniteur(rs.getInt("numCours"), rs.getString("nomSport"), rs.getInt("prix"),
+						rs.getInt("minEleve"), rs.getInt("maxEleve"), rs.getString("periodeCours"), rs.getString("categorieAge"), rs.getString("niveauCours"));
+				liste.add(coursCollectif);
+			}
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst != null) {
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return liste;*/
+	}
+	
+
+	
+	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public ArrayList<DisponibiliteMoniteur> getListCoursSelonId(int idMoniteur) { return null; }
+	@Override public ArrayList<DisponibiliteMoniteur> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<DisponibiliteMoniteur> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
+	@Override public ArrayList<DisponibiliteMoniteur> getMyList(int idPersonne) { return null; }
+	@Override public ArrayList<DisponibiliteMoniteur> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
+	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
+	@Override public ArrayList<DisponibiliteMoniteur> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+}
+
+

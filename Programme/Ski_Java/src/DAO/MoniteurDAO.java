@@ -2,20 +2,14 @@ package DAO;
 
 import java.sql.Connection;
 import java.util.Date;
-import java.util.HashSet;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import POJO.Accreditation;
-import POJO.Cours;
-import POJO.CoursCollectif;
-import POJO.CoursParticulier;
-import POJO.Eleve;
 import POJO.Moniteur;
 import POJO.Personne;
-import POJO.Reservation;
 import POJO.Utilisateur;
 
 public class MoniteurDAO extends DAO<Moniteur>{

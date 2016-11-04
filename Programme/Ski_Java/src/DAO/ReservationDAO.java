@@ -1,19 +1,13 @@
 package DAO;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
-
 import POJO.Accreditation;
 import POJO.Client;
 import POJO.Cours;
-import POJO.CoursCollectif;
-import POJO.CoursParticulier;
 import POJO.Eleve;
 import POJO.Moniteur;
 import POJO.Reservation;

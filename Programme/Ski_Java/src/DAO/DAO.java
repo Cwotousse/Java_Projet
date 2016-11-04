@@ -1,13 +1,6 @@
 package DAO;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.HashSet;
-
-import POJO.Cours;
-import POJO.CoursCollectif;
-import POJO.CoursParticulier;
-import POJO.Eleve;
-import POJO.Reservation;
 
 public abstract class DAO<T> {
 	protected Connection connect = null;
@@ -37,9 +30,7 @@ public abstract class DAO<T> {
 	// Eleve
 	public abstract ArrayList<T> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours);
 
-	
-
-	
-
-
+	// DisponibiliteMoniteur
+	public void creerTouteDisponibilites() { }
+	public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 }

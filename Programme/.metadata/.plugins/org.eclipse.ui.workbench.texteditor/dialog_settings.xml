@@ -2,30 +2,30 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="listCoursColl" key="selection"/>
+		<item value="DisponibiliteMoniteur" key="selection"/>
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="listCoursColl"/>
-			<item value="listMoniteur"/>
-			<item value="Id moniteur"/>
-			<item value="listReservReserv"/>
-			<item value="list"/>
-			<item value="Date"/>
-			<item value="utilisateur"/>
-			<item value="Utilisateur"/>
+			<item value="CoursCollectif"/>
+			<item value="NumSemaineDansAnnee"/>
+			<item value="NumDisponibiliteMoniteur"/>
+			<item value="numDisponibiliteMoniteur"/>
+			<item value="numDisponibiliteMoniteurDansAnnee"/>
+			<item value="CongeScolaire"/>
+			<item value="congeScolaire"/>
+			<item value="Semaine"/>
 		</list>
 		<list key="replacehistory">
+			<item value="DisponibiliteMoniteur"/>
+			<item value="NumMoniteur"/>
+			<item value="NumSemaine"/>
+			<item value="numSemaine"/>
+			<item value="numMoniteur"/>
+			<item value="Disponible"/>
+			<item value="disponible"/>
 			<item value="listReserv"/>
-			<item value="int"/>
-			<item value="reservation"/>
-			<item value="Reservation"/>
-			<item value="CP"/>
-			<item value="coursCollectif"/>
-			<item value="CoursCollectif"/>
-			<item value="CoursParticulier"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

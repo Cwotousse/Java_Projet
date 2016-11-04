@@ -2,9 +2,6 @@ package POJO;
 
 import java.sql.Date;
 
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
-
 public class Client extends Utilisateur{
 	// VARIABLES
 	private int numClient;

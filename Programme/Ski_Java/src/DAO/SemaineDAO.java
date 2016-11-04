@@ -5,14 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-
-import POJO.Cours;
-import POJO.CoursCollectif;
-import POJO.CoursParticulier;
-import POJO.Eleve;
-import POJO.Reservation;
 import POJO.Semaine;
 public class SemaineDAO extends DAO<Semaine> {
 	public SemaineDAO(Connection conn) {
