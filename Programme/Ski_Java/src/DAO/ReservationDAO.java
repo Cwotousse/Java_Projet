@@ -572,19 +572,35 @@ public class ReservationDAO extends DAO<Reservation> {
 	public boolean updateAssurance(int numEleve, int numSemaine, String periode){
 		PreparedStatement pst_upd = null;
 		try {
-
+			String verifPeriode;
+			switch(periode){
+				case "09-12": verifPeriode = " = '14-17' ";
+				break;
+				case "14-17": verifPeriode = " = '09-12' ";
+				break;
+				case "12-13": verifPeriode = " IN('12-14', '13-14') ";
+					break;
+				case "13-14": verifPeriode = " IN('12-13', '12-14') ";
+					break;
+				case "12-14": verifPeriode = " IN('12-13', '13-14') ";
+					break;
+				default : verifPeriode = " = ? ";
+					break;
+			}
+			
+			
 			String upd_ass = "UPDATE Reservation SET aPrisAssurance = 0 WHERE Reservation.numReservation in ( "
 					+ "SELECT ReservationClient.numReservation FROM ReservationClient "
 					+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
 					+ "INNER JOIN ReservationCours ON ReservationCours.numReservation = Reservation.numReservation "
 					+ "INNER JOIN Cours ON ReservationCours.numCours = Cours.numCours "
 					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
-					+ "WHERE aPrisAssurance = 1 AND numEleve = ? AND numSemaine = ? AND Cours.periodeCours NOT LIKE ?); ";
+					+ "WHERE aPrisAssurance = 1 AND numEleve = ? AND numSemaine = ? AND Cours.periodeCours "+ verifPeriode +");";
 
 			pst_upd = this.connect.prepareStatement(upd_ass);
 			pst_upd.setInt(1, numEleve);
 			pst_upd.setInt(2, numSemaine);
-			pst_upd.setString(3, periode);
+			//pst_upd.setString(3, periode);
 			pst_upd.executeUpdate();
 			return true;
 		}
@@ -602,10 +618,10 @@ public class ReservationDAO extends DAO<Reservation> {
 	@Override public ArrayList<Reservation> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<Reservation> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
 	@Override public ArrayList<Reservation> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<Reservation> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
+	@Override public ArrayList<Reservation> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public void creerTouteDisponibilites() { }
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Reservation> getListDispo(int numSemaine) { return null; }
+	@Override public ArrayList<Reservation> getListDispo(int numSemaine, String periode) { return null; }
 }
 

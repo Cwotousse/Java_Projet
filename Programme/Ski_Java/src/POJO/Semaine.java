@@ -2,12 +2,6 @@ package POJO;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
-
 import java.sql.Date;
 
 public class Semaine {
@@ -18,8 +12,8 @@ public class Semaine {
 	private boolean congeScolaire;
 	private int numSemaineDansAnnee;
 	private int numSemaine;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Semaine> SemaineDao = adf.getSemaineDAO();
+	//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	//DAO<Semaine> SemaineDao = adf.getSemaineDAO();
 
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -35,100 +29,19 @@ public class Semaine {
 	}
 
 	// METHODES
-	// Juste faire tourner une fois pour ajouter les semaines dans la DB 
-	public void AjouterSemainesDansDB(){
-		// Date de début d'ajout
-		//int jour = 03;
-		//int mois = 12;
-		//int annee = 2016;
-		try{
-			// date du jour
-			//java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-
-			// test internet 
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			java.util.Date startDate = formatter.parse("2016-10-30");
-			java.util.Date endDate = formatter.parse("2016-11-25");
-			java.util.Date startDateWeek = null;
-			java.util.Date endDateWeek = null;
-			Calendar start = Calendar.getInstance();
-			start.setTime(startDate);
-			Calendar end = Calendar.getInstance();
-			end.setTime(endDate);
-
-			for (java.util.Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 7), date = start.getTime()) {
-				/* 	•	Du 24/12/2016 => 07/01/2017 (Noël / Nouvel an)
-					•	Du 25/02/2017 au 04/03/2017 (Carnaval)
-					•	Du 01/04/2017 au 15/04/2017 (Pâques) */
-				boolean estFerme = false;
-				if((date.after(formatter.parse("2016-12-24")) && date.before(formatter.parse("2017-01-07"))) 
-						|| (date.after(formatter.parse("2017-02-25")) && date.before(formatter.parse("2017-03-04")))
-						|| date.after(formatter.parse("2017-04-01")) && date.before(formatter.parse("2017-04-15"))){
-					// In between
-					estFerme = true;
-				}
-
-
-				// Do your job here with `date`.
-				startDateWeek = date;
-				Calendar c = Calendar.getInstance(); 
-				c.setTime(date); 
-				c.add(Calendar.DATE, 6);
-				endDateWeek = c.getTime();
-				//System.out.println("Debut : " + startDateWeek + " - Fin : " + endDateWeek + " -> " + estFerme + " numSem : " + c.get(Calendar.WEEK_OF_YEAR));
-
-				// Initialisation des propriétés
-				setNumSemaine(-1);
-				setCongeScolaire(estFerme);
-				setDateDebut(new java.sql.Date(startDateWeek.getTime()));
-				setDateFin(new java.sql.Date(endDateWeek.getTime()));
-				setNumSemaineDansAnnee(c.get(Calendar.WEEK_OF_YEAR));
-
-				// Ajout dans la DB
-				SemaineDao.create(this);
-			}
-		}
-		catch(Exception e){
-			e.getStackTrace();
-		}
-	}
 	
-	private boolean EstEnPeriodeDeConge(Date date){
+	
+	public static boolean EstEnPeriodeDeConge(Date date){
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		try {
-			return !((date.after(formatter.parse("2016-12-24")) && date.before(formatter.parse("2017-01-07"))) 
+			return ((date.after(formatter.parse("2016-12-24")) && date.before(formatter.parse("2017-01-07"))) 
 					|| (date.after(formatter.parse("2017-02-25")) && date.before(formatter.parse("2017-03-04")))
 					|| date.after(formatter.parse("2017-04-01")) && date.before(formatter.parse("2017-04-15")));
 		} 
 		catch (ParseException e) { e.printStackTrace(); return false; }
 	}
-	public ArrayList<Semaine> getListSemaine(){
-		return SemaineDao.getList();
-	}
 
-	public ArrayList<Semaine> getListSemaineSelonDateDuJour(){
-		//AjouterSemainesDansDB();
-		// ATTENTION SEMAINE NUMANNEE 44 A 47 SONT A SUPPRIMER
-		Semaine S = new Semaine();
-		ArrayList<Semaine> listeRetour = new ArrayList<Semaine>();
-		ArrayList<Semaine> listSemaine = S.getListSemaine();
-		//  Aujourd'hui
-		java.sql.Date today = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-		int jourDelaisMax = EstEnPeriodeDeConge(today) ? 7 : 31; 
-		Calendar c = Calendar.getInstance(); 
-		c.setTime(today); 
-		// 1 mois si période scolaire, sinon 7 jours.
-		c.add(Calendar.DATE, jourDelaisMax); // Ajout d'un mois ou d'un jour si c'est un période de congé ou pas.
-		java.util.Date maxDateToDisplay = c.getTime();
-		
-		if (listSemaine != null)
-			for(Semaine s : listSemaine){
-				// N'affiche que les semaines ou il n'y a pas de congés et qui ne sont pas passées.
-				if (!s.getCongeScolaire() && s.dateDebut.after(today) && s.dateDebut.before(maxDateToDisplay)) 
-					listeRetour.add(s);
-			}
-		return listeRetour;
-	}
+	
 	
 	// FONCTION SURCHARGEE
 	@Override

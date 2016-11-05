@@ -137,11 +137,11 @@ public class EleveDAO extends DAO<Eleve> {
 		return listeFiltree;
 	}*/
 	
-	public ArrayList<Eleve> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours){
+	public ArrayList<Eleve> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode){
 		ArrayList<Eleve> liste = new ArrayList<Eleve>();
 		PreparedStatement pst = null;
 		try {
-			String sql = "SELECT * from Eleve "
+			/*String sql = "SELECT * from Eleve "
 				+ "INNER JOIN Personne ON Eleve.numEleve = Personne.numPersonne "
 				+ "WHERE numEleve NOT IN "
 				+ "(Select numEleve from ReservationEleve "
@@ -159,6 +159,37 @@ public class EleveDAO extends DAO<Eleve> {
 			pst.setString(3, periode);
 			pst.setInt(4, cours);
 			pst.setInt(5, numMoniteur);
+				*/
+			String verifPeriode;
+			switch(periode){
+				case "12-13": verifPeriode = " IN('12-14',?) ";
+					break;
+				case "13-14": verifPeriode = " IN('12-14',?) ";
+					break;
+				case "12-14": verifPeriode = " IN('12-13', '13-14', ?) ";
+					break;
+				default : verifPeriode = " = ? ";
+					break;
+			}
+				
+			
+			String sql = "SELECT * FROM Eleve " 
+					+ "INNER JOIN PERSONNE ON Personne.numPersonne = Eleve.numEleve "
+					+ "WHERE categorie IN "
+					    + "(SELECT NomAccreditation FROM Accreditation WHERE numAccreditation IN "
+					        + "(SELECT numAccreditation FROM LigneAccreditation WHERE numMoniteur =  ?)) "
+					+ "AND numEleve NOT IN "
+					    + "( SELECT numEleve FROM ReservationEleve WHERE numReservation IN ( "
+					        + "SELECT numReservation FROM ReservationCours  "
+					        + "WHERE ReservationCours.numCours IN ( SELECT Cours.numCours FROM COURS "
+					        + "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
+					        + "WHERE periodeCours" + verifPeriode + "AND CoursSemaine.numSemaine = ?)));";
+	        pst = this.connect.prepareStatement(sql);
+			
+			pst.setInt(1, numMoniteur);
+			pst.setString(2, periode);
+			//pst.setInt(4, cours);
+			pst.setInt(3, numSemaine);
 			ResultSet result = pst.executeQuery();
 			// int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance
 			while (result.next()) {
@@ -187,5 +218,5 @@ public class EleveDAO extends DAO<Eleve> {
 	@Override public void creerTouteDisponibilites() { }
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Eleve> getListDispo(int numSemaine) { return null; }
+	@Override public ArrayList<Eleve> getListDispo(int numSemaine, String periode) { return null; }
 }

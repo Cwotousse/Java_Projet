@@ -17,6 +17,8 @@ public class MoniteurDAO extends DAO<Moniteur>{
 	public MoniteurDAO(Connection conn) { super(conn); }
 
 	public int create(Moniteur obj) {
+		PreparedStatement pst = null;
+		PreparedStatement pst_accred = null;
 		try {
 			Personne P = new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance());
 			int numPersonne = P.createPersonne();
@@ -25,12 +27,11 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				if(U.createUtilisateur() != -1){
 					//on l'utilise pour ajouter les données dans la table Moniteur
 					String requete3 = "INSERT INTO Moniteur (anneeDexp, numMoniteur) VALUES (?, ?)";
-					PreparedStatement pst = connect.prepareStatement(requete3);
+					pst = connect.prepareStatement(requete3);
 
 					pst.setInt(1, 0); // obj.getAnneeExp()
 					pst.setInt(2, numPersonne);
 					pst.executeUpdate();
-					pst.close();
 
 					// On lui ajoute les accréditations
 					java.util.Date ud = new Date();
@@ -45,14 +46,13 @@ public class MoniteurDAO extends DAO<Moniteur>{
 						while (rsAccred.next()) numAccred = rsAccred.getInt(1); // On a l'id du moniteur
 
 						String requete4 = "INSERT INTO LigneAccreditation (numMoniteur, numAccreditation, dateAccreditation) VALUES (?,?,?)";
-						PreparedStatement pst4 = connect.prepareStatement(requete4);
+						pst_accred = connect.prepareStatement(requete4);
 
-						pst4.setInt(1, numPersonne);
-						pst4.setInt(2, numAccred);
-						pst4.setDate(3, now);
+						pst_accred.setInt(1, numPersonne);
+						pst_accred.setInt(2, numAccred);
+						pst_accred.setDate(3, now);
 
-						pst4.executeUpdate();
-						pst4.close();
+						pst_accred.executeUpdate();
 					}
 					System.out.println("Ajout d'un moniteur effectue");
 					return numPersonne;
@@ -62,11 +62,14 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				} // utilisateur
 			} else { return -1; } // personne
 		} 
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return -1;
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst != null || pst_accred != null) {
+				try { pst.close(); pst_accred.close();}
+				catch (SQLException e) { e.printStackTrace(); }
+			}
 		}
+		return -1;
 	}
 
 	public boolean delete(Moniteur obj) { return false; }
@@ -155,18 +158,37 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		return liste;
 	}
 	
-	public ArrayList<Moniteur> getListDispo(int numSemaine) {
+	public ArrayList<Moniteur> getListDispo(int numSemaine, String periode) {
 		ArrayList<Moniteur> liste = new ArrayList<Moniteur>();
 		PreparedStatement pst_mon = null;
 		PreparedStatement pstAccred = null;
 		try {
-			String sql_mon = "SELECT * FROM Moniteur "
+			String verifPeriode;
+			switch(periode){
+				case "12-13": verifPeriode = " IN('12-14',?) ";
+					break;
+				case "13-14": verifPeriode = " IN('12-14',?) ";
+					break;
+				case "12-14": verifPeriode = " IN('12-13', '13-14', ?) ";
+					break;
+				default : verifPeriode = " = ? ";
+					break;
+			}
+			String sql_mon =
+					"SELECT distinct * FROM Moniteur "
 					+ "INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Moniteur.numMoniteur "
-					+ "INNER JOIN Personne ON Utilisateur.numUtilisateur = Personne.numPersonne "
-					+ "INNER JOIN DisponibiliteMoniteur ON DisponibiliteMoniteur.numMoniteur = Personne.numPersonne "
-					+ "WHERE numSemaine = ? AND disponible = 1 ";
+					+ "INNER JOIN DisponibiliteMoniteur ON DisponibiliteMoniteur.numMoniteur = Utilisateur.numUtilisateur "
+					+ "INNER JOIN Personne ON Personne.numPersonne = Moniteur.numMoniteur "
+							+ "WHERE disponible = 1 "
+							+ "AND numSemaine = ? "
+							+ "AND Moniteur.numMoniteur NOT IN "
+							+ "( SELECT numMoniteur FROM CoursMoniteur WHERE numCours IN "
+							+ "( SELECT Cours.numCours FROM COURS "
+							+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
+							+ "WHERE periodeCours " + verifPeriode +"));";
 			pst_mon = this.connect.prepareStatement(sql_mon);
 			pst_mon.setInt(1, numSemaine);
+			pst_mon.setString(2, periode);
 			ResultSet res_mon = pst_mon.executeQuery();
 			while (res_mon.next()) {
 				ArrayList<Accreditation> listeAccred = new ArrayList<Accreditation>();
@@ -203,7 +225,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 	@Override public ArrayList<Moniteur> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<Moniteur> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
 	@Override public ArrayList<Moniteur> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<Moniteur> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
+	@Override public ArrayList<Moniteur> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Moniteur> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Moniteur> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }

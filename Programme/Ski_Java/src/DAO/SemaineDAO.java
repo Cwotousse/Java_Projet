@@ -4,13 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import POJO.Semaine;
 public class SemaineDAO extends DAO<Semaine> {
-	public SemaineDAO(Connection conn) {
-		super(conn);
-	}
+	public SemaineDAO(Connection conn) { super(conn); }
 
 	public int create(Semaine obj) { 
 		PreparedStatement pst2 = null;
@@ -101,7 +101,79 @@ public class SemaineDAO extends DAO<Semaine> {
 		}
 		return liste;
 	}
+	
+	public ArrayList<Semaine> getListSemaineSelonDateDuJour(){
+		//AjouterSemainesDansDB();
+		// ATTENTION SEMAINE NUMANNEE 44 A 47 SONT A SUPPRIMER
+		ArrayList<Semaine> listeRetour = new ArrayList<Semaine>();
+		ArrayList<Semaine> listSemaine = getList();
+		//  Aujourd'hui
+		java.sql.Date today = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+		int jourDelaisMax = Semaine.EstEnPeriodeDeConge(today) ? 7 : 31; 
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(today); 
+		// 1 mois si période scolaire, sinon 7 jours.
+		c.add(Calendar.DATE, jourDelaisMax); // Ajout d'un mois ou d'un jour si c'est un période de congé ou pas.
+		java.util.Date maxDateToDisplay = c.getTime();
+		
+		if (listSemaine != null)
+			for(Semaine s : listSemaine){
+				// N'affiche que les semaines ou il n'y a pas de congés et qui ne sont pas passées.
+				if (!s.getCongeScolaire() && s.getDateDebut().after(today) && s.getDateFin().before(maxDateToDisplay)) 
+					listeRetour.add(s);
+			}
+		return listeRetour;
+	}
+	
+	// Juste faire tourner une fois pour ajouter les semaines dans la DB 
+		public void AjouterSemainesDansDB(){
+			// Date de début d'ajout
+			//int jour = 03;
+			//int mois = 12;
+			//int annee = 2016;
+			try{
+				// date du jour
+				//java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
 
+				// test internet 
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+				java.util.Date startDate = formatter.parse("2016-10-30");
+				java.util.Date endDate = formatter.parse("2016-11-25");
+				java.util.Date startDateWeek = null;
+				java.util.Date endDateWeek = null;
+				Calendar start = Calendar.getInstance();
+				start.setTime(startDate);
+				Calendar end = Calendar.getInstance();
+				end.setTime(endDate);
+
+				for (java.util.Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 7), date = start.getTime()) {
+					/* 	•	Du 24/12/2016 => 07/01/2017 (Noël / Nouvel an)
+						•	Du 25/02/2017 au 04/03/2017 (Carnaval)
+						•	Du 01/04/2017 au 15/04/2017 (Pâques) */
+					boolean estFerme = true;
+					if((date.after(formatter.parse("2016-12-24")) && date.before(formatter.parse("2017-01-07"))) 
+							|| (date.after(formatter.parse("2017-02-25")) && date.before(formatter.parse("2017-03-04")))
+							|| date.after(formatter.parse("2017-04-01")) && date.before(formatter.parse("2017-04-15"))){
+						// In between
+						estFerme = false;
+					}
+
+					// Do your job here with `date`.
+					startDateWeek = date;
+					Calendar c = Calendar.getInstance(); 
+					c.setTime(date); 
+					c.add(Calendar.DATE, 6);
+					endDateWeek = c.getTime();
+
+					// Initialisation des propriétés
+
+					// Ajout dans la DB
+					//public Semaine(int numSemaine,  boolean congeScolaire, Date dateDebut, Date dateFin, int numSemaineDansAnnee){
+					create(new Semaine( -1, estFerme, new java.sql.Date(startDateWeek.getTime()), new java.sql.Date(endDateWeek.getTime()), c.get(Calendar.WEEK_OF_YEAR)));
+				}
+			}
+			catch (Exception e) { e.printStackTrace(); }
+		}
 	/*public ArrayList<Semaine> getListSemaineSelonDateDuJour(){
 		//AjouterSemainesDansDB();
 		// ATTENTION SEMAINE NUMANNEE 44 A 47 SONT A SUPPRIMER
@@ -130,13 +202,13 @@ public class SemaineDAO extends DAO<Semaine> {
 	@Override public ArrayList<Semaine> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<Semaine> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
 	@Override public ArrayList<Semaine> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<Semaine> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
+	@Override public ArrayList<Semaine> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Semaine> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Semaine> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 	@Override public void creerTouteDisponibilites() { }
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Semaine> getListDispo(int numSemaine) { return null; }
+	@Override public ArrayList<Semaine> getListDispo(int numSemaine, String periode) { return null; }
 }
 

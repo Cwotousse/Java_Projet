@@ -110,12 +110,12 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 	@Override public ArrayList<Utilisateur> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<Utilisateur> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
 	@Override public ArrayList<Utilisateur> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<Utilisateur> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
+	@Override public ArrayList<Utilisateur> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Utilisateur> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Utilisateur> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 	@Override public void creerTouteDisponibilites() { }
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Utilisateur> getListDispo(int numSemaine) { return null; }
+	@Override public ArrayList<Utilisateur> getListDispo(int numSemaine, String periode) { return null; }
 }

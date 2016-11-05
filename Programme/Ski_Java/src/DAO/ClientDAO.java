@@ -118,12 +118,12 @@ public class ClientDAO extends DAO<Client> {
 	@Override public ArrayList<Client> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<Client> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
 	@Override public ArrayList<Client> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<Client> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
+	@Override public ArrayList<Client> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Client> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Client> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 	@Override public void creerTouteDisponibilites() { }
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Client> getListDispo(int numSemaine) { return null; }
+	@Override public ArrayList<Client> getListDispo(int numSemaine, String periode) { return null; }
 }

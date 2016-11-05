@@ -28,7 +28,7 @@ public abstract class DAO<T> {
 	public abstract ArrayList<T> getListCoursParticulierSelonId(int numMoniteur, String periode);
 
 	// Eleve
-	public abstract ArrayList<T> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours);
+	public abstract ArrayList<T> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode);
 
 	// DisponibiliteMoniteur
 	public abstract void creerTouteDisponibilites();
@@ -36,6 +36,9 @@ public abstract class DAO<T> {
 	public abstract boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur);
 
 	// Moniteur
-	public abstract ArrayList<T> getListDispo(int numSemaine);
+	public abstract ArrayList<T> getListDispo(int numSemaine, String periode);
+	
+	// Semaine
+	public ArrayList<T> getListSemaineSelonDateDuJour() { return null; }
 	
 }

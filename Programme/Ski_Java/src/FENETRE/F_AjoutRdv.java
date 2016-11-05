@@ -44,7 +44,7 @@ public class F_AjoutRdv extends JFrame {
 	private int numEleve;
 	private int numSemaine;
 	private String periode = "09-12";
-	private Boolean pageChargee = false;
+	private boolean pageChargee = false;
 
 
 	JSeparator separator = new JSeparator();
@@ -66,7 +66,7 @@ public class F_AjoutRdv extends JFrame {
 	JRadioButton radbtn_touteLaJournee = new JRadioButton("x");
 	JRadioButton rdbtnCoursParticulier = new JRadioButton("Cours particulier");
 	JRadioButton rdbtnCoursMatin = new JRadioButton("Cours matin");
-	JRadioButton rdbtnCoursAprem = new JRadioButton("Cours apree");
+	JRadioButton rdbtnCoursAprem = new JRadioButton("Cours apres-midi");
 	JButton btn_ret = new JButton("Retour");
 	JButton btn_inscrip = new JButton("R\u00E9server");
 	JCheckBox chkb_assur = new JCheckBox("Assurance (15\u20AC)");
@@ -83,15 +83,8 @@ public class F_AjoutRdv extends JFrame {
 	DAO<CoursParticulier> 	CoursParticulierDAO = adf.getCoursParticulierDAO();
 	
 	// lISTES UTILES AUX COMBOBOXS
-	//Eleve E 							= new Eleve();
-	//Moniteur M 							= new Moniteur();
-	Semaine S 							= new Semaine();
-	//Cours C 							= new Cours();
-	//CoursParticulier CP 				= new CoursParticulier();
-	//CoursCollectif CC 					= new CoursCollectif();
 	ArrayList<Eleve> listEleve			= new ArrayList<Eleve>();
-	//MoniteurDAO.getList();//new ArrayList<Moniteur>(); //M.getListMoniteur();
-	ArrayList<Semaine> listSemaine		= S.getListSemaineSelonDateDuJour(); //ArrayList<Semaine>();//S.getListSemaineSelonDateDuJour();	
+	ArrayList<Semaine> listSemaine		= SemaineDAO.getListSemaineSelonDateDuJour();
 
 	
 
@@ -310,7 +303,7 @@ public class F_AjoutRdv extends JFrame {
 					}
 				}
 
-				if (pageChargee) {  loadCbEleve(); loadCbCours();}
+				if (pageChargee) {  loadCbEleve(); loadCbCours(); }
 			}
 		});
 
@@ -345,7 +338,7 @@ public class F_AjoutRdv extends JFrame {
 					int value = ((ComboItem)item).getValue();
 					numEleve = value;
 					System.out.println("Num élève : " + value);
-					//if (pageChargee) loadCbCours();
+					if (pageChargee) loadCbCours();
 				}
 			}
 		});
@@ -381,7 +374,7 @@ public class F_AjoutRdv extends JFrame {
 					numCours = value;
 					System.out.println("Num cours : " + value);
 
-					if (pageChargee) { loadInfoCoursText(); loadCbEleve(); }
+					if (pageChargee) { loadInfoCoursText(); /*loadCbEleve();*/ }
 				}
 			}
 		});
@@ -408,22 +401,17 @@ public class F_AjoutRdv extends JFrame {
 
 	public void loadCbEleve(){
 		// ELEVES
-		listEleve = EleveDAO.getListEleveSelonAccredProfEtCours(numSemaine, numMoniteur, periode, numCours);
-		if (listEleve == null || listEleve.size() == 0){
-			cb_nomEleve.removeAllItems();
-			lbl_error.setText("Pas d'élèves disponible");
-		}
-		else
-		{
-			cb_nomEleve.removeAllItems();
-			lbl_error.setText("");
-			for(Eleve e : listEleve) { cb_nomEleve.addItem (new ComboItem(e.getNom().toUpperCase() + " " + e.getPre(), e.getNumPersonne())); }
-		}
+		listEleve = EleveDAO.getListEleveSelonAccredProfEtCours(numSemaine, numMoniteur, periode);
+		cb_nomEleve.removeAllItems();
+		//cb_nomEleve.removeAllItems();
+		lbl_error.setText("");
+		if (listEleve == null || listEleve.size() == 0){ lbl_error.setText("Pas d'élèves disponible"); }
+		else { for(Eleve e : listEleve) { cb_nomEleve.addItem (new ComboItem(e.getNom().toUpperCase() + " " + e.getPre(), e.getNumPersonne())); } }
 	}
 
 	public void loadCbMoniteur(){
 		// MONITEUR
-		ArrayList<Moniteur> listMoniteur	= MoniteurDAO.getListDispo(numSemaine);
+		ArrayList<Moniteur> listMoniteur = MoniteurDAO.getListDispo(numSemaine, periode);
 		if (listMoniteur != null){
 			cb_nomMoniteur.removeAllItems();
 			for(Moniteur m : listMoniteur) cb_nomMoniteur.addItem (new ComboItem(m.getNom().toUpperCase() + " " + m.getPre(), m.getNumPersonne()));
@@ -443,17 +431,14 @@ public class F_AjoutRdv extends JFrame {
 
 	public void loadCbCours(){
 		// COURS
+		cb_cours.removeAllItems();
 		if(rdbtnCoursCollectif.isSelected()){ // Cours collectif
-			cb_cours.removeAllItems();
-			
 			ArrayList<CoursCollectif> listCoursColl = CoursCollectifDAO.getListCoursCollectifSelonId(numMoniteur, numEleve, periode);
-			//for(Cours cc : listCours){
 			for(CoursCollectif cc : listCoursColl){
 				cb_cours.addItem (new ComboItem("Niveau " + cc.getNiveauCours() + ", " + cc.getCategorieAge() + " (" + cc.getNomSport() + ") ", cc.getNumCours()));
 			}
 		}
 		else if(rdbtnCoursParticulier.isSelected()){ // Cours particulier
-			cb_cours.removeAllItems();
 			ArrayList<CoursParticulier>  listCoursPartic = CoursParticulierDAO.getListCoursParticulierSelonId(numMoniteur, periode);
 			for(CoursParticulier cp : listCoursPartic){
 				cb_cours.addItem (new ComboItem(cp.getNombreHeures() + " heure(s) de " + cp.getNomSport() + " (" + cp.getPeriodeCours() + ")", cp.getNumCours()));

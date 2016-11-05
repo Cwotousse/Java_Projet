@@ -89,12 +89,12 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
 	@Override public ArrayList<CoursParticulier> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<CoursParticulier> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<CoursParticulier> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
+	@Override public ArrayList<CoursParticulier> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<CoursParticulier> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<CoursParticulier> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 	@Override public void creerTouteDisponibilites() { }
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<CoursParticulier> getListDispo(int numSemaine) { return null; }
+	@Override public ArrayList<CoursParticulier> getListDispo(int numSemaine, String periode) { return null; }
 }

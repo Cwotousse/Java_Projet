@@ -75,7 +75,7 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 	
 	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, String periode){
 		//System.out.println("Entree fonc");
-		ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur);
+		/*ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur);
 		ArrayList<CoursCollectif> listFull = getList();
 		ArrayList<CoursCollectif> listSelonId = new ArrayList<CoursCollectif>();
 		Eleve E = EleveDAO.find(idEleve);
@@ -93,19 +93,50 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 				}
 			}
 		}
+		return listSelonId;*/
+		/* Sélection des cours par rapport à la catégorie de l'élève et de la période */
+		/*Sélection des étudiants par rapport aux accreds du moniteur */
+		PreparedStatement pst_lst_cou = null;
+		ArrayList<CoursCollectif> listSelonId = new ArrayList<CoursCollectif>();
+		try {
+			String sql = "SELECT * from Cours "
+			+ "INNER JOIN CoursCollectif ON CoursCollectif.numCoursCollectif = Cours.numCours "
+			+ "WHERE PeriodeCours = ? AND CoursCollectif.categorieAge in "
+			+ "(SELECT Categorie from ELEVE Where numEleve = ?) "
+			+ "AND nomSport in "
+			+ "(SELECT nomAccreditation from accreditation where numAccreditation in "
+			+ "(SELECT numAccreditation from ligneAccreditation where numMoniteur = ?));";
+			pst_lst_cou = this.connect.prepareStatement(sql);
+			pst_lst_cou.setString(1, periode);
+			pst_lst_cou.setInt(2, idEleve);
+			pst_lst_cou.setInt(3, idMoniteur);
+			ResultSet res_lst_cou = pst_lst_cou.executeQuery();
+			while (res_lst_cou.next()) {
+				CoursCollectif coursCollectif = new CoursCollectif(res_lst_cou.getInt("numCours"), res_lst_cou.getString("nomSport"), res_lst_cou.getInt("prix"),
+						res_lst_cou.getInt("minEleve"), res_lst_cou.getInt("maxEleve"), res_lst_cou.getString("periodeCours"), res_lst_cou.getString("categorieAge"), res_lst_cou.getString("niveauCours"));
+				listSelonId.add(coursCollectif);
+			}
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst_lst_cou != null) {
+				try { pst_lst_cou.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
 		return listSelonId;
 	}
 	
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
 	@Override public ArrayList<CoursCollectif> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<CoursCollectif> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<CoursCollectif> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode, int cours) { return null; }
+	@Override public ArrayList<CoursCollectif> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<CoursCollectif> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<CoursCollectif> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
 	@Override public void creerTouteDisponibilites() { }
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<CoursCollectif> getListDispo(int numSemaine) { return null; }
+	@Override public ArrayList<CoursCollectif> getListDispo(int numSemaine, String periode) { return null; }
 }
 
