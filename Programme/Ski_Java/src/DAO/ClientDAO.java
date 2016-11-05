@@ -6,20 +6,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import POJO.Accreditation;
 import POJO.Client;
 import POJO.Personne;
 import POJO.Utilisateur;
 
 public class ClientDAO extends DAO<Client> {
-	public ClientDAO(Connection conn) {
-		super(conn);
-	}
+	public ClientDAO(Connection conn) { super(conn); }
 
 	@Override
 	public int create(Client obj) {
+		PreparedStatement pst_cre_cli = null;
 		try {
-			
 			int numPersonne = -1;
 			Personne P = new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance());
 			numPersonne = P.createPersonne();
@@ -35,12 +32,12 @@ public class ClientDAO extends DAO<Client> {
 					while (rs0.next()) numUtilisateur = rs0.getInt(1); // On a l'id de l'utilisateur*/
 
 					String requete5 = "INSERT INTO Client (adresseFacturation, numClient) VALUES (?,?)";
-					PreparedStatement pst5 = connect.prepareStatement(requete5);
+					pst_cre_cli = connect.prepareStatement(requete5);
 
-					pst5.setString(1, obj.getAdresseFacturation());
-					pst5.setInt(2, numPersonne);
-					pst5.executeUpdate();
-					pst5.close();
+					pst_cre_cli.setString(1, obj.getAdresseFacturation());
+					pst_cre_cli.setInt(2, numPersonne);
+					pst_cre_cli.executeUpdate();
+					pst_cre_cli.close();
 					System.out.println("Ajout d'un client effectue");
 					return numPersonne;
 				}
@@ -51,21 +48,19 @@ public class ClientDAO extends DAO<Client> {
 			}
 			else { return -1; } // personne
 		} 
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return -1;
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst_cre_cli != null) {
+				try { pst_cre_cli.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
 		}
+		return -1;
 
 	}
 
-	public boolean delete(Client obj) {
-		return false;
-	}
-
-	public boolean update(Client obj) {
-		return false;
-	}
+	public boolean delete(Client obj) { return false; }
+	public boolean update(Client obj) { return false; }
 
 	// On cherche une Client grâce à son id
 	public Client find(int id) {
@@ -83,21 +78,18 @@ public class ClientDAO extends DAO<Client> {
 						result.getString("mdp"), result.getInt("typeUtilisateur"), result.getString("adresseFacturation"));
 			}
 			return client;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		} finally {
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
+		return null;
 	}
 
+	@SuppressWarnings("null")
 	public ArrayList<Client> getList() {
 		Client client = null;
 		ArrayList<Client> liste = new ArrayList<Client>();
@@ -111,15 +103,12 @@ public class ClientDAO extends DAO<Client> {
 				client.setNumClient(rs.getInt("numClient"));
 				liste.add(client);
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return liste;

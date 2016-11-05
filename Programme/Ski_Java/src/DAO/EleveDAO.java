@@ -6,24 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import POJO.Accreditation;
 import POJO.Eleve;
-import POJO.Moniteur;
 import POJO.Personne;
-import POJO.Reservation;
-import POJO.Semaine;
 
 public class EleveDAO extends DAO<Eleve> {
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Moniteur> MoniteurDAO = adf.getMoniteurDAO();
-	DAO<Semaine> SemaineDAO = adf.getSemaineDAO();
-	DAO<Reservation> ReservationDAO = adf.getReservationDAO();
-
-	public EleveDAO(Connection conn) {
-		super(conn);
-	}
+	public EleveDAO(Connection conn) { super(conn); }
 
 	public int create(Eleve obj) {
+		PreparedStatement pst = null;
 		try {
 			System.out.println("EleveDao -> " + obj.getNumPersonne());
 			int numPersonne = obj.getNumPersonne();
@@ -39,23 +29,24 @@ public class EleveDAO extends DAO<Eleve> {
 				}
 			}
 
-			String requete5 = "INSERT INTO Eleve (aPrisUneAssurance, categorie, numEleve) VALUES (?,?,?)";
-			PreparedStatement pst5 = connect.prepareStatement(requete5);
+			String requete5 = "INSERT INTO Eleve (categorie, numEleve) VALUES (?,?)";
+			pst = connect.prepareStatement(requete5);
 
-			pst5.setBoolean(1, obj.getAUneAssurance());
-			pst5.setString(2, obj.getCategorie());
-			pst5.setInt(3, numPersonne);
-			pst5.executeUpdate();
-			pst5.close();
+			pst.setString(1, obj.getCategorie());
+			pst.setInt(2, numPersonne);
+			pst.executeUpdate();
+			pst.close();
 			System.out.println("Ajout d'un eleve effectue");
 			return numPersonne;
-
 		} 
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return -1;
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst != null) {
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
 		}
+		return -1;
 	}
 
 	public boolean delete(Eleve obj) { return false; }
@@ -76,22 +67,16 @@ public class EleveDAO extends DAO<Eleve> {
 						result.getString("sexe"), result.getDate("dateNaissance"));
 			}
 			return eleve;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		} finally {
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
+		return null;
 	}
-
-
 
 	public ArrayList<Eleve> getList() {
 
@@ -107,17 +92,11 @@ public class EleveDAO extends DAO<Eleve> {
 				liste.add(eleve);
 			}
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
+		catch (SQLException e) { e.printStackTrace(); }
 		finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return liste;
@@ -187,19 +166,15 @@ public class EleveDAO extends DAO<Eleve> {
 						result.getString("sexe"), result.getDate("dateNaissance")));
 			}
 			return liste;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		} finally {
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
+		return null;
 	}
 
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }

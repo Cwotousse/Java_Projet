@@ -1,6 +1,5 @@
 package FENETRE;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -8,15 +7,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-
 import DAO.AbstractDAOFactory;
 import DAO.DAO;
 import POJO.ButtonColumn;
-import POJO.Moniteur;
 import POJO.Reservation;
 
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -34,8 +29,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class F_AfficherRDV extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -85,7 +83,7 @@ public class F_AfficherRDV extends JFrame {
 			separator.setBounds(10, 37, 76, 20);
 			lbl_error.setBounds(166, 16, 203, 16);
 			btn_fr.setBounds(10, 308, 125, 25);
-			lbl_somme.setBounds(166, 313, 203, 14);
+			lbl_somme.setBounds(166, 313, 505, 14);
 			
 
 			// Add
@@ -113,6 +111,7 @@ public class F_AfficherRDV extends JFrame {
 			// Liste RDV
 			ArrayList<Reservation> listReserv = ReservationDAO.getMyList(idPersonne);
 			int somme = 0;
+			int sommeAssurance = 0;
 			// TABLEAU -> https://tips4java.wordpress.com/2010/01/24/table-row-rendering/
 			//headers for the table
 			String[] columns = new String[] { "N°","Période", "Horaire", "Libellé", "Niveau", "Moniteur", "Eleve", "Titutlaire", "Prix", "Annuler" };
@@ -132,9 +131,9 @@ public class F_AfficherRDV extends JFrame {
 				data[i][8] = listReserv.get(i).getCours().getPrix() + "€";
 				data[i][9] = "Del"; //listReserv.get(i).getCours().getPrix() + "€";
 				somme += listReserv.get(i).getCours().getPrix();
-				if(listReserv.get(i).getAUneAssurance()){ somme += 15; }
+				if(listReserv.get(i).getAUneAssurance()){ sommeAssurance += 15; }
 			}
-			lbl_somme.setText("La somme totale est de : " + somme + " €.");
+			lbl_somme.setText("La somme totale est de : " + (somme+sommeAssurance) + " € (" + sommeAssurance + "€ d'assurance).");
 			
 			DefaultTableModel model = new DefaultTableModel(data, columns);
 			JTable table = new JTable( model );
@@ -142,13 +141,20 @@ public class F_AfficherRDV extends JFrame {
 			// Action de modification
 			final Action changerValeur = new AbstractAction() 
 			{
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				@Override
 				public void actionPerformed(ActionEvent e) 
 				{
 					JTable mytableClicked = (JTable)e.getSource();
-					int numRes = Integer.parseInt((String) mytableClicked.getModel().getValueAt(mytableClicked.getSelectedRow(), 0));
-					//DisponibiliteMoniteurDAO.changeDispoSelonIdSemaine(Integer.parseInt(parts[0]), F_Moniteur.numMoniteur);
-					JOptionPane.showMessageDialog(null, "Cours supprimé.");
+					Object numRes = mytableClicked.getModel().getValueAt(mytableClicked.getSelectedRow(), 0);
+					if(ReservationDAO.delete(ReservationDAO.find(Integer.parseInt(numRes.toString()))))
+						JOptionPane.showMessageDialog(null, "Cours supprimé.\nLe tableau sera actualisé par la suite.");
+					else
+						JOptionPane.showMessageDialog(null, "Une erreur est intervenue, le cours n'est pas supprimé.");
 				}
 			};
 

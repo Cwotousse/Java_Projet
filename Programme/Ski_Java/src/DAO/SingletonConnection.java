@@ -30,8 +30,8 @@ public class SingletonConnection {
 		if (connect == null) {
 			System.out.println("Instanciation de la connexion.");
 			new SingletonConnection();
-		} else
-			System.out.println("Connexion réussie!");
+		}
+		else System.out.println("Connexion réussie!");
 		return connect;
 	}
 }

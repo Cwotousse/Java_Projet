@@ -6,10 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import POJO.Accreditation;
-import POJO.Cours;
 import POJO.DisponibiliteMoniteur;
-import POJO.Eleve;
 import POJO.Moniteur;
 import POJO.Semaine;
 
@@ -43,17 +40,14 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 			System.out.println("rechNumDispoDao -> " + obj.getNumDispo());
 			return obj.getNumDispo();
 		} 
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return -1;
-		}
+		catch (SQLException e) { e.printStackTrace(); }
 		finally {
 			if (rechNumDispo != null) {
 				try { rechNumDispo.close(); }
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
+		return -1;
 	}
 	
 	public boolean delete	(DisponibiliteMoniteur obj) { return false; }

@@ -1,6 +1,5 @@
 package FENETRE;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -21,9 +20,6 @@ import POJO.Semaine;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-
 import javax.swing.JSeparator;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -35,11 +31,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class F_AjoutRdv extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8692836574443387394L;
 	private JPanel contentPane;
 	private int numMoniteur;
 	private int numCours;
@@ -209,7 +207,6 @@ public class F_AjoutRdv extends JFrame {
 						String heureDebut = partsPer[0];
 						String heureFin = partsPer[1];
 						boolean assurance = chkb_assur.isSelected();
-						System.out.println("Assurance : " + assurance );
 						int numReservation = ReservationDAO.create(new Reservation(Integer.parseInt(heureDebut), Integer.parseInt(heureFin), -1, assurance, SemaineDAO.find(numSemaine),
 								CoursDAO.find(numCours), EleveDAO.find(numEleve), ClientDAO.find(idClient), MoniteurDAO.find(numMoniteur)));
 						// Update -> décoche toutes les assurances précédemment sélectionnées, pour faciliter le calcul d'assurance final.

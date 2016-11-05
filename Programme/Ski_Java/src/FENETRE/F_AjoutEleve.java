@@ -1,6 +1,5 @@
 package FENETRE;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -11,17 +10,14 @@ import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Properties;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.border.EmptyBorder;
@@ -32,8 +28,6 @@ import org.jdatepicker.impl.SqlDateModel;
 
 import DAO.AbstractDAOFactory;
 import DAO.DAO;
-import FENETRE.F_Inscription.DateLabelFormatter;
-import POJO.Accreditation;
 import POJO.Client;
 import POJO.Cours;
 import POJO.Eleve;
@@ -43,12 +37,16 @@ import POJO.Semaine;
 
 public class F_AjoutEleve extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField txtF_nom;
-	private JTextField txtF_pre;
-	private JTextField txtF_adresse;
+	//private JTextField txtF_nom;
+	//private JTextField txtF_pre;
+	//private JTextField txtF_adresse;
 	private String sexe = "H"; 
-	private JTable table;
+	//private JTable table;
 
 	// ADF
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
@@ -244,6 +242,10 @@ public class F_AjoutEleve extends JFrame {
 
 	public class DateLabelFormatter extends AbstractFormatter {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private String datePattern = "dd-MM-yyyy";
 		private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
 

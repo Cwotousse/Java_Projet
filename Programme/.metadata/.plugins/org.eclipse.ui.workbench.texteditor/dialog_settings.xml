@@ -2,37 +2,37 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="listMoniteur" key="selection"/>
+		<item value="txtF_nom" key="selection"/>
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="listMoniteur"/>
-			<item value="setContentPane"/>
-			<item value="adri"/>
-			<item value="CoursCollectif"/>
-			<item value="NumSemaineDansAnnee"/>
-			<item value="NumDisponibiliteMoniteur"/>
-			<item value="numDisponibiliteMoniteur"/>
-			<item value="numDisponibiliteMoniteurDansAnnee"/>
+			<item value="txtF_nom"/>
+			<item value="pst5"/>
+			<item value="pst_Res_Cli"/>
+			<item value="pst_Res_Ele"/>
+			<item value="pst_Res_Cou"/>
+			<item value="pst_Cou_Sem"/>
+			<item value="pst_Cou_Mon"/>
+			<item value="ReservationDAO : 1"/>
 		</list>
 		<list key="replacehistory">
+			<item value="pst"/>
+			<item value="pst_Res"/>
+			<item value="pst_cre_cli"/>
+			<item value="FROM"/>
+			<item value="DELETE"/>
+			<item value="delete"/>
 			<item value="chelsea"/>
 			<item value="DisponibiliteMoniteur"/>
-			<item value="NumMoniteur"/>
-			<item value="NumSemaine"/>
-			<item value="numSemaine"/>
-			<item value="numMoniteur"/>
-			<item value="Disponible"/>
-			<item value="disponible"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="284" key="DIALOG_WIDTH"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<item value="391" key="DIALOG_HEIGHT"/>
-		<item value="706" key="DIALOG_X_ORIGIN"/>
-		<item value="258" key="DIALOG_Y_ORIGIN"/>
+		<item value="252" key="DIALOG_X_ORIGIN"/>
+		<item value="315" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

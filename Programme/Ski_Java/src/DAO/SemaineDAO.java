@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import POJO.Accreditation;
 import POJO.Semaine;
 public class SemaineDAO extends DAO<Semaine> {
 	public SemaineDAO(Connection conn) {
@@ -14,11 +13,12 @@ public class SemaineDAO extends DAO<Semaine> {
 	}
 
 	public int create(Semaine obj) { 
+		PreparedStatement pst2 = null;
 		try
 		{
 			System.out.println("SemaineDao -> " + obj.getNumSemaineDansAnnee());
 			String requete2 = "INSERT INTO Semaine (congeScolaireOuNon,dateDebut,dateFin,numSemaineDansAnnee) VALUES (?,?,?,?)";
-			PreparedStatement pst2 = connect.prepareStatement(requete2);
+			pst2 = connect.prepareStatement(requete2);
 
 			//pst2.setInt(1, numSemaine);     //L'id qui lie la table moniteur a la table personne
 			pst2.setBoolean(1, obj.getCongeScolaire());
@@ -36,23 +36,22 @@ public class SemaineDAO extends DAO<Semaine> {
 			ResultSet rs = pst_numReserv.executeQuery();
 			while (rs.next()) { obj.setNumSemaine(rs.getInt(1)); }
 			System.out.println("ReservationDao -> " + obj.getNumSemaine());
-			
+
 			return obj.getNumSemaine();
 		}
 
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return -1;
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst2 != null) {
+				try { pst2.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
 		}
+		return -1;
 	}
-	public boolean delete(Semaine obj) {
-		return false;
-	}
+	public boolean delete(Semaine obj) { return false; }
 
-	public boolean update(Semaine obj) {
-		return false;
-	}
+	public boolean update(Semaine obj) { return false; }
 
 	// On cherche un élève grâce à son id
 	public Semaine find(int id) {
@@ -70,15 +69,12 @@ public class SemaineDAO extends DAO<Semaine> {
 				semaine.setNumSemaineDansAnnee(rs.getInt("numSemaineDansAnnee"));
 				semaine.setNumSemaine(rs.getInt("numSemaine"));
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
+		} 
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return semaine;
@@ -86,7 +82,6 @@ public class SemaineDAO extends DAO<Semaine> {
 
 	public  ArrayList<Semaine> getList() {
 		ArrayList<Semaine> liste = new ArrayList<Semaine>();
-
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM Semaine";
@@ -97,22 +92,16 @@ public class SemaineDAO extends DAO<Semaine> {
 				liste.add(semaine);
 			}
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
+		catch (SQLException e) { e.printStackTrace(); }
 		finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return liste;
 	}
-	
+
 	/*public ArrayList<Semaine> getListSemaineSelonDateDuJour(){
 		//AjouterSemainesDansDB();
 		// ATTENTION SEMAINE NUMANNEE 44 A 47 SONT A SUPPRIMER
@@ -127,7 +116,7 @@ public class SemaineDAO extends DAO<Semaine> {
 		// 1 mois si période scolaire, sinon 7 jours.
 		c.add(Calendar.DATE, jourDelaisMax); // Ajout d'un mois ou d'un jour si c'est un période de congé ou pas.
 		java.util.Date maxDateToDisplay = c.getTime();
-		
+
 		if (listSemaine != null)
 			for(Semaine s : listSemaine){
 				// N'affiche que les semaines ou il n'y a pas de congés et qui ne sont pas passées.
@@ -136,7 +125,7 @@ public class SemaineDAO extends DAO<Semaine> {
 			}
 		return listeRetour;
 	}*/
-	
+
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
 	@Override public ArrayList<Semaine> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<Semaine> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }

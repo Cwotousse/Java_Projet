@@ -1,6 +1,5 @@
 package FENETRE;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -8,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import DAO.AbstractDAOFactory;
-import DAO.ClientDAO;
 import DAO.DAO;
 import POJO.Client;
 import POJO.Cours;
@@ -16,22 +14,19 @@ import POJO.Eleve;
 import POJO.Moniteur;
 import POJO.Reservation;
 import POJO.Semaine;
-import POJO.Utilisateur;
-
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Date;
-
-import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
-import javax.swing.JCheckBox;
 
 public class F_Client extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3858120588993719215L;
 
 	private JPanel contentPane;
 	
@@ -118,6 +113,7 @@ public class F_Client extends JFrame {
 		// ONCLICK
 		// S'ajouter en tant qu'élève
 		btn_sajouterCli.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("unused")
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				

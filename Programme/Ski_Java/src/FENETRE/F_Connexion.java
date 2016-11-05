@@ -1,19 +1,10 @@
 package FENETRE;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
-import POJO.Semaine;
 import POJO.Utilisateur;
 
-import java.awt.Label;
-import java.awt.GridBagLayout;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
@@ -26,6 +17,10 @@ import java.awt.event.MouseEvent;
 import java.awt.Color;
 
 public class F_Connexion extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2614761702909947171L;
 	private JTextField txtNomDutilisateur;
 	private JPasswordField pwdPassword;
 
@@ -69,7 +64,7 @@ public class F_Connexion extends JFrame {
 
 		txtNomDutilisateur = new JTextField();
 		txtNomDutilisateur.setToolTipText("Nom d'utilisateur");
-		txtNomDutilisateur.setText("chelsea");
+		txtNomDutilisateur.setText("adri");
 		txtNomDutilisateur.setBounds(10, 39, 139, 20);
 		getContentPane().add(txtNomDutilisateur);
 		txtNomDutilisateur.setColumns(10);
@@ -87,6 +82,7 @@ public class F_Connexion extends JFrame {
 				int typeUtilisateur = -1;
 				try {
 					
+					@SuppressWarnings("deprecation")
 					Utilisateur U = new Utilisateur (-1, txtNomDutilisateur.getText(), pwdPassword.getText(), -1);
 					U = U.returnUser();
 					//numUtilisateur 
@@ -133,6 +129,7 @@ public class F_Connexion extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				setVisible(false); //you can't see me!
 				//dispose(); //Destroy the JFrame object
+				@SuppressWarnings("deprecation")
 				F_Inscription frame = new F_Inscription(txtNomDutilisateur.getText(), pwdPassword.getText());
 				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 				frame.setVisible(true);

@@ -34,7 +34,6 @@
 <fullyQualifiedTypeName name="DAO.ReservationDAO"/>
 <fullyQualifiedTypeName name="POJO.Semaine"/>
 <fullyQualifiedTypeName name="POJO.Moniteur"/>
-<fullyQualifiedTypeName name="POJO.DisponibiliteMoniteur"/>
 <fullyQualifiedTypeName name="java.awt.Desktop.Action"/>
 <fullyQualifiedTypeName name="javax.swing.border.Border"/>
 <fullyQualifiedTypeName name="javax.swing.table.TableCellRenderer"/>
@@ -50,4 +49,5 @@
 <fullyQualifiedTypeName name="javax.swing.table.AbstractTableModel"/>
 <fullyQualifiedTypeName name="javax.swing.SwingUtilities"/>
 <fullyQualifiedTypeName name="POJO.ButtonColumn"/>
+<fullyQualifiedTypeName name="POJO.DisponibiliteMoniteur"/>
 </qualifiedTypeNameHistroy>

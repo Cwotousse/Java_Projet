@@ -16,19 +16,24 @@ import POJO.Semaine;
 
 public class ReservationDAO extends DAO<Reservation> {
 
-	public ReservationDAO(Connection conn) {
-		super(conn);
-	}
+	public ReservationDAO(Connection conn) { super(conn); }
 
 	public int create(Reservation obj) { 
+		PreparedStatement pst_Res = null;
+		PreparedStatement pst_Res_Cli = null;
+		PreparedStatement pst_Res_Ele = null;
+		PreparedStatement pst_Cou_Mon = null;
+		PreparedStatement pst_Cou_Sem = null;
+		PreparedStatement pst_Res_Cou = null; 
 		try
 		{
-			String insertReservation 	= "INSERT INTO Reservation (heureDebut, heurefin) VALUES (?,?)";
-			PreparedStatement pst_Res = connect.prepareStatement(insertReservation);
+			String insertReservation 	= "INSERT INTO Reservation (heureDebut, heurefin, aPrisAssurance) VALUES (?,?,?)";
+			pst_Res = connect.prepareStatement(insertReservation);
 			pst_Res.setInt(1, obj.getHeureDebut());
 			pst_Res.setInt(2, obj.getHeureFin());
+			pst_Res.setBoolean(3, obj.getAUneAssurance());
 			pst_Res.executeUpdate();
-			pst_Res.close();
+			//pst_Res.close();
 
 			PreparedStatement pst_numReserv;
 			String selectNumReserv = "SELECT MAX(numReservation) FROM Reservation";
@@ -44,11 +49,11 @@ public class ReservationDAO extends DAO<Reservation> {
 			String insertReservCours 	= "INSERT INTO ReservationCours 	(numReservation, numCours) 	VALUES (?,?)";
 
 
-			PreparedStatement pst_Res_Cli = connect.prepareStatement(insertReservCli);
-			PreparedStatement pst_Res_Ele = connect.prepareStatement(insertReservEleve);
-			PreparedStatement pst_Cou_Mon = connect.prepareStatement(insertCoursMoniteur);
-			PreparedStatement pst_Cou_Sem = connect.prepareStatement(insertCoursSemaine);
-			PreparedStatement pst_Res_Cou = connect.prepareStatement(insertReservCours);
+			pst_Res_Cli = connect.prepareStatement(insertReservCli);
+			pst_Res_Ele = connect.prepareStatement(insertReservEleve);
+			pst_Cou_Mon = connect.prepareStatement(insertCoursMoniteur);
+			pst_Cou_Sem = connect.prepareStatement(insertCoursSemaine);
+			pst_Res_Cou = connect.prepareStatement(insertReservCours);
 
 
 			pst_Res_Cli.setInt(1, obj.getNumReservation());
@@ -83,14 +88,101 @@ public class ReservationDAO extends DAO<Reservation> {
 			return obj.getNumReservation();
 		}
 
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return -1;
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst_Res != null || pst_Res_Cli != null || pst_Res_Ele != null || pst_Res_Cou != null || pst_Cou_Mon != null || pst_Cou_Sem != null) {
+				try {
+					pst_Res_Cli.close();
+					pst_Res_Ele.close();
+					pst_Cou_Mon.close();
+					pst_Cou_Sem.close();
+					pst_Res_Cou.close();
+					pst_Res.close(); 
+				}
+				catch (SQLException e) { e.printStackTrace(); }
+			}
 		}
+		return -1;
 	}
 	public boolean delete(Reservation obj) {
-		
+		PreparedStatement pst_Res 		= null;
+		PreparedStatement pst_Res_Cli 	= null;
+		PreparedStatement pst_Res_Ele 	= null;
+		PreparedStatement pst_Res_Cou 	= null;
+		PreparedStatement pst_Cou_Mon 	= null;
+		PreparedStatement pst_Cou_Sem 	= null;
+		try
+		{
+			String deleteReservation 	= "DELETE FROM Reservation 			WHERE numReservation = ?";
+			String deleteReservCli 		= "DELETE FROM ReservationClient 	WHERE numReservation = ?";
+			String deleteReservEleve 	= "DELETE FROM ReservationEleve 	WHERE numReservation = ?";
+			String deleteReservCours 	= "DELETE FROM ReservationCours 	WHERE numReservation = ?";
+			String deleteCoursMoniteur 	= "DELETE FROM CoursMoniteur 		WHERE numCours = ? AND numMoniteur = ? ";
+			String deleteCoursSemaine 	= "DELETE FROM CoursSemaine 		WHERE numCours = ? AND numSemaine = ?";
+
+			pst_Res 		= connect.prepareStatement(deleteReservation);
+			pst_Res_Cli 	= connect.prepareStatement(deleteReservCli);
+			pst_Res_Ele 	= connect.prepareStatement(deleteReservEleve);
+			pst_Res_Cou 	= connect.prepareStatement(deleteReservCours);
+			pst_Cou_Mon 	= connect.prepareStatement(deleteCoursMoniteur);
+			pst_Cou_Sem 	= connect.prepareStatement(deleteCoursSemaine);
+
+
+			/*PreparedStatement pst_numReserv;
+			String selectNumReserv = "SELECT MAX(numReservation) FROM Reservation";
+			pst_numReserv = this.connect.prepareStatement(selectNumReserv);
+			ResultSet rs = pst_numReserv.executeQuery();
+			while (rs.next()) { obj.setNumReservation(rs.getInt(1)); }
+			System.out.println("ReservationDao -> " + obj.getNumReservation());*/
+
+
+			pst_Res.setInt(1, obj.getNumReservation());
+
+			pst_Res_Cli.setInt(1, obj.getNumReservation());
+
+			pst_Res_Ele.setInt(1, obj.getNumReservation());
+
+			pst_Res_Cou.setInt(1, obj.getNumReservation());
+
+			pst_Cou_Mon.setInt(1, obj.getCours().getNumCours());
+			pst_Cou_Mon.setInt(2, obj.getMoniteur().getNumPersonne());
+
+			pst_Cou_Sem.setInt(1, obj.getCours().getNumCours());
+			pst_Cou_Sem.setInt(2, obj.getSemaine().getNumSemaine());
+
+
+			pst_Res.executeUpdate();
+			pst_Res_Cli.executeUpdate();
+			pst_Res_Ele.executeUpdate();
+			pst_Cou_Mon.executeUpdate();
+			pst_Cou_Sem.executeUpdate();
+			pst_Res_Cou.executeUpdate();
+
+
+			pst_Res_Cli.close();
+			pst_Res_Ele.close();
+			pst_Cou_Mon.close();
+			pst_Cou_Sem.close();
+			pst_Res_Cou.close();
+			pst_Res.close();
+
+			return true;
+		}
+
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst_Res != null || pst_Res_Cli != null || pst_Res_Ele != null || pst_Res_Cou != null || pst_Cou_Mon != null || pst_Cou_Sem != null) {
+				try {
+					pst_Res_Cli.close();
+					pst_Res_Ele.close();
+					pst_Cou_Mon.close();
+					pst_Cou_Sem.close();
+					pst_Res_Cou.close();
+					pst_Res.close(); 
+				}
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
 		return false;
 	}
 
@@ -116,7 +208,8 @@ public class ReservationDAO extends DAO<Reservation> {
 					+ "INNER JOIN Reservation ON Reservation.numReservation = ReservationCours.numReservation "
 					+ "INNER JOIN ReservationClient ON ReservationClient.numReservation = Reservation.numReservation "
 					+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
-					+ "WHERE ReservationClient.numClient = ? ;";
+					+ "WHERE ReservationClient.numReservation = ? ;";
+			// Modifier ReservationClient.numClient si ça ne va pas
 
 			pst = this.connect.prepareStatement(sql);
 			pst.setInt(1, id);
@@ -285,25 +378,25 @@ public class ReservationDAO extends DAO<Reservation> {
 			Eleve E 	= new Eleve();
 			Client Cli 	= new Client();
 			Moniteur M 	= new Moniteur();
-			
+
 			String innerTypePersonne = "INNER JOIN Personne On Personne.numPersonne = ReservationClient.numClient ";
-			
+
 			// IL FAUT SAVOIR SI LA PERSONNE ENTREE EN PARAM EST UN CLIENT OU UN MONITEUR
 			String rechercheMon = "SELECT * FROM Moniteur WHERE numMoniteur = ?";
 			//String rechercheCli = "SELECT * FROM Client WHERE numClient = ?";
-			
+
 			PreparedStatement pst_Rec_Mon = this.connect.prepareStatement(rechercheMon);
 			//PreparedStatement pst_Rec_Cli = this.connect.prepareStatement(rechercheCli);
-			
+
 			pst_Rec_Mon.setInt(1, idPersonne);
 			//pst_Rec_Cli.setInt(1, idPersonne);
-			
+
 			ResultSet res_Rec_Mon = pst_Rec_Mon.executeQuery();
 			//ResultSet res_Rec_Cli = pst_Rec_Cli.executeQuery();
-			
+
 			if (res_Rec_Mon.isBeforeFirst() ) { innerTypePersonne = "INNER JOIN Personne On Personne.numPersonne = CoursMoniteur.numMoniteur "; } 
-			
-			String sql = "SELECT * FROM Cours "
+
+			String sql = "SELECT distinct * FROM Cours "
 					+ "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = Cours.numCours "
 					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
 					+ "INNER JOIN ReservationCours ON ReservationCours.numCours = Cours.numCours "
@@ -382,7 +475,7 @@ public class ReservationDAO extends DAO<Reservation> {
 		}
 		return liste;
 	}
-	
+
 	public  ArrayList<Reservation> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) {
 		ArrayList<Reservation> liste = new ArrayList<Reservation>();
 
@@ -402,7 +495,7 @@ public class ReservationDAO extends DAO<Reservation> {
 					+ "INNER JOIN ReservationClient ON ReservationClient.numReservation = Reservation.numReservation "
 					+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
 					+ "WHERE CoursSemaine.numSemaine = ? AND Cours.periodeCours = ? ;";
-			
+
 			pst = this.connect.prepareStatement(sql);
 			//pst.setInt(1, numMoniteur);
 			pst.setInt(1, numSemaine);
@@ -475,13 +568,7 @@ public class ReservationDAO extends DAO<Reservation> {
 		}
 		return liste;
 	}
-	
-	public int prixTotalAssuranceParClient(int idClient){
-		int prixTotal = 0;
-		
-		return prixTotal;
-	}
-	
+
 	public boolean updateAssurance(int numEleve, int numSemaine, String periode){
 		PreparedStatement pst_upd = null;
 		try {
@@ -510,7 +597,7 @@ public class ReservationDAO extends DAO<Reservation> {
 		}
 		return false;
 	}
-	
+
 	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
 	@Override public ArrayList<Reservation> getListCoursSelonId(int idMoniteur) { return null; }
 	@Override public ArrayList<Reservation> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }

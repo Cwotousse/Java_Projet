@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import POJO.Accreditation;
 import POJO.Utilisateur;
 public class UtilisateurDAO extends DAO<Utilisateur> {
 	public UtilisateurDAO(Connection conn) {
@@ -14,14 +13,13 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 	}
 
 	public int create(Utilisateur obj) { 
+		PreparedStatement pst2 = null;
 		try
 		{
 			// Vérifier si la personne existe déjà (username/mdp)
 			Utilisateur uTmp= find(obj.getTypeUtilisateur());
 			//int numType = uTmp.getTypeUtilisateur();
-			if(uTmp == null){
-				return -1;
-			}
+			if(uTmp == null){ return -1; }
 			else {
 				/*String sql = "SELECT MAX(numPersonne) from Personne";
 				PreparedStatement pst = this.connect.prepareStatement(sql);
@@ -32,7 +30,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 				//on l'utilise pour ajouter les données dans la table Utilisateur
 				System.out.println("UtilisateurDao -> " + obj.getNumUtilisateur());
 				String requete2 = "INSERT INTO Utilisateur (pseudo, mdp, typeUtilisateur, numUtilisateur) VALUES (?,?,?,?)";
-				PreparedStatement pst2 = connect.prepareStatement(requete2);
+				pst2 = connect.prepareStatement(requete2);
 
 				//pst2.setInt(1, numUtilisateur);     //L'id qui lie la table moniteur a la table personne
 				pst2.setString(1, obj.getPseudo());
@@ -47,20 +45,18 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 				return obj.getNumUtilisateur();
 			}
 		}
-
-		catch (SQLException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return -1;
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst2 != null) {
+				try { pst2.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
 		}
+		return -1;
 	}
-	public boolean delete(Utilisateur obj) {
-		return false;
-	}
+	public boolean delete(Utilisateur obj) { return false; }
 
-	public boolean update(Utilisateur obj) {
-		return false;
-	}
+	public boolean update(Utilisateur obj) { return false; }
 
 	// On cherche un élève grâce à son id
 	public Utilisateur find(int id) {
@@ -76,38 +72,6 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 				utilisateur.setMdp(rs.getString("mdp"));
 				utilisateur.setTypeUtilisateur(rs.getInt("typeUtilisateur"));
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (pst != null) {
-				try {
-					pst.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return utilisateur;
-	}
-
-	/*public  int verifPseudoMdp(Utilisateur obj){
-		PreparedStatement pst = null;
-		try {
-			String sql = "SELECT * FROM utilisateur WHERE pseudo = ? AND mdp = ? ";
-			pst = this.connect.prepareStatement(sql);
-			pst.setString(1, obj.getPseudo());
-			pst.setString(2, obj.getMdp());
-			ResultSet rs = pst.executeQuery();
-			if (rs.next()) {
-				obj.setPseudo(rs.getString("pseudo"));
-				obj.setMdp(rs.getString("mdp"));
-				obj.setTypeUtilisateur(rs.getInt("typeUtilisateur"));
-				obj.setNumUtilisateur(rs.getInt("numUtilisateur"));
-			}
-			else {
-				// pas de résultat
-				return -1;
-			}
 		} 
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
@@ -116,12 +80,11 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return obj.getNumUtilisateur(); // retourne le type d'objet
-	}*/
+		return null;
+	}
 
 	public  ArrayList<Utilisateur> getList() {
 		ArrayList<Utilisateur> liste = new ArrayList<Utilisateur>();
-		
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM Utilisateur INNER JOIN Personne ON Personne.numPersonne = Utilisateur.numUtilisateur";

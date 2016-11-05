@@ -2,8 +2,6 @@ package DAO;
 import java.sql.Connection;
 import java.util.ArrayList;
 
-import POJO.Moniteur;
-
 public abstract class DAO<T> {
 	protected Connection connect = null;
 	public DAO(Connection conn) { this.connect = conn; }

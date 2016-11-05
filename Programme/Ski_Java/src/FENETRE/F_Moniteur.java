@@ -1,6 +1,5 @@
 package FENETRE;
 
-import java.awt.Button;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -32,6 +31,10 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 public class F_Moniteur extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	static int numMoniteur = -1;
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<DisponibiliteMoniteur> DisponibiliteMoniteurDAO = adf.getDisponibiliteMoniteurDAO();
@@ -193,6 +196,11 @@ public class F_Moniteur extends JFrame {
 		// Action de modification
 		final Action changerValeur = new AbstractAction() 
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -215,6 +223,11 @@ public class F_Moniteur extends JFrame {
 
 		// Changer la couleur selon la dispo
 		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 				super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);

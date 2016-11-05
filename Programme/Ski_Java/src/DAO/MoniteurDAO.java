@@ -69,40 +69,12 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		}
 	}
 
-	public boolean delete(Moniteur obj) {
-		return false;
-	}
+	public boolean delete(Moniteur obj) { return false; }
 
-	public boolean update(Moniteur obj) {
-		return false;
-	}
+	public boolean update(Moniteur obj) { return false; }
 
 	// On cherche une Moniteur grâce à son id
 	public Moniteur find(int id) {
-		/*Moniteur moniteur = new Moniteur();
-		PreparedStatement pst = null;
-		try {
-			String sql = "SELECT * FROM Moniteur WHERE numMoniteur = ?";
-			pst = this.connect.prepareStatement(sql);
-			pst.setInt(1, id);
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				moniteur.setNumUtilisateur(rs.getInt("numUtilisateur"));
-				moniteur.setNumMoniteur(rs.getInt("numMoniteur"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (pst != null) {
-				try {
-					pst.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return moniteur;*/
-		//Moniteur liste = new Moniteur>();
 		Moniteur moniteur = null;
 		PreparedStatement pst = null;
 		PreparedStatement pstAccred = null;
@@ -130,18 +102,11 @@ public class MoniteurDAO extends DAO<Moniteur>{
 						rs.getInt("typeUtilisateur"), listeAccred);
 			}
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
+		catch (SQLException e) { e.printStackTrace(); }
 		finally {
-			if (pst != null) {
-				try {
-					pst.close();
-					pstAccred.close();
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+			if (pst != null || pstAccred != null) {
+				try { pst.close(); pstAccred.close();}
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return moniteur;

@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import POJO.Accreditation;
 import POJO.Cours;
 import POJO.CoursCollectif;
 import POJO.Eleve;
@@ -16,9 +15,7 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 	DAO<Eleve> EleveDAO = adf.getEleveDAO();
 	DAO<Cours> CoursDAO = adf.getCoursDAO();
 	
-	public CoursCollectifDAO(Connection conn) {
-		super(conn);
-	}
+	public CoursCollectifDAO(Connection conn) { super(conn); }
 
 	@Override
 	public int create		(CoursCollectif obj) { return -1; }
@@ -42,17 +39,14 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 			}
 			return coursCollectif;
 		}
-		catch (SQLException e) { e.printStackTrace(); return null; }
-		finally { 
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
+		return null;
 	}
 
 	public ArrayList<CoursCollectif> getList() {

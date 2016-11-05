@@ -6,19 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import POJO.Accreditation;
 import POJO.Cours;
 import POJO.CoursParticulier;
-import POJO.Eleve;
 
 public class CoursParticulierDAO extends DAO<CoursParticulier> {
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Eleve> EleveDAO = adf.getEleveDAO();
 	DAO<Cours> CoursDAO = adf.getCoursDAO();
 
-	public CoursParticulierDAO(Connection conn) {
-		super(conn);
-	}
+	public CoursParticulierDAO(Connection conn) { super(conn); }
 
 	@Override
 	public int create		(CoursParticulier obj) { return -1; }
@@ -41,22 +36,18 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 			}
 			return coursParticulier;
 		}
-		catch (SQLException e) { e.printStackTrace(); return null; }
-		finally { 
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
+		return null;
 	}
 
 	public ArrayList<CoursParticulier> getList() {
 		ArrayList<CoursParticulier> liste = new ArrayList<CoursParticulier>();
-
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM CoursParticulier INNER JOIN Cours ON Cours.numCours = CoursParticulier.numCoursParticulier";

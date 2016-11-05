@@ -6,17 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import POJO.Accreditation;
 import POJO.Cours;
-import POJO.Moniteur;
 
 public class CoursDAO extends DAO<Cours> {
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Moniteur> MoniteurDAO = adf.getMoniteurDAO();
-	
-	public CoursDAO(Connection conn) {
-		super(conn);
-	}
+	public CoursDAO(Connection conn) { super(conn); }
 
 	@Override
 	public int create		(Cours obj) { return -1; }
@@ -70,20 +63,6 @@ public class CoursDAO extends DAO<Cours> {
 	}
 	
 	public ArrayList<Cours> getListCoursSelonId(int idMoniteur){
-		/*ArrayList<Cours> listFull = getList(); 
-		ArrayList<Cours> listSelonId = new ArrayList<Cours>();
-		// new ArrayList<Accreditation>();
-		Moniteur M = MoniteurDAO.find(idMoniteur);
-		ArrayList<Accreditation> listAccred = M.getAccrediList(); // Liste des accreditations du moniteur
-		for(Cours C : listFull){
-			for(Accreditation A : listAccred){
-				if(A.getNom().equals(C.getNomSport())){
-					// Si l'accreditation du moniteur correspond à celle du cours proposé, on l'ajoute dans la liste triée
-					listSelonId.add(C);
-				}
-			}
-		}
-		return listSelonId;*/
 		PreparedStatement pst_rec_cou = null;
 		ArrayList<Cours> listSelonId = new ArrayList<Cours>();
 		try {
