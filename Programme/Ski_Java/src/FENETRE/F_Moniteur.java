@@ -217,8 +217,9 @@ public class F_Moniteur extends JFrame {
 			}
 		};
 
-		ButtonColumn buttonColumn = new ButtonColumn(table, changerValeur, 2);
-
+		//ButtonColumn buttonColumn = new ButtonColumn(table, changerValeur, 2);
+		new ButtonColumn(table, changerValeur, 2);
+		
 		JScrollPane pane = new JScrollPane(table);
 
 		// Changer la couleur selon la dispo

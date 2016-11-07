@@ -95,7 +95,7 @@ public class F_AjoutRdv extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					F_AjoutRdv frame = new F_AjoutRdv(-1);
+					F_AjoutRdv frame = new F_AjoutRdv(118);
 					frame.setVisible(true);
 					//this.loadComboBox();
 				}
@@ -191,7 +191,7 @@ public class F_AjoutRdv extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if(cb_nomEleve.getSelectedItem() != "" && cb_nomMoniteur.getSelectedItem() != "" && cb_semaine.getSelectedItem() != "" && cb_cours.getSelectedItem() != ""){
-					String string = CoursDAO.calculerPlaceCours(numCours, numSemaine);
+					String string = CoursDAO.calculerPlaceCours(numCours, numSemaine, numMoniteur);
 					String[] parts = string.split("-");
 					String part1 = parts[0];
 					if(Integer.parseInt(part1) > 0){
@@ -200,8 +200,13 @@ public class F_AjoutRdv extends JFrame {
 						String heureDebut = partsPer[0];
 						String heureFin = partsPer[1];
 						boolean assurance = chkb_assur.isSelected();
-						int numReservation = ReservationDAO.create(new Reservation(Integer.parseInt(heureDebut), Integer.parseInt(heureFin), -1, assurance, SemaineDAO.find(numSemaine),
-								CoursDAO.find(numCours), EleveDAO.find(numEleve), ClientDAO.find(idClient), MoniteurDAO.find(numMoniteur)));
+						int numReservation = ReservationDAO.create(new Reservation(Integer.parseInt(heureDebut), Integer.parseInt(heureFin), -1, assurance,
+								SemaineDAO.find(numSemaine),
+								CoursDAO.find(numCours),
+								EleveDAO.find(numEleve),
+								ClientDAO.find(idClient),
+								MoniteurDAO.find(numMoniteur)));
+						if(numReservation != -1){
 						// Update -> décoche toutes les assurances précédemment sélectionnées, pour faciliter le calcul d'assurance final.
 						ReservationDAO.updateAssurance(numEleve, numSemaine, periode);
 						System.out.println("Num reserv : " + numReservation);
@@ -211,10 +216,10 @@ public class F_AjoutRdv extends JFrame {
 						F_Client frame = new F_Client(idClient);
 						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						frame.setVisible(true);
+						}
+						else { lbl_infoCours.setText("Reservation annulée. (6 ans mini pour faire du snow)"); }
 					}
-					else {
-						lbl_infoCours.setText("Vous ne pouvez plus réserver pour ce cours.");
-					}
+					else { lbl_infoCours.setText("Vous ne pouvez plus réserver pour ce cours."); }
 				}
 			}
 		});
@@ -433,13 +438,13 @@ public class F_AjoutRdv extends JFrame {
 		// COURS
 		cb_cours.removeAllItems();
 		if(rdbtnCoursCollectif.isSelected()){ // Cours collectif
-			ArrayList<CoursCollectif> listCoursColl = CoursCollectifDAO.getListCoursCollectifSelonId(numMoniteur, numEleve, periode);
+			ArrayList<CoursCollectif> listCoursColl = CoursCollectifDAO.getListCoursCollectifSelonId(numMoniteur, numEleve, periode, numSemaine);
 			for(CoursCollectif cc : listCoursColl){
 				cb_cours.addItem (new ComboItem("Niveau " + cc.getNiveauCours() + ", " + cc.getCategorieAge() + " (" + cc.getNomSport() + ") ", cc.getNumCours()));
 			}
 		}
 		else if(rdbtnCoursParticulier.isSelected()){ // Cours particulier
-			ArrayList<CoursParticulier>  listCoursPartic = CoursParticulierDAO.getListCoursParticulierSelonId(numMoniteur, periode);
+			ArrayList<CoursParticulier>  listCoursPartic = CoursParticulierDAO.getListCoursParticulierSelonId(numMoniteur, periode, numSemaine);
 			for(CoursParticulier cp : listCoursPartic){
 				cb_cours.addItem (new ComboItem(cp.getNombreHeures() + " heure(s) de " + cp.getNomSport() + " (" + cp.getPeriodeCours() + ")", cp.getNumCours()));
 			}
@@ -449,7 +454,7 @@ public class F_AjoutRdv extends JFrame {
 	}
 
 	public void loadInfoCoursText(){
-		String string = CoursDAO.calculerPlaceCours(numCours, numSemaine);
+		String string = CoursDAO.calculerPlaceCours(numCours, numSemaine, numMoniteur);
 		String[] parts = string.split("-");
 		String part1 = parts[0];
 		String part2 = parts[1]; 

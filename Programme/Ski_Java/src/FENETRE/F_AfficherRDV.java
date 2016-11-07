@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.swing.JSeparator;
 import javax.swing.JTable;
@@ -42,7 +43,7 @@ public class F_AfficherRDV extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					F_AfficherRDV frame = new F_AfficherRDV(-1);
+					F_AfficherRDV frame = new F_AfficherRDV(118);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -54,6 +55,7 @@ public class F_AfficherRDV extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	@SuppressWarnings("unchecked")
 	public F_AfficherRDV(int idPersonne) {
 		try{
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -112,10 +114,12 @@ public class F_AfficherRDV extends JFrame {
 			ArrayList<Reservation> listReserv = ReservationDAO.getMyList(idPersonne);
 			int somme = 0;
 			int sommeAssurance = 0;
+			int sommeReduction = 0;
 			// TABLEAU -> https://tips4java.wordpress.com/2010/01/24/table-row-rendering/
 			//headers for the table
-			String[] columns = new String[] { "N°","Période", "Horaire", "Libellé", "Niveau", "Moniteur", "Eleve", "Titutlaire", "Prix", "Annuler" };
-
+			String[] columns = new String[] { "N°","Période", "Horaire", "Libellé", "Elèves max", "Moniteur", "Eleve", "Titutlaire", "Prix", "Annuler" };
+			@SuppressWarnings("rawtypes")
+			HashSet hs_numSem = new HashSet();
 			//actual data for the table in a 2d array
 			Object[][] data  = new Object[listReserv.size()][10];
 
@@ -124,16 +128,22 @@ public class F_AfficherRDV extends JFrame {
 				data[i][1] = listReserv.get(i).getSemaine().getDateDebut() + " à " + listReserv.get(i).getSemaine().getDateFin();
 				data[i][2] = listReserv.get(i).getHeureDebut() + " à " + listReserv.get(i).getHeureFin() + "h";
 				data[i][3] = listReserv.get(i).getCours().getNomSport();
-				data[i][4] = "niveau";
+				data[i][4] = listReserv.get(i).getCours().getMaxEl();
 				data[i][5] = listReserv.get(i).getMoniteur().getNom().toUpperCase() + " " + listReserv.get(i).getMoniteur().getPre();
 				data[i][6] = listReserv.get(i).getEleve().getNom().toUpperCase() + " " + listReserv.get(i).getEleve().getPre();
 				data[i][7] = listReserv.get(i).getClient().getNom().toUpperCase() + " " + listReserv.get(i).getClient().getPre();
 				data[i][8] = listReserv.get(i).getCours().getPrix() + "€";
 				data[i][9] = "Del"; //listReserv.get(i).getCours().getPrix() + "€";
 				somme += listReserv.get(i).getCours().getPrix();
+				
 				if(listReserv.get(i).getAUneAssurance()){ sommeAssurance += 15; }
+				hs_numSem.add(listReserv.get(i).getSemaine().getNumSemaine());
 			}
-			lbl_somme.setText("La somme totale est de : " + (somme+sommeAssurance) + " € (" + sommeAssurance + "€ d'assurance).");
+			for(Object hs : hs_numSem) {
+				// Réduction par semaine
+				sommeReduction = ReservationDAO.valeurReduction((int)hs);
+			}
+			lbl_somme.setText("La somme totale est de : " + (somme + sommeAssurance - sommeReduction) + " € (" + sommeAssurance + "€ d'assurance, " + sommeReduction + " de réduction).");
 			
 			DefaultTableModel model = new DefaultTableModel(data, columns);
 			JTable table = new JTable( model );
@@ -158,7 +168,7 @@ public class F_AfficherRDV extends JFrame {
 				}
 			};
 
-			ButtonColumn buttonColumn = new ButtonColumn(table, changerValeur, 9);
+			new ButtonColumn(table, changerValeur, 9);
 
 			JScrollPane pane = new JScrollPane(table);
 			

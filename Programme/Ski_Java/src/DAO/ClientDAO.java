@@ -11,6 +11,9 @@ import POJO.Personne;
 import POJO.Utilisateur;
 
 public class ClientDAO extends DAO<Client> {
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Utilisateur> UtilisateurDAO = adf.getUtilisateurDAO();
+	DAO<Personne> PersonneDao = adf.getPersonneDAO();
 	public ClientDAO(Connection conn) { super(conn); }
 
 	@Override
@@ -19,12 +22,11 @@ public class ClientDAO extends DAO<Client> {
 		try {
 			int numPersonne = -1;
 			Personne P = new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance());
-			numPersonne = P.createPersonne();
+			numPersonne = PersonneDao.create(P);
 			if (numPersonne != -1){
 				
 				System.out.println("Client Dao -> " + numPersonne);
-				Utilisateur U = new Utilisateur(numPersonne, obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur());
-				if(U.createUtilisateur()!= -1){
+				if(UtilisateurDAO.create(new Utilisateur(numPersonne, obj.getPseudo(), obj.getMdp(), obj.getTypeUtilisateur())) != -1){
 					/*String sql0 = "SELECT numPersonne FROM Personne WHERE numPersonne";
 					PreparedStatement pst0 = this.connect.prepareStatement(sql0);
 					ResultSet rs0 = pst0.executeQuery();
@@ -42,7 +44,7 @@ public class ClientDAO extends DAO<Client> {
 					return numPersonne;
 				}
 				else { 
-					P.deletePersonne();
+					PersonneDao.delete(P);
 					return -1;
 				} // utilisateur
 			}
@@ -114,10 +116,10 @@ public class ClientDAO extends DAO<Client> {
 		return liste;
 	}
 
-	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
 	@Override public ArrayList<Client> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Client> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Client> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<Client> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
+	@Override public ArrayList<Client> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
 	@Override public ArrayList<Client> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Client> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Client> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
@@ -126,4 +128,6 @@ public class ClientDAO extends DAO<Client> {
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
 	@Override public ArrayList<Client> getListDispo(int numSemaine, String periode) { return null; }
+	@Override public Client returnUser(String mdp, String pseudo) { return null; }
+	@Override public int valeurReduction(int numSem) { return 0; }
 }

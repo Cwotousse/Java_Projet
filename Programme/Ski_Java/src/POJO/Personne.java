@@ -5,8 +5,6 @@ import java.sql.Date;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
 
 public class Personne {
 	// VARIABLES 
@@ -16,8 +14,6 @@ public class Personne {
 	private String 	sexe;
 	private Date 	dateNaissance;
 	private int 	numPersonne;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Personne> PersonneDao = adf.getPersonneDAO();
 		
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	// CONSTRUCTEURS
@@ -42,16 +38,9 @@ public class Personne {
 			return (double)tu/365;
 			
 		}
-		catch (Exception e) {
-			System.out.println("Erreur calculerAge");
-			e.getStackTrace();
-			return 0;
-		}
-		
+		catch (Exception e) { e.getStackTrace(); }
+		return -1;
 	}
-	
-	public int createPersonne() { return PersonneDao.create(this); }
-	public void deletePersonne(){ PersonneDao.delete(null); }
 	
 	// METHODE SURCHARGEE
 	@Override

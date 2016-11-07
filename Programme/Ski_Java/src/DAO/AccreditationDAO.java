@@ -62,10 +62,10 @@ public class AccreditationDAO extends DAO<Accreditation> {
 		return liste;
 	}
 
-	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
 	@Override public ArrayList<Accreditation> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Accreditation> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Accreditation> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<Accreditation> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
+	@Override public ArrayList<Accreditation> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
 	@Override public ArrayList<Accreditation> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Accreditation> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Accreditation> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
@@ -74,4 +74,6 @@ public class AccreditationDAO extends DAO<Accreditation> {
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
 	@Override public ArrayList<Accreditation> getListDispo(int numSemaine, String periode) { return null; }
+	@Override public Accreditation returnUser(String mdp, String pseudo) { return null; }
+	@Override public int valeurReduction(int numSem) { return 0; }
 }

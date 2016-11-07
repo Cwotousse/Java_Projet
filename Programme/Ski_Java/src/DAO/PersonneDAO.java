@@ -24,7 +24,6 @@ public class PersonneDAO  extends DAO<Personne> {
 			pst.setString(5, obj.getSexe());
 
 			pst.executeUpdate();
-			pst.close();
 
 			PreparedStatement rechNumPersPst;
 			String sql = "SELECT MAX(numPersonne) FROM Personne";
@@ -70,10 +69,10 @@ public class PersonneDAO  extends DAO<Personne> {
 	public Personne find(int id) { return null; } 
 	public ArrayList<Personne> getList() { return null; } 
 
-	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
 	@Override public ArrayList<Personne> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Personne> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Personne> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<Personne> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
+	@Override public ArrayList<Personne> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
 	@Override public ArrayList<Personne> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Personne> getMyList(int idPersonne) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
@@ -82,4 +81,6 @@ public class PersonneDAO  extends DAO<Personne> {
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
 	@Override public ArrayList<Personne> getListDispo(int numSemaine, String periode) { return null; }
+	@Override public Personne returnUser(String mdp, String pseudo) { return null; }
+	@Override public int valeurReduction(int numSem) { return 0; }
 }

@@ -8,7 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+
 import POJO.Semaine;
+
 public class SemaineDAO extends DAO<Semaine> {
 	public SemaineDAO(Connection conn) { super(conn); }
 
@@ -55,7 +57,6 @@ public class SemaineDAO extends DAO<Semaine> {
 
 	// On cherche un élève grâce à son id
 	public Semaine find(int id) {
-		Semaine semaine = new Semaine();
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM semaine WHERE numSemaine = ?";
@@ -63,11 +64,9 @@ public class SemaineDAO extends DAO<Semaine> {
 			pst.setInt(1, id);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
-				semaine.setCongeScolaire(rs.getBoolean("CongeScolaireOuNon"));
-				semaine.setDateDebut(rs.getDate("dateDebut"));
-				semaine.setDateFin(rs.getDate("dateFin"));
-				semaine.setNumSemaineDansAnnee(rs.getInt("numSemaineDansAnnee"));
-				semaine.setNumSemaine(rs.getInt("numSemaine"));
+				//public Semaine(int numSemaine,  boolean congeScolaire, Date dateDebut, Date dateFin, int numSemaineDansAnnee){
+				return new Semaine( rs.getInt("numSemaine"), rs.getBoolean("CongeScolaireOuNon"), rs.getDate("dateDebut"), 
+						rs.getDate("dateFin"), rs.getInt("numSemaineDansAnnee"));
 			}
 		} 
 		catch (SQLException e) { e.printStackTrace(); }
@@ -77,7 +76,7 @@ public class SemaineDAO extends DAO<Semaine> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return semaine;
+		return null;
 	}
 
 	public  ArrayList<Semaine> getList() {
@@ -198,10 +197,10 @@ public class SemaineDAO extends DAO<Semaine> {
 		return listeRetour;
 	}*/
 
-	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
 	@Override public ArrayList<Semaine> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Semaine> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Semaine> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<Semaine> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
+	@Override public ArrayList<Semaine> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
 	@Override public ArrayList<Semaine> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Semaine> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Semaine> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
@@ -210,5 +209,7 @@ public class SemaineDAO extends DAO<Semaine> {
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
 	@Override public ArrayList<Semaine> getListDispo(int numSemaine, String periode) { return null; }
+	@Override public Semaine returnUser(String mdp, String pseudo) { return null; }
+	@Override public int valeurReduction(int numSem) { return 0; }
 }
 

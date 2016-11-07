@@ -1,10 +1,5 @@
 package POJO;
 
-import java.util.ArrayList;
-
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
-
 public class Cours {
 	// VARIABLES
 	private int 	numCours;
@@ -13,8 +8,8 @@ public class Cours {
 	private int 	minEleve;
 	private int 	maxEleve;
 	private String 	periodeCours;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Cours> CoursDao = adf.getCoursDAO();
+	//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	//DAO<Cours> CoursDao = adf.getCoursDAO();
 	
 	// CONSTRUCTEURS
 	public Cours (){}
@@ -28,10 +23,10 @@ public class Cours {
 	}
 	
 	// METHODES
-	public int createCours				() 		{ return CoursDao.create(this); }
-	public void deleteCours				()		{ CoursDao.delete(null); }
-	public Cours rechercherCours		(int id){ return CoursDao.find(id); }
-	public ArrayList<Cours> getListCours()		{ return CoursDao.getList(); }
+	//public int createCours				() 		{ return CoursDao.create(this); }
+	//public void deleteCours				()		{ CoursDao.delete(null); }
+	//public Cours rechercherCours		(int id){ return CoursDao.find(id); }
+	//public ArrayList<Cours> getListCours()		{ return CoursDao.getList(); }
 	
 	// FONCTION SURCHARGEE
 		@Override

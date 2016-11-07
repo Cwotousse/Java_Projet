@@ -10,6 +10,8 @@ import POJO.Eleve;
 import POJO.Personne;
 
 public class EleveDAO extends DAO<Eleve> {
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Personne> PersonneDao = adf.getPersonneDAO();
 	public EleveDAO(Connection conn) { super(conn); }
 
 	public int create(Eleve obj) {
@@ -22,9 +24,9 @@ public class EleveDAO extends DAO<Eleve> {
 			// La personne n'existe pas
 			if (e == null || numPersonne == -1){
 				Personne P = new Personne(-1,obj.getNom(), obj.getPre(), obj.getAdresse(), obj.getSexe(), obj.getDateNaissance());
-				numPersonne = P.createPersonne();
+				numPersonne = PersonneDao.create(P);
 				if (numPersonne == -1){
-					P.deletePersonne();
+					PersonneDao.delete(P);
 					return -1;
 				}
 			}
@@ -208,10 +210,10 @@ public class EleveDAO extends DAO<Eleve> {
 		return null;
 	}
 
-	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
 	@Override public ArrayList<Eleve> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Eleve> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Eleve> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<Eleve> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
+	@Override public ArrayList<Eleve> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
 	@Override public ArrayList<Eleve> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Eleve> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
@@ -219,4 +221,6 @@ public class EleveDAO extends DAO<Eleve> {
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
 	@Override public ArrayList<Eleve> getListDispo(int numSemaine, String periode) { return null; }
+	@Override public Eleve returnUser(String mdp, String pseudo) { return null; }
+	@Override public int valeurReduction(int numSem) { return 0; }
 }

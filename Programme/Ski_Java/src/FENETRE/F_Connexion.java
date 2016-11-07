@@ -6,6 +6,10 @@ import javax.swing.JFrame;
 import POJO.Utilisateur;
 
 import javax.swing.JTextField;
+
+import DAO.AbstractDAOFactory;
+import DAO.DAO;
+
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import java.awt.Font;
@@ -23,7 +27,8 @@ public class F_Connexion extends JFrame {
 	private static final long serialVersionUID = 2614761702909947171L;
 	private JTextField txtNomDutilisateur;
 	private JPasswordField pwdPassword;
-
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Utilisateur> UtilisateurDAO = adf.getUtilisateurDAO();
 	/**
 	 * Launch the application.
 	 */
@@ -83,8 +88,7 @@ public class F_Connexion extends JFrame {
 				try {
 					
 					@SuppressWarnings("deprecation")
-					Utilisateur U = new Utilisateur (-1, txtNomDutilisateur.getText(), pwdPassword.getText(), -1);
-					U = U.returnUser();
+					Utilisateur U = UtilisateurDAO.returnUser(pwdPassword.getText(),txtNomDutilisateur.getText());
 					//numUtilisateur 
 					// 
 					//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);

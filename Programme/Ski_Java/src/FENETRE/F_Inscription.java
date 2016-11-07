@@ -123,11 +123,11 @@ public class F_Inscription extends JFrame {
 		JCheckBox chkb_telemark 	= new JCheckBox("T\u00E9l\u00E9mark");
 		JCheckBox chkb_jeune 		= new JCheckBox("Enfant");
 		JCheckBox chkb_adulte 		= new JCheckBox("Adulte");
-		txtF_userName 				= new JTextField();
-		txtF_mdp 					= new JTextField();
-		txtF_nom 					= new JTextField();
-		txtF_pre 					= new JTextField();
-		txtF_adresse 				= new JTextField();
+		txtF_userName 				= new JTextField("mon6");
+		txtF_mdp 					= new JTextField("test");
+		txtF_nom 					= new JTextField("moniteur");
+		txtF_pre 					= new JTextField("6");
+		txtF_adresse 				= new JTextField("Rue des sports");
 		txtF_adresseFact 			= new JTextField();
 
 		// Visibility
@@ -343,7 +343,7 @@ public class F_Inscription extends JFrame {
 						if(chkb_skiAlpin.isSelected())	listAccreditation.add(new Accreditation("Ski"));
 						if(chkb_skiFond.isSelected())	listAccreditation.add(new Accreditation("Ski de fond"));
 						if(chkb_telemark.isSelected())	listAccreditation.add(new Accreditation("Telemark"));
-						if(chkb_jeune.isSelected())		listAccreditation.add(new Accreditation("Jeune"));
+						if(chkb_jeune.isSelected())		listAccreditation.add(new Accreditation("Enfant"));
 						if(chkb_adulte.isSelected())	listAccreditation.add(new Accreditation("Adulte"));
 						numUtilisateur = MoniteurDao.create(new Moniteur(-1, txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe,
 								sd, txtF_userName.getText(), txtF_mdp.getText(), 1, listAccreditation));

@@ -92,7 +92,7 @@ public class CoursDAO extends DAO<Cours> {
 		return listSelonId;
 	}
 	
-	public String calculerPlaceCours(int idCours, int idSemaine){
+	public String calculerPlaceCours(int idCours, int idSemaine, int idMoniteur){
 		PreparedStatement pst_rec_cou = null;
 		PreparedStatement pst_cpt_cou = null;
 		try {
@@ -100,19 +100,23 @@ public class CoursDAO extends DAO<Cours> {
 			int max = 0;
 			int placeActuelle = 0;
 			String sql_rec_cou = "SELECT * FROM Cours WHERE numCours = ?";
+			pst_rec_cou = this.connect.prepareStatement(sql_rec_cou);
+			pst_rec_cou.setInt(1, idCours);
+			ResultSet res_rec_cou = pst_rec_cou.executeQuery();
+			
 			String sql_cpt_res = "SELECT Count(*) AS total FROM ReservationCours "
 					+ "INNER JOIN Cours ON Cours.numCours = ReservationCours.numCours "
 					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
-					+ "WHERE ReservationCours.numCours = ? AND CoursSemaine.numSemaine = ?;";
+					+ "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = Cours.numCours "
+					+ "WHERE ReservationCours.numCours = ? AND CoursSemaine.numSemaine = ? AND CoursMoniteur.numMoniteur = ? ;";
 			
-			pst_rec_cou = this.connect.prepareStatement(sql_rec_cou);
 			pst_cpt_cou = this.connect.prepareStatement(sql_cpt_res);
 			
-			pst_rec_cou.setInt(1, idCours);
 			pst_cpt_cou.setInt(1, idCours);
 			pst_cpt_cou.setInt(2, idSemaine);
+			pst_cpt_cou.setInt(3, idMoniteur);
 			
-			ResultSet res_rec_cou = pst_rec_cou.executeQuery();
+			
 			ResultSet res_cpt_cou = pst_cpt_cou.executeQuery();
 			
 			while (res_rec_cou.next()) {
@@ -120,13 +124,9 @@ public class CoursDAO extends DAO<Cours> {
 				max = res_rec_cou.getInt("maxEleve");
 			}
 			
-			while (res_cpt_cou.next()) {
-				placeActuelle = res_cpt_cou.getInt("total");
-			}
+			while (res_cpt_cou.next()) { placeActuelle = res_cpt_cou.getInt("total"); }
 			int seuilMini = min - placeActuelle;
-			if (seuilMini < 0){
-				seuilMini = 0;
-			}
+			if (seuilMini < 0){ seuilMini = 0; }
 			return (max - placeActuelle) + "-" + seuilMini;
 		}
 		catch (SQLException e) { e.printStackTrace(); }
@@ -142,8 +142,8 @@ public class CoursDAO extends DAO<Cours> {
 		return -1 + "";
 	}
 	
-	@Override public ArrayList<Cours> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Cours> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<Cours> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
+	@Override public ArrayList<Cours> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
 	@Override public ArrayList<Cours> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Cours> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Cours> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
@@ -152,4 +152,6 @@ public class CoursDAO extends DAO<Cours> {
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
 	@Override public ArrayList<Cours> getListDispo(int numSemaine, String periode) { return null; }
+	@Override public Cours returnUser(String mdp, String pseudo) { return null; }
+	@Override public int valeurReduction(int numSem) { return 0; }
 }

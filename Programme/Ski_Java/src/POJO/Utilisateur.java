@@ -1,10 +1,6 @@
 package POJO;
 
 import java.sql.Date;
-import java.util.ArrayList;
-
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
 
 public class Utilisateur extends Personne{
 	// VARIABLES
@@ -12,8 +8,6 @@ public class Utilisateur extends Personne{
 	private String mdp;
 	private int typeUtilisateur;
 	private int numUtilisateur;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
 	
 	// CONSTRUCTEURs
 	public Utilisateur(){}
@@ -33,22 +27,6 @@ public class Utilisateur extends Personne{
 		//this.numUtilisateur 	= numUtilisateur;
 	}
 
-	// METHODES
-	public int createUtilisateur(){
-		return UtilisateurDao.create(this);
-	}
-	
-	public Utilisateur returnUser(){
-		ArrayList<Utilisateur> liste = new ArrayList<Utilisateur>();
-		liste = UtilisateurDao.getList();
-		for(Utilisateur U : liste){
-			//System.out.println("U.pseudo : " + U.getPseudo() + " this.getPseudo : " + this.getPseudo());
-			//System.out.println("U.mdp : " + U.getMdp() + " this.getMdp : " + this.getMdp());
-			if (U.getMdp().equals(this.getMdp()) && U.getPseudo().equals(this.getPseudo()))
-				return U;
-		}
-		return null;
-	}
 	// METHODES SURCHARGEES
 	@Override
 	public String toString() { 

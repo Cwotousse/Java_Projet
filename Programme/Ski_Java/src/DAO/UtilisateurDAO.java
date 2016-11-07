@@ -17,16 +17,8 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		try
 		{
 			// Vérifier si la personne existe déjà (username/mdp)
-			Utilisateur uTmp= find(obj.getTypeUtilisateur());
-			//int numType = uTmp.getTypeUtilisateur();
-			if(uTmp == null){ return -1; }
+			if(find(obj.getNumUtilisateur()) != null){ return -1; }
 			else {
-				/*String sql = "SELECT MAX(numPersonne) from Personne";
-				PreparedStatement pst = this.connect.prepareStatement(sql);
-				ResultSet rs = pst.executeQuery();
-				int numPersonne = -1 ;
-				while (rs.next()) numPersonne = rs.getInt(1); // On a l'id de la personne*/
-
 				//on l'utilise pour ajouter les données dans la table Utilisateur
 				System.out.println("UtilisateurDao -> " + obj.getNumUtilisateur());
 				String requete2 = "INSERT INTO Utilisateur (pseudo, mdp, typeUtilisateur, numUtilisateur) VALUES (?,?,?,?)";
@@ -39,7 +31,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 				pst2.setInt(4, obj.getNumUtilisateur());
 
 				pst2.executeUpdate();
-				pst2.close();
+				//pst2.close();
 				//System.out.println("Ajout d'un moniteur effectue");
 				System.out.println("UtilisateurDao -> " + obj.getNumUtilisateur());
 				return obj.getNumUtilisateur();
@@ -106,10 +98,22 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		return liste;
 	}
 	
-	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	public Utilisateur returnUser(String mdp, String pseudo){
+		ArrayList<Utilisateur> liste = new ArrayList<Utilisateur>();
+		liste = getList();
+		for(Utilisateur U : liste){
+			//System.out.println("U.pseudo : " + U.getPseudo() + " this.getPseudo : " + this.getPseudo());
+			//System.out.println("U.mdp : " + U.getMdp() + " this.getMdp : " + this.getMdp());
+			if (U.getMdp().equals(mdp) && U.getPseudo().equals(pseudo))
+				return U;
+		}
+		return null;
+	}
+	
+	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
 	@Override public ArrayList<Utilisateur> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Utilisateur> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
-	@Override public ArrayList<Utilisateur> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<Utilisateur> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
+	@Override public ArrayList<Utilisateur> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
 	@Override public ArrayList<Utilisateur> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<Utilisateur> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<Utilisateur> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
@@ -118,4 +122,5 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
 	@Override public ArrayList<Utilisateur> getListDispo(int numSemaine, String periode) { return null; }
+	@Override public int valeurReduction(int numSem) { return 0; }
 }

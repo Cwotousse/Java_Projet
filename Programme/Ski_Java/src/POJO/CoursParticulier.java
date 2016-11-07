@@ -1,16 +1,11 @@
 package POJO;
 
-import java.util.ArrayList;
-
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
-
 public class CoursParticulier extends Cours{
 	// VARIABLES
 	private int 	numCoursParticulier;
 	private int 	nombreHeures;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<CoursParticulier> CoursParticulierDao = adf.getCoursParticulierDAO();
+	//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	//DAO<CoursParticulier> CoursParticulierDao = adf.getCoursParticulierDAO();
 	
 	// CONSTRUCTEURS
 	public CoursParticulier (){}
@@ -27,10 +22,10 @@ public class CoursParticulier extends Cours{
 	}
 	
 	// METHODES
-	public int createCoursParticulier					() 		 { return CoursParticulierDao.create(this); }
-	public void deleteCoursParticulier					()		 { CoursParticulierDao.delete(null); }
-	public CoursParticulier rechercherCoursParticulier	(int id) { return CoursParticulierDao.find(id); }
-	public ArrayList<CoursParticulier> getListCoursParticulier()		{ return CoursParticulierDao.getList(); }
+	//public int createCoursParticulier					() 		 { return CoursParticulierDao.create(this); }
+	//public void deleteCoursParticulier					()		 { CoursParticulierDao.delete(null); }
+	//public CoursParticulier rechercherCoursParticulier	(int id) { return CoursParticulierDao.find(id); }
+	//public ArrayList<CoursParticulier> getListCoursParticulier()		{ return CoursParticulierDao.getList(); }
 	
 	// FONCTION SURCHARGEE
 		@Override

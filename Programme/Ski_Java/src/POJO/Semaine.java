@@ -40,8 +40,6 @@ public class Semaine {
 		} 
 		catch (ParseException e) { e.printStackTrace(); return false; }
 	}
-
-	
 	
 	// FONCTION SURCHARGEE
 	@Override

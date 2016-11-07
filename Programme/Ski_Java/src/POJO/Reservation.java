@@ -1,8 +1,5 @@
 package POJO;
 
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
-
 public class Reservation {
 	// VARIABLES
 	Semaine S;
@@ -14,8 +11,8 @@ public class Reservation {
 	private int heureFin;
 	private int numReservation;
 	private boolean aUneAssurance;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Reservation> ReservationDAO = adf.getReservationDAO();
+	//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	//DAO<Reservation> ReservationDAO = adf.getReservationDAO();
 	
 	// CONSTRUCTEURS
 	public Reservation(){}
@@ -44,8 +41,8 @@ public class Reservation {
 			+ M.toString() + System.getProperty("line.separator"); }
 	
 	// METHODE
-	public int createReservation	() { return ReservationDAO.create(this); }
-	public void deleteReservation	() { ReservationDAO.delete(null); }
+	//public int createReservation	() { return ReservationDAO.create(this); }
+	//public void deleteReservation	() { ReservationDAO.delete(null); }
 	
 	// PROPRIETE
 	public int 		getHeureDebut		() { return heureDebut; }

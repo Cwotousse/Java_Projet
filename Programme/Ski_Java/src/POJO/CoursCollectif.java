@@ -1,17 +1,13 @@
 package POJO;
 
-import java.util.ArrayList;
-
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
 
 public class CoursCollectif extends Cours{
 	// VARIABLES
 	private int 	numCoursCollectif;
 	private String 	categorieAge;
 	private String 	niveauCours;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<CoursCollectif> CoursCollectifDao = adf.getCoursCollectifDAO();
+	//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	//DAO<CoursCollectif> CoursCollectifDao = adf.getCoursCollectifDAO();
 
 	// CONSTRUCTEURS
 	public CoursCollectif (){}
@@ -28,10 +24,10 @@ public class CoursCollectif extends Cours{
 	}
 
 	// METHODES
-	public int createCoursCollectif					() 		{ return CoursCollectifDao.create(this); }
-	public void deleteCoursCollectif				()		{ CoursCollectifDao.delete(null); }
-	public CoursCollectif rechercherCoursCollectif	(int id){ return CoursCollectifDao.find(id); }
-	public ArrayList<CoursCollectif> getListCoursCollectif()		{ return CoursCollectifDao.getList(); }
+	//public int createCoursCollectif					() 		{ return CoursCollectifDao.create(this); }
+	//public void deleteCoursCollectif				()		{ CoursCollectifDao.delete(null); }
+	//public CoursCollectif rechercherCoursCollectif	(int id){ return CoursCollectifDao.find(id); }
+	//public ArrayList<CoursCollectif> getListCoursCollectif()		{ return CoursCollectifDao.getList(); }
 
 	
 

@@ -73,7 +73,7 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		return liste;
 	}
 	
-	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, String periode){
+	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, String periode, int numSemaine){
 		//System.out.println("Entree fonc");
 		/*ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur);
 		ArrayList<CoursCollectif> listFull = getList();
@@ -96,40 +96,70 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		return listSelonId;*/
 		/* Sélection des cours par rapport à la catégorie de l'élève et de la période */
 		/*Sélection des étudiants par rapport aux accreds du moniteur */
-		PreparedStatement pst_lst_cou = null;
+		PreparedStatement pst_lst_cou1 = null;
+		PreparedStatement pst_lst_cou2 = null;
 		ArrayList<CoursCollectif> listSelonId = new ArrayList<CoursCollectif>();
 		try {
-			String sql = "SELECT * from Cours "
+			String sql1 = "SELECT * from Cours "
 			+ "INNER JOIN CoursCollectif ON CoursCollectif.numCoursCollectif = Cours.numCours "
 			+ "WHERE PeriodeCours = ? AND CoursCollectif.categorieAge in "
 			+ "(SELECT Categorie from ELEVE Where numEleve = ?) "
 			+ "AND nomSport in "
 			+ "(SELECT nomAccreditation from accreditation where numAccreditation in "
-			+ "(SELECT numAccreditation from ligneAccreditation where numMoniteur = ?));";
-			pst_lst_cou = this.connect.prepareStatement(sql);
-			pst_lst_cou.setString(1, periode);
-			pst_lst_cou.setInt(2, idEleve);
-			pst_lst_cou.setInt(3, idMoniteur);
-			ResultSet res_lst_cou = pst_lst_cou.executeQuery();
-			while (res_lst_cou.next()) {
-				CoursCollectif coursCollectif = new CoursCollectif(res_lst_cou.getInt("numCours"), res_lst_cou.getString("nomSport"), res_lst_cou.getInt("prix"),
-						res_lst_cou.getInt("minEleve"), res_lst_cou.getInt("maxEleve"), res_lst_cou.getString("periodeCours"), res_lst_cou.getString("categorieAge"), res_lst_cou.getString("niveauCours"));
+			+ "(SELECT numAccreditation from ligneAccreditation where numMoniteur = ?)) "
+			
+			+ "AND   Cours.numCours IN "
+            + "(SELECT CoursMoniteur.numCours FROM CoursMoniteur "
+           	+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = CoursMoniteur.numCours "         
+           	+ "WHERE  CoursSemaine.numCours IN "
+            + "(SELECT CoursSemaine.numCours FROM Cours WHERE CoursSemaine.numSemaine = ? AND periodeCours = ? AND numMoniteur = ?));";
+			pst_lst_cou1 = this.connect.prepareStatement(sql1);
+			pst_lst_cou1.setString(1, periode);
+			pst_lst_cou1.setInt(2, idEleve);
+			pst_lst_cou1.setInt(3, idMoniteur);
+			pst_lst_cou1.setInt(4, numSemaine);
+			pst_lst_cou1.setString(5, periode);
+			pst_lst_cou1.setInt(6, idMoniteur);
+			ResultSet res_lst_cou1 = pst_lst_cou1.executeQuery();
+			while (res_lst_cou1.next()) {
+				CoursCollectif coursCollectif = new CoursCollectif(res_lst_cou1.getInt("numCours"), res_lst_cou1.getString("nomSport"), res_lst_cou1.getInt("prix"),
+						res_lst_cou1.getInt("minEleve"), res_lst_cou1.getInt("maxEleve"), res_lst_cou1.getString("periodeCours"), res_lst_cou1.getString("categorieAge"), res_lst_cou1.getString("niveauCours"));
 				listSelonId.add(coursCollectif);
+			}
+			if (listSelonId.isEmpty()){
+				String sql2 = "SELECT * from Cours "
+						+ "INNER JOIN CoursCollectif ON CoursCollectif.numCoursCollectif = Cours.numCours "
+						+ "WHERE PeriodeCours = ? AND CoursCollectif.categorieAge in "
+						+ "(SELECT Categorie from ELEVE Where numEleve = ?) "
+						+ "AND nomSport in "
+						+ "(SELECT nomAccreditation from accreditation where numAccreditation in "
+						+ "(SELECT numAccreditation from ligneAccreditation where numMoniteur = ?));";
+				pst_lst_cou2 = this.connect.prepareStatement(sql2);
+				pst_lst_cou2.setString(1, periode);
+				pst_lst_cou2.setInt(2, idEleve);
+				pst_lst_cou2.setInt(3, idMoniteur);
+						ResultSet res_lst_cou2 = pst_lst_cou2.executeQuery();
+						while (res_lst_cou2.next()) {
+							CoursCollectif coursCollectif = new CoursCollectif(res_lst_cou2.getInt("numCours"), res_lst_cou2.getString("nomSport"), res_lst_cou2.getInt("prix"),
+									res_lst_cou2.getInt("minEleve"), res_lst_cou2.getInt("maxEleve"), res_lst_cou2.getString("periodeCours"), res_lst_cou2.getString("categorieAge"), res_lst_cou2.getString("niveauCours"));
+							listSelonId.add(coursCollectif);
+						}
+						pst_lst_cou2.close();
 			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
-			if (pst_lst_cou != null) {
-				try { pst_lst_cou.close(); }
+			if (pst_lst_cou1 != null) {
+				try { pst_lst_cou1.close(); }
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return listSelonId;
 	}
 	
-	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
 	@Override public ArrayList<CoursCollectif> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<CoursCollectif> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<CoursCollectif> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
 	@Override public ArrayList<CoursCollectif> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<CoursCollectif> getMyList(int idPersonne) { return null; }
 	@Override public ArrayList<CoursCollectif> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
@@ -138,5 +168,7 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
 	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
 	@Override public ArrayList<CoursCollectif> getListDispo(int numSemaine, String periode) { return null; }
+	@Override public CoursCollectif returnUser(String mdp, String pseudo) { return null; }
+	@Override public int valeurReduction(int numSem) { return 0; }
 }
 

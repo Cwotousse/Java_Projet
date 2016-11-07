@@ -3,16 +3,13 @@ package POJO;
 import java.sql.Date;
 import java.util.ArrayList;
 
-import DAO.AbstractDAOFactory;
-import DAO.DAO;
-
 public class Moniteur extends Utilisateur{
 	// VARIABLES 
 	private int anneeDexp;
 	private int numMoniteur;
 	private ArrayList<Accreditation> listAccreditation = new ArrayList<Accreditation>();
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
+	//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	//DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
 	
 	// CONSTRUCTEURS
 	public Moniteur(){}
@@ -31,11 +28,11 @@ public class Moniteur extends Utilisateur{
 		if(!listAccreditation.contains(ac))
 			listAccreditation.add(ac);
 	}
-	public void 		removeAccreditation(Accreditation ac){ this.listAccreditation.remove(ac); }
-	public boolean 		equals(Moniteur mo){ return this.getNumMoniteur() == mo.getNumMoniteur(); }
+	//public void 		removeAccreditation(Accreditation ac){ this.listAccreditation.remove(ac); }
+	//public boolean 		equals(Moniteur mo){ return this.getNumMoniteur() == mo.getNumMoniteur(); }
 	
-	public			 	ArrayList<Moniteur> getListMoniteur(){ return MoniteurDao.getList(); }
-	public 				Moniteur findMoniteur(int id){ return MoniteurDao.find(id); }
+	//public			 	ArrayList<Moniteur> getListMoniteur(){ return MoniteurDao.getList(); }
+	//public 				Moniteur findMoniteur(int id){ return MoniteurDao.find(id); }
 	
 	// METHODE SURCHARGEE
 	@Override

@@ -179,14 +179,16 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 		return false;
 	}
 
-	@Override public String calculerPlaceCours(int numCours, int numSemaine) { return -1 + ""; }
+	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
 	@Override public ArrayList<DisponibiliteMoniteur> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<DisponibiliteMoniteur> getListCoursParticulierSelonId(int numMoniteur, String periode) { return null; }
+	@Override public ArrayList<DisponibiliteMoniteur> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
 	@Override public ArrayList<DisponibiliteMoniteur> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
 	@Override public ArrayList<DisponibiliteMoniteur> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
 	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
-	@Override public ArrayList<DisponibiliteMoniteur> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode) { return null; }
+	@Override public ArrayList<DisponibiliteMoniteur> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
 	@Override public ArrayList<DisponibiliteMoniteur> getListDispo(int numSemaine, String periode) { return null; }
+	@Override public DisponibiliteMoniteur returnUser(String mdp, String pseudo) { return null; }
+	@Override public int valeurReduction(int numSem) { return 0; }
 }
 
 
