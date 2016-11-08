@@ -9,7 +9,6 @@
 <fullyQualifiedTypeName name="java.text.ParseException"/>
 <fullyQualifiedTypeName name="java.text.DateFormat"/>
 <fullyQualifiedTypeName name="org.jdatepicker.impl.SqlDateModel"/>
-<fullyQualifiedTypeName name="java.sql.Date"/>
 <fullyQualifiedTypeName name="POJO.Personne"/>
 <fullyQualifiedTypeName name="POJO.Utilisateur"/>
 <fullyQualifiedTypeName name="DAO.ClientDAO"/>
@@ -50,4 +49,12 @@
 <fullyQualifiedTypeName name="DAO.AbstractDAOFactory"/>
 <fullyQualifiedTypeName name="DAO.DAO"/>
 <fullyQualifiedTypeName name="java.util.HashSet"/>
+<fullyQualifiedTypeName name="be.mousty.pojo.Moniteur"/>
+<fullyQualifiedTypeName name="be.mousty.dao.UtilisateurDAO"/>
+<fullyQualifiedTypeName name="be.mousty.dao.AbstractDAOFactory"/>
+<fullyQualifiedTypeName name="be.mousty.dao.DAO"/>
+<fullyQualifiedTypeName name="be.mousty.accessToDao.PersonneATD"/>
+<fullyQualifiedTypeName name="be.mousty.accessToDao.ClientATD"/>
+<fullyQualifiedTypeName name="java.sql.Date"/>
+<fullyQualifiedTypeName name="be.mousty.accessToDao.EleveATD"/>
 </qualifiedTypeNameHistroy>

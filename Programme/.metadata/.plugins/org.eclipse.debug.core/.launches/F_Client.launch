@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/Ski_Java/src/FENETRE/F_Client.java"/>
+<listEntry value="/Ski_Java/src/be/mousty/fenetre/F_Client.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="FENETRE.F_Client"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="be.mousty.fenetre.F_Client"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Ski_Java"/>
 </launchConfiguration>

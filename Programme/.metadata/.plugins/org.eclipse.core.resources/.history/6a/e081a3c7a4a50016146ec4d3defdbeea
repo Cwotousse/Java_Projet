@@ -1,0 +1,44 @@
+package be.mousty.accessToDao;
+
+import java.sql.Date;
+
+public class UtilisateurATD extends PersonneATD{
+	// VARIABLES
+	private String pseudo;
+	private String mdp;
+	private int typeUtilisateur;
+	
+	// CONSTRUCTEURs
+	public UtilisateurATD(){}
+	public UtilisateurATD(String pseudo, String mdp, int typeUtilisateur){
+		this.pseudo 			= pseudo;
+		this.mdp 				= mdp;
+		this.typeUtilisateur 	= typeUtilisateur;
+	}
+	
+	public UtilisateurATD(String nom, String pre, String adresse, String sexe, Date dateNaissance,
+			String pseudo, String mdp, int typeUtilisateur){
+		super(nom, pre, adresse, sexe, dateNaissance);
+		this.pseudo 			= pseudo;
+		this.mdp 				= mdp;
+		this.typeUtilisateur 	= typeUtilisateur;
+	}
+
+	// METHODES SURCHARGEES
+	@Override
+	public String toString() { 
+		return 
+				"Utilisateur." + System.getProperty("line.separator")
+				+ "User name    : " + pseudo +  System.getProperty("line.separator")
+				+ "Mot de passe : " + mdp + System.getProperty("line.separator");
+	}
+
+	// PROPRIETES
+	public String getPseudo			() { return pseudo; }
+	public String getMdp			() { return mdp; }
+	public int getTypeUtilisateur	() { return typeUtilisateur; }
+	public void setPseudo			(String pseudo) 		{ this.pseudo = pseudo; }
+	public void setMdp				(String mdp)			{ this.mdp = mdp; }
+	public void setTypeUtilisateur	(int typeUtilisateur) 	{ this.typeUtilisateur = typeUtilisateur; }
+}
+

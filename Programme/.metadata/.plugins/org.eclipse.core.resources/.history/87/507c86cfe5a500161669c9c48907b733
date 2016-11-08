@@ -1,0 +1,18 @@
+package be.mousty.pojo;
+
+import java.util.Date;
+
+public class ReservationEleve {
+	// VARIABLES
+	private int numClient;
+	private int numReservation;
+	
+	// CONSTRUCTEURS
+	public ReservationEleve(){}
+	
+	// PROPRIETE
+	public int getNumClient			() { return numClient; }
+	public int getNumReservation	() { return numReservation; }
+	public void setNumClient		(int el) 	{ this.numClient = el; }
+	public void setNumReservation	(int el) 	{ this.numReservation = el; }
+}
