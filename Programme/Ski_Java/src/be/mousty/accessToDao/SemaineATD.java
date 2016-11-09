@@ -2,6 +2,12 @@ package be.mousty.accessToDao;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+import be.mousty.dao.AbstractDAOFactory;
+import be.mousty.dao.DAO;
+import be.mousty.pojo.Semaine;
+
 import java.sql.Date;
 
 public class SemaineATD {
@@ -12,9 +18,6 @@ public class SemaineATD {
 	private boolean congeScolaire;
 	private int numSemaineDansAnnee;
 	private int numSemaine;
-	//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	//DAO<Semaine> SemaineDao = adf.getSemaineDAO();
-
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	// CONSTRUCTEURS
@@ -28,9 +31,19 @@ public class SemaineATD {
 		this.numSemaineDansAnnee 	= numSemaineDansAnnee;
 	}
 
+	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Semaine> SemaineDAO = adf.getSemaineDAO();
+	public int		create	(Semaine s) 	{ return SemaineDAO.create(s); 	}
+	public boolean 	delete	(Semaine s)	 	{ return SemaineDAO.delete(s); 	}
+	public Semaine 	getId	(Semaine s) 	{ return SemaineDAO.getId(s); 	}
+	public boolean 	update	(Semaine s) 	{ return SemaineDAO.update(s); 	}
+	public Semaine 	find	(int id) 		{ return SemaineDAO.find(id); 	} 
+	public ArrayList<Semaine> getList () 	{ return SemaineDAO.getList(); 	} 
+	public void AjouterSemainesDansDB	(String start, String end)	{ SemaineDAO.AjouterSemainesDansDB(start, end);	}
+	public ArrayList<Semaine> getListSelonCriteres(Semaine obj) 	{ return SemaineDAO.getListSelonCriteres(obj);	}
+
 	// METHODES
-	
-	
 	public static boolean EstEnPeriodeDeConge(Date date){
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		try {
@@ -40,7 +53,7 @@ public class SemaineATD {
 		} 
 		catch (ParseException e) { e.printStackTrace(); return false; }
 	}
-	
+
 	// FONCTION SURCHARGEE
 	@Override
 	public String toString() { 

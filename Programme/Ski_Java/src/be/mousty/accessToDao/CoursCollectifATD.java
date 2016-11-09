@@ -1,12 +1,16 @@
 package be.mousty.accessToDao;
 
+import java.util.ArrayList;
+
+import be.mousty.dao.AbstractDAOFactory;
+import be.mousty.dao.DAO;
+import be.mousty.pojo.CoursCollectif;
+
 public class CoursCollectifATD extends CoursATD{
 	// VARIABLES
 	private int 	numCoursCollectif;
 	private String 	categorieAge;
 	private String 	niveauCours;
-	//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	//DAO<CoursCollectif> CoursCollectifDao = adf.getCoursCollectifDAO();
 
 	// CONSTRUCTEURS
 	public CoursCollectifATD (){}
@@ -22,13 +26,17 @@ public class CoursCollectifATD extends CoursATD{
 		this.niveauCours 	= niveauCours;
 	}
 
-	// METHODES
-	//public int createCoursCollectif					() 		{ return CoursCollectifDao.create(this); }
-	//public void deleteCoursCollectif				()		{ CoursCollectifDao.delete(null); }
-	//public CoursCollectif rechercherCoursCollectif	(int id){ return CoursCollectifDao.find(id); }
-	//public ArrayList<CoursCollectif> getListCoursCollectif()		{ return CoursCollectifDao.getList(); }
-
-	
+	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<CoursCollectif> CoursCollectifDAO = adf.getCoursCollectifDAO();
+	public int					create				(CoursCollectif c) 		{ return CoursCollectifDAO.create(c); 	}
+	public boolean 				delete				()	 						{ return CoursCollectifDAO.delete(null); 	}
+	public CoursCollectif 	getId				(CoursCollectif c) 		{ return CoursCollectifDAO.getId(c); 		}
+	public boolean 				update				(CoursCollectif c) 		{ return CoursCollectifDAO.update(c); 	}
+	public CoursCollectif 	find				(int id) 					{ return CoursCollectifDAO.find(id); 		} 
+	public ArrayList<CoursCollectif> 	getListCP 	() 							{ return CoursCollectifDAO.getList(); 	} 
+	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, int numSemaine,  String periode)
+	{ return CoursCollectifDAO.getMyListSelonID(idMoniteur, idEleve, numSemaine, periode); 	}
 
 	// FONCTION SURCHARGEE
 	@Override

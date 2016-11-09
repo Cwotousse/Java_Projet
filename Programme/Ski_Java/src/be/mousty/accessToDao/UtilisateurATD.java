@@ -1,29 +1,27 @@
 package be.mousty.accessToDao;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
-import be.mousty.dao.UtilisateurDAO;
 import be.mousty.pojo.Utilisateur;
 
 public class UtilisateurATD extends PersonneATD{
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Utilisateur> utilisateurDao = adf.getUtilisateurDAO();
-	
+
 	// VARIABLES
 	private String pseudo;
 	private String mdp;
 	private int typeUtilisateur;
-	
-	// CONSTRUCTEURs
+
+	// CONSTRUCTEURS
 	public UtilisateurATD(){}
 	public UtilisateurATD(String mdp, String pseudo){
 		this.pseudo 			= pseudo;
 		this.mdp 				= mdp;
-		this.typeUtilisateur 	= utilisateurDao.returnUser(mdp,pseudo).getTypeUtilisateur();
+		this.typeUtilisateur 	= -1; // On ne connait pas encore le type lors de la connexion
 	}
-	
+
 	public UtilisateurATD(String nom, String pre, String adresse, String sexe, Date dateNaissance,
 			String pseudo, String mdp, int typeUtilisateur){
 		super(nom, pre, adresse, sexe, dateNaissance);
@@ -32,6 +30,17 @@ public class UtilisateurATD extends PersonneATD{
 		this.typeUtilisateur 	= typeUtilisateur;
 	}
 
+	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Utilisateur> UtilisateurDAO = adf.getUtilisateurDAO();
+	public int					 	create				(Utilisateur u) 	{ return UtilisateurDAO.create(u); 					}
+	public boolean 					delete				(Utilisateur u)	 	{ return UtilisateurDAO.delete(u); 				}
+	public Utilisateur 				getId				(Utilisateur u) 	{ return UtilisateurDAO.getId(u); 					}
+	public boolean 					update				(Utilisateur u) 	{ return UtilisateurDAO.update(u); 					}
+	public Utilisateur 				find				(int id) 			{ return UtilisateurDAO.find(id); 					} 
+	public ArrayList<Utilisateur> 	getListUtil			() 					{ return UtilisateurDAO.getList(); 					} 
+	public ArrayList<Utilisateur> 	getListSelonCriteres(Utilisateur u) 	{ return UtilisateurDAO.getListSelonCriteres(u); 	}
+
 	// METHODES SURCHARGEES
 	@Override
 	public String toString() { 
@@ -39,10 +48,6 @@ public class UtilisateurATD extends PersonneATD{
 				"Utilisateur." + System.getProperty("line.separator")
 				+ "User name    : " + pseudo +  System.getProperty("line.separator")
 				+ "Mot de passe : " + mdp + System.getProperty("line.separator");
-	}
-	
-	public Utilisateur connexionMoniteur() { 
-		UtilisateurDAO.returnUser
 	}
 
 	// PROPRIETES

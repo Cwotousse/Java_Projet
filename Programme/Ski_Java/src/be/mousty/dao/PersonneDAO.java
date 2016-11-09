@@ -1,7 +1,6 @@
 package be.mousty.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -66,17 +65,26 @@ public class PersonneDAO  extends DAO<Personne> {
 		return false;
 	}
 	
-	public int getNumPersonne (String nom, String pre, String adr) {
+	
+	public Personne getId (Personne obj) {
 		PreparedStatement pst = null;
-		int id = -1;
+		Personne P = new Personne ();
+		//int id = -1;
 		try {
-			String sql = "SELECT numPersonne FROM Personne WHERE nom = ? AND prenom = ? AND adresse = ? ;";
+			String sql = "SELECT * FROM Personne WHERE nom = ? AND prenom = ? AND adresse = ? ;";
 			pst = this.connect.prepareStatement(sql);
-			pst.setString(1, nom);
-			pst.setString(2, pre);
-			pst.setString(3, adr);
-			ResultSet res_Rec_Accr = pst.executeQuery();
-			while (res_Rec_Accr.next()) { id = res_Rec_Accr.getInt("numPersonne"); }
+			pst.setString(1, obj.getNom());
+			pst.setString(2, obj.getPre());
+			pst.setString(3, obj.getAdresse());
+			ResultSet res_Rec_Sem = pst.executeQuery();
+			while (res_Rec_Sem.next()) {
+				P.setNumPersonne(res_Rec_Sem.getInt("numPersonne"));
+				P.setNom(res_Rec_Sem.getString("nom"));
+				P.setPre(res_Rec_Sem.getString("prenom"));
+				P.setDateNaissance(res_Rec_Sem.getDate("dateNaissance"));
+				P.setAdresse(res_Rec_Sem.getString("adresse"));
+				P.setSexe(res_Rec_Sem.getString("sexe"));
+				}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
@@ -85,49 +93,59 @@ public class PersonneDAO  extends DAO<Personne> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return id;
+		return P;
 	}
 
 	public boolean update(Personne obj) { return false; }
 	public Personne find(int id) { return null; } 
-	public ArrayList<Personne> getList() { return null; } 
-
-	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
-	@Override public ArrayList<Personne> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Personne> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Personne> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Personne> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<Personne> getMyList(int idPersonne) { return null; }
-	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
-	@Override public ArrayList<Personne> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
-	@Override public void creerTouteDisponibilites() { }
-	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
-	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Personne> getListDispo(int numSemaine, String periode) { return null; }
-	@Override public Personne returnUser(String mdp, String pseudo) { return null; }
-	@Override public int valeurReduction(int numSem) { return 0; }
+	public ArrayList<Personne> getList() { return null; }
 
 	@Override
-	public int getNumCoursCollectif(String nomSport, String periode, String categorie, String niveauCours) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getNumCoursParticulier(String nomSport, String periode) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public ArrayList<Personne> getListSemaineSelonDateDuJour() {
+	public ArrayList<Personne> getListSelonCriteres(Personne obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int getNumSemaine(Date dateDebut) {
+	public ArrayList<Personne> getMyListSelonID(int id1, int id2, int id3, String str1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean updateAssurance(int numEleve, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int valeurReduction(int numSem) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void creerTouteDisponibilites() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void creerTouteDisponibilitesSelonMoniteur(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void AjouterSemainesDansDB(String start, String end) {
+		// TODO Auto-generated method stub
+		
+	} 
+
 }

@@ -1,7 +1,6 @@
 package be.mousty.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,11 +29,12 @@ public class ReservationDAO extends DAO<Reservation> {
 		PreparedStatement pst_numReserv = null;
 		try
 		{
-			Eleve E = obj.getEleve();
-			E.calculerAge();
+			//Eleve E = obj.getEleve();
+			//E.calculerAge();
 			// Un enfant ne peut pas faire du snow s'il est moins agé que 6 ans
-			if(obj.getCours().getNomSport().equals("Snowboard") && E.calculerAge() < 6){ return -1; }
-			else{
+			//if(obj.getCours().getNomSport().equals("Snowboard") && E.calculerAge() < 6){ return -1; }
+			
+			//else{
 				String insertReservation = "INSERT INTO Reservation (heureDebut, heurefin, aPrisAssurance) VALUES (?,?,?)";
 				pst_Res = connect.prepareStatement(insertReservation);
 				pst_Res.setInt(1, obj.getHeureDebut());
@@ -88,7 +88,7 @@ public class ReservationDAO extends DAO<Reservation> {
 				pst_Res_Cou.close();*/
 
 				return obj.getNumReservation();
-			}
+			//}
 		}
 
 		catch (SQLException e) { e.printStackTrace(); }
@@ -249,21 +249,76 @@ public class ReservationDAO extends DAO<Reservation> {
 				ResultSet rs_Acc = pst_Acc.executeQuery();
 				ResultSet rs_Mon = pst_Mon.executeQuery();
 
-				while (rs_Sem.next()) { S = new Semaine(rs_Sem.getInt("numSemaine"), rs_Sem.getBoolean("CongeScolaireOuNon"), rs_Sem.getDate("dateDebut"), rs_Sem.getDate("dateFin"), rs_Sem.getInt("numSemaineDansAnnee")); }
-				while (rs_Cou.next()) { C = new Cours(rs_Cou.getInt("numCours"), rs_Cou.getString("nomSport"), rs_Cou.getInt("prix"), rs_Cou.getInt("minEleve"), 
-						rs_Cou.getInt("maxEleve"), rs_Cou.getString("periodeCours")); }
-				while (rs_Ele.next()) { E = new Eleve(rs_Ele.getInt("numEleve"), rs_Ele.getString("nom"), rs_Ele.getString("prenom"),
-						rs_Ele.getString("adresse"), rs_Ele.getString("sexe"), rs_Ele.getDate("dateNaissance")); }
-				while (rs_Cli.next()) { Cli = new Client(rs_Cli.getInt("numPersonne"), rs_Cli.getString("nom"), rs_Cli.getString("prenom"),
-						rs_Cli.getString("adresse"), rs_Cli.getString("sexe"), rs_Cli.getDate("dateNaissance"), rs_Cli.getString("pseudo"),
-						rs_Cli.getString("mdp"), rs_Cli.getInt("typeUtilisateur"), rs_Cli.getString("adresseFacturation")); }
-				while(rs_Acc.next()){ listeAccred.add(new Accreditation(rs_Acc.getString("nomAccreditation"))); }
-				while (rs_Mon.next()) { M = new Moniteur(rs_Mon.getInt("numMoniteur"), rs_Mon.getString("nom"), rs_Mon.getString("prenom"),
-						rs_Mon.getString("adresse"), rs_Mon.getString("sexe"), rs_Mon.getDate("dateNaissance"), rs_Mon.getString("pseudo"), rs_Mon.getString("mdp"),
-						rs_Mon.getInt("typeUtilisateur"), listeAccred); }
+				while (rs_Sem.next()) {
+					S.setNumSemaine(rs_Sem.getInt("numSemaine"));
+					S.setCongeScolaire(rs_Sem.getBoolean("CongeScolaireOuNon"));
+					S.setDateDebut(rs_Sem.getDate("dateDebut"));
+					S.setDateFin(rs_Sem.getDate("dateFin"));
+					S.setNumSemaineDansAnnee(rs_Sem.getInt("numSemaineDansAnnee"));
+					}
+				while (rs_Cou.next()) {
+					C.setNumCours(rs_Cou.getInt("numCours"));
+					C.setNomSport(rs_Cou.getString("nomSport"));
+					C.setPrix(rs_Cou.getInt("prix"));
+					C.setMinEl(rs_Cou.getInt("minEleve"));
+					C.setMaxEl(rs_Cou.getInt("maxEleve"));
+					C.setPeriodeCours(rs_Cou.getString("periodeCours"));
+					}
+				while (rs_Ele.next()) { 
+					E.setNumEleve(rs_Ele.getInt("numEleve"));
+					E.setCategorie(rs_Ele.getString("categorie"));
+					E.setNumPersonne(rs_Ele.getInt("numEleve"));
+					E.setNom(rs_Ele.getString("nom"));
+					E.setPre(rs_Ele.getString("prenom"));
+					E.setDateNaissance(rs_Ele.getDate("dateNaissance"));
+					E.setAdresse(rs_Ele.getString("adresse"));
+					E.setSexe(rs_Ele.getString("sexe"));
+				}
+				while (rs_Cli.next()) {
+					Cli.setAdresseFacturation(rs_Cli.getString("adresseFacturation"));
+					Cli.setNumClient(rs_Cli.getInt("numClient"));
+					Cli.setPseudo(rs_Cli.getString("pseudo"));
+					Cli.setMdp(rs_Cli.getString("mdp"));
+					Cli.setTypeUtilisateur(rs_Cli.getInt("typeUtilisateur"));
+					Cli.setNumPersonne(rs_Cli.getInt("numPersonne"));
+					Cli.setNom(rs_Cli.getString("nom"));
+					Cli.setPre(rs_Cli.getString("prenom"));
+					Cli.setDateNaissance(rs_Cli.getDate("dateNaissance"));
+					Cli.setAdresse(rs_Cli.getString("adresse"));
+					Cli.setSexe(rs_Cli.getString("sexe"));
+					}
+				while(rs_Acc.next()){
+					Accreditation A = new Accreditation();
+					A.setNomAccreditation(rs_Acc.getString("nomAccreditation"));
+					A.setNumAccreditation(rs_Acc.getInt("numAccreditation"));
+					}
+				while (rs_Mon.next()) {
+					M.setNumMoniteur(rs_Mon.getInt("numMoniteur"));
+					M.setAnneeExp(0);
+					M.setAccrediList(listeAccred);
+					M.setNumUtilisateur(rs_Mon.getInt("numUtilisateur"));
+					M.setPseudo(rs_Mon.getString("pseudo"));
+					M.setMdp(rs_Mon.getString("mdp"));
+					M.setTypeUtilisateur(rs_Mon.getInt("typeUtilisateur"));
+					M.setNumPersonne(rs_Mon.getInt("numPersonne"));
+					M.setNom(rs_Mon.getString("nom"));
+					M.setPre(rs_Mon.getString("prenom"));
+					M.setDateNaissance(rs_Mon.getDate("dateNaissance"));
+					M.setAdresse(rs_Mon.getString("adresse"));
+					M.setSexe(rs_Mon.getString("sexe")); 
+					}
 
-				Reservation reservation = new Reservation(rs.getInt("heureDebut"), rs.getInt("heureFin"), rs.getInt("numReservation"), rs.getBoolean("aPrisAssurance"), S, C, E, Cli, M);
-				return reservation;
+				Reservation R = new Reservation();
+				R.setHeureDebut(rs.getInt("heureDebut"));
+				R.setHeureFin(rs.getInt("heureFin"));
+				R.setNumReservation(rs.getInt("numReservation"));
+				R.setAUneAssurance(rs.getBoolean("aPrisAssurance"));
+				R.setSemaine(S);
+				R.setCours(C);
+				R.setEleve(E);
+				R.setClient(Cli);
+				R.setMoniteur(M);
+				return R;
 			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
@@ -339,21 +394,76 @@ public class ReservationDAO extends DAO<Reservation> {
 				ResultSet rs_Acc = pst_Acc.executeQuery();
 				ResultSet rs_Mon = pst_Mon.executeQuery();
 
-				while (rs_Sem.next()) { S = new Semaine(rs_Sem.getInt("numSemaine"), rs_Sem.getBoolean("CongeScolaireOuNon"), rs_Sem.getDate("dateDebut"), rs_Sem.getDate("dateFin"), rs_Sem.getInt("numSemaineDansAnnee")); }
-				while (rs_Cou.next()) { C = new Cours(rs_Cou.getInt("numCours"), rs_Cou.getString("nomSport"), rs_Cou.getInt("prix"), rs_Cou.getInt("minEleve"), 
-						rs_Cou.getInt("maxEleve"), rs_Cou.getString("periodeCours")); }
-				while (rs_Ele.next()) { E = new Eleve(rs_Ele.getInt("numEleve"), rs_Ele.getString("nom"), rs_Ele.getString("prenom"),
-						rs_Ele.getString("adresse"), rs_Ele.getString("sexe"), rs_Ele.getDate("dateNaissance")); }
-				while (rs_Cli.next()) { Cli = new Client(rs_Cli.getInt("numPersonne"), rs_Cli.getString("nom"), rs_Cli.getString("prenom"),
-						rs_Cli.getString("adresse"), rs_Cli.getString("sexe"), rs_Cli.getDate("dateNaissance"), rs_Cli.getString("pseudo"),
-						rs_Cli.getString("mdp"), rs_Cli.getInt("typeUtilisateur"), rs_Cli.getString("adresseFacturation")); }
-				while(rs_Acc.next()){ listeAccred.add(new Accreditation(rs_Acc.getString("nomAccreditation"))); }
-				while (rs_Mon.next()) { M = new Moniteur(rs_Mon.getInt("numMoniteur"), rs_Mon.getString("nom"), rs_Mon.getString("prenom"),
-						rs_Mon.getString("adresse"), rs_Mon.getString("sexe"), rs_Mon.getDate("dateNaissance"), rs_Mon.getString("pseudo"), rs_Mon.getString("mdp"),
-						rs_Mon.getInt("typeUtilisateur"), listeAccred); }
+				while (rs_Sem.next()) {
+					S.setNumSemaine(rs_Sem.getInt("numSemaine"));
+					S.setCongeScolaire(rs_Sem.getBoolean("CongeScolaireOuNon"));
+					S.setDateDebut(rs_Sem.getDate("dateDebut"));
+					S.setDateFin(rs_Sem.getDate("dateFin"));
+					S.setNumSemaineDansAnnee(rs_Sem.getInt("numSemaineDansAnnee"));
+					}
+				while (rs_Cou.next()) {
+					C.setNumCours(rs_Cou.getInt("numCours"));
+					C.setNomSport(rs_Cou.getString("nomSport"));
+					C.setPrix(rs_Cou.getInt("prix"));
+					C.setMinEl(rs_Cou.getInt("minEleve"));
+					C.setMaxEl(rs_Cou.getInt("maxEleve"));
+					C.setPeriodeCours(rs_Cou.getString("periodeCours"));
+					}
+				while (rs_Ele.next()) {
+					E.setNumEleve(rs_Ele.getInt("numEleve"));
+					E.setCategorie(rs_Ele.getString("categorie"));
+					E.setNumPersonne(rs_Ele.getInt("numEleve"));
+					E.setNom(rs_Ele.getString("nom"));
+					E.setPre(rs_Ele.getString("prenom"));
+					E.setDateNaissance(rs_Ele.getDate("dateNaissance"));
+					E.setAdresse(rs_Ele.getString("adresse"));
+					E.setSexe(rs_Ele.getString("sexe"));
+					}
+				while (rs_Cli.next()) {
+					Cli.setAdresseFacturation(rs_Cli.getString("adresseFacturation"));
+					Cli.setNumClient(rs_Cli.getInt("numClient"));
+					Cli.setPseudo(rs_Cli.getString("pseudo"));
+					Cli.setMdp(rs_Cli.getString("mdp"));
+					Cli.setTypeUtilisateur(rs_Cli.getInt("typeUtilisateur"));
+					Cli.setNumPersonne(rs_Cli.getInt("numPersonne"));
+					Cli.setNom(rs_Cli.getString("nom"));
+					Cli.setPre(rs_Cli.getString("prenom"));
+					Cli.setDateNaissance(rs_Cli.getDate("dateNaissance"));
+					Cli.setAdresse(rs_Cli.getString("adresse"));
+					Cli.setSexe(rs_Cli.getString("sexe"));
+					}
+				while(rs_Acc.next()){
+					Accreditation A = new Accreditation();
+					A.setNomAccreditation(rs_Acc.getString("nomAccreditation"));
+					A.setNumAccreditation(rs_Acc.getInt("numAccreditation"));
+					}
+				while (rs_Mon.next()) {
+					M.setNumMoniteur(rs_Mon.getInt("numMoniteur"));
+					M.setAnneeExp(0);
+					M.setAccrediList(listeAccred);
+					M.setNumUtilisateur(rs_Mon.getInt("numUtilisateur"));
+					M.setPseudo(rs_Mon.getString("pseudo"));
+					M.setMdp(rs_Mon.getString("mdp"));
+					M.setTypeUtilisateur(rs_Mon.getInt("typeUtilisateur"));
+					M.setNumPersonne(rs_Mon.getInt("numPersonne"));
+					M.setNom(rs_Mon.getString("nom"));
+					M.setPre(rs_Mon.getString("prenom"));
+					M.setDateNaissance(rs_Mon.getDate("dateNaissance"));
+					M.setAdresse(rs_Mon.getString("adresse"));
+					M.setSexe(rs_Mon.getString("sexe")); 
+					}
 
-				Reservation reservation = new Reservation(rs.getInt("heureDebut"), rs.getInt("heureFin"), rs.getInt("numReservation"), rs.getBoolean("aPrisAssurance"), S, C, E, Cli, M);
-				liste.add(reservation);
+				Reservation R = new Reservation();
+				R.setHeureDebut(rs.getInt("heureDebut"));
+				R.setHeureFin(rs.getInt("heureFin"));
+				R.setNumReservation(rs.getInt("numReservation"));
+				R.setAUneAssurance(rs.getBoolean("aPrisAssurance"));
+				R.setSemaine(S);
+				R.setCours(C);
+				R.setEleve(E);
+				R.setClient(Cli);
+				R.setMoniteur(M);;
+				liste.add(R);
 			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
@@ -366,7 +476,8 @@ public class ReservationDAO extends DAO<Reservation> {
 		return liste;
 	}
 
-	public  ArrayList<Reservation> getMyList(int idPersonne) {
+	@Override
+	public ArrayList<Reservation> getMyListSelonID(int idPersonne, int nonUsed, int nonUsed2, String nonUsed3) {
 		ArrayList<Reservation> liste = new ArrayList<Reservation>();
 
 		PreparedStatement pst = null;
@@ -448,21 +559,76 @@ public class ReservationDAO extends DAO<Reservation> {
 				ResultSet rs_Acc = pst_Acc.executeQuery();
 				ResultSet rs_Mon = pst_Mon.executeQuery();
 
-				while (rs_Sem.next()) { S = new Semaine(rs_Sem.getInt("numSemaine"), rs_Sem.getBoolean("CongeScolaireOuNon"), rs_Sem.getDate("dateDebut"), rs_Sem.getDate("dateFin"), rs_Sem.getInt("numSemaineDansAnnee")); }
-				while (rs_Cou.next()) { C = new Cours(rs_Cou.getInt("numCours"), rs_Cou.getString("nomSport"), rs_Cou.getInt("prix"), rs_Cou.getInt("minEleve"), 
-						rs_Cou.getInt("maxEleve"), rs_Cou.getString("periodeCours")); }
-				while (rs_Ele.next()) { E = new Eleve(rs_Ele.getInt("numEleve"), rs_Ele.getString("nom"), rs_Ele.getString("prenom"),
-						rs_Ele.getString("adresse"), rs_Ele.getString("sexe"), rs_Ele.getDate("dateNaissance")); }
-				while (rs_Cli.next()) { Cli = new Client(rs_Cli.getInt("numPersonne"), rs_Cli.getString("nom"), rs_Cli.getString("prenom"),
-						rs_Cli.getString("adresse"), rs_Cli.getString("sexe"), rs_Cli.getDate("dateNaissance"), rs_Cli.getString("pseudo"),
-						rs_Cli.getString("mdp"), rs_Cli.getInt("typeUtilisateur"), rs_Cli.getString("adresseFacturation")); }
-				while(rs_Acc.next()){ listeAccred.add(new Accreditation(rs_Acc.getString("nomAccreditation"))); }
-				while (rs_Mon.next()) { M = new Moniteur(rs_Mon.getInt("numMoniteur"), rs_Mon.getString("nom"), rs_Mon.getString("prenom"),
-						rs_Mon.getString("adresse"), rs_Mon.getString("sexe"), rs_Mon.getDate("dateNaissance"), rs_Mon.getString("pseudo"), rs_Mon.getString("mdp"),
-						rs_Mon.getInt("typeUtilisateur"), listeAccred); }
+				while (rs_Sem.next()) {
+					S.setNumSemaine(rs_Sem.getInt("numSemaine"));
+					S.setCongeScolaire(rs_Sem.getBoolean("CongeScolaireOuNon"));
+					S.setDateDebut(rs_Sem.getDate("dateDebut"));
+					S.setDateFin(rs_Sem.getDate("dateFin"));
+					S.setNumSemaineDansAnnee(rs_Sem.getInt("numSemaineDansAnnee"));
+					}
+				while (rs_Cou.next()) {
+					C.setNumCours(rs_Cou.getInt("numCours"));
+					C.setNomSport(rs_Cou.getString("nomSport"));
+					C.setPrix(rs_Cou.getInt("prix"));
+					C.setMinEl(rs_Cou.getInt("minEleve"));
+					C.setMaxEl(rs_Cou.getInt("maxEleve"));
+					C.setPeriodeCours(rs_Cou.getString("periodeCours"));
+					}
+				while (rs_Ele.next()) {
+					E.setNumEleve(rs_Ele.getInt("numEleve"));
+					E.setCategorie(rs_Ele.getString("categorie"));
+					E.setNumPersonne(rs_Ele.getInt("numEleve"));
+					E.setNom(rs_Ele.getString("nom"));
+					E.setPre(rs_Ele.getString("prenom"));
+					E.setDateNaissance(rs_Ele.getDate("dateNaissance"));
+					E.setAdresse(rs_Ele.getString("adresse"));
+					E.setSexe(rs_Ele.getString("sexe"));
+					}
+				while (rs_Cli.next()) {
+					Cli.setAdresseFacturation(rs_Cli.getString("adresseFacturation"));
+					Cli.setNumClient(rs_Cli.getInt("numClient"));
+					Cli.setPseudo(rs_Cli.getString("pseudo"));
+					Cli.setMdp(rs_Cli.getString("mdp"));
+					Cli.setTypeUtilisateur(rs_Cli.getInt("typeUtilisateur"));
+					Cli.setNumPersonne(rs_Cli.getInt("numPersonne"));
+					Cli.setNom(rs_Cli.getString("nom"));
+					Cli.setPre(rs_Cli.getString("prenom"));
+					Cli.setDateNaissance(rs_Cli.getDate("dateNaissance"));
+					Cli.setAdresse(rs_Cli.getString("adresse"));
+					Cli.setSexe(rs_Cli.getString("sexe"));
+				}
+				while(rs_Acc.next()){
+					Accreditation A = new Accreditation();
+					A.setNomAccreditation(rs_Acc.getString("nomAccreditation"));
+					A.setNumAccreditation(rs_Acc.getInt("numAccreditation"));
+					}
+				while (rs_Mon.next()) {
+					M.setNumMoniteur(rs_Mon.getInt("numMoniteur"));
+					M.setAnneeExp(0);
+					M.setAccrediList(listeAccred);
+					M.setNumUtilisateur(rs_Mon.getInt("numUtilisateur"));
+					M.setPseudo(rs_Mon.getString("pseudo"));
+					M.setMdp(rs_Mon.getString("mdp"));
+					M.setTypeUtilisateur(rs_Mon.getInt("typeUtilisateur"));
+					M.setNumPersonne(rs_Mon.getInt("numPersonne"));
+					M.setNom(rs_Mon.getString("nom"));
+					M.setPre(rs_Mon.getString("prenom"));
+					M.setDateNaissance(rs_Mon.getDate("dateNaissance"));
+					M.setAdresse(rs_Mon.getString("adresse"));
+					M.setSexe(rs_Mon.getString("sexe")); 
+					}
 
-				Reservation reservation = new Reservation(rs.getInt("heureDebut"), rs.getInt("heureFin"), rs.getInt("numReservation"), rs.getBoolean("aPrisAssurance"), S, C, E, Cli, M);
-				liste.add(reservation);
+				Reservation R = new Reservation();
+				R.setHeureDebut(rs.getInt("heureDebut"));
+				R.setHeureFin(rs.getInt("heureFin"));
+				R.setNumReservation(rs.getInt("numReservation"));
+				R.setAUneAssurance(rs.getBoolean("aPrisAssurance"));
+				R.setSemaine(S);
+				R.setCours(C);
+				R.setEleve(E);
+				R.setClient(Cli);
+				R.setMoniteur(M);
+				liste.add(R);
 			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
@@ -475,7 +641,9 @@ public class ReservationDAO extends DAO<Reservation> {
 		return liste;
 	}
 
-	public  ArrayList<Reservation> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) {
+	// Retourne la liste  des réservations selon le numéro de la semaine et de la période
+	@Override
+	public ArrayList<Reservation> getListSelonCriteres(Reservation obj) {
 		ArrayList<Reservation> liste = new ArrayList<Reservation>();
 
 		PreparedStatement pst = null;
@@ -497,10 +665,10 @@ public class ReservationDAO extends DAO<Reservation> {
 
 			pst = this.connect.prepareStatement(sql);
 			//pst.setInt(1, numMoniteur);
-			pst.setInt(1, numSemaine);
-			pst.setString(2, periode);
-			System.out.println("ReservationDao -> numSemaine : " + numSemaine);
-			System.out.println("ReservationDao -> periode : " + periode);
+			pst.setInt(1, obj.getSemaine().getNumSemaine());
+			pst.setString(2, obj.getCours().getPeriodeCours());
+			System.out.println("ReservationDao -> numSemaine : " + obj.getSemaine().getNumSemaine());
+			System.out.println("ReservationDao -> periode : " + obj.getCours().getPeriodeCours());
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				ArrayList<Accreditation> listeAccred = new ArrayList<Accreditation>();
@@ -541,21 +709,76 @@ public class ReservationDAO extends DAO<Reservation> {
 				ResultSet rs_Acc = pst_Acc.executeQuery();
 				ResultSet rs_Mon = pst_Mon.executeQuery();
 
-				while (rs_Sem.next()) { S = new Semaine(rs_Sem.getInt("numSemaine"), rs_Sem.getBoolean("CongeScolaireOuNon"), rs_Sem.getDate("dateDebut"), rs_Sem.getDate("dateFin"), rs_Sem.getInt("numSemaineDansAnnee")); }
-				while (rs_Cou.next()) { C = new Cours(rs_Cou.getInt("numCours"), rs_Cou.getString("nomSport"), rs_Cou.getInt("prix"), rs_Cou.getInt("minEleve"), 
-						rs_Cou.getInt("maxEleve"), rs_Cou.getString("periodeCours")); }
-				while (rs_Ele.next()) { E = new Eleve(rs_Ele.getInt("numEleve"), rs_Ele.getString("nom"), rs_Ele.getString("prenom"),
-						rs_Ele.getString("adresse"), rs_Ele.getString("sexe"), rs_Ele.getDate("dateNaissance")); }
-				while (rs_Cli.next()) { Cli = new Client(rs_Cli.getInt("numPersonne"), rs_Cli.getString("nom"), rs_Cli.getString("prenom"),
-						rs_Cli.getString("adresse"), rs_Cli.getString("sexe"), rs_Cli.getDate("dateNaissance"), rs_Cli.getString("pseudo"),
-						rs_Cli.getString("mdp"), rs_Cli.getInt("typeUtilisateur"), rs_Cli.getString("adresseFacturation")); }
-				while(rs_Acc.next()){ listeAccred.add(new Accreditation(rs_Acc.getString("nomAccreditation"))); }
-				while (rs_Mon.next()) { M = new Moniteur(rs_Mon.getInt("numMoniteur"), rs_Mon.getString("nom"), rs_Mon.getString("prenom"),
-						rs_Mon.getString("adresse"), rs_Mon.getString("sexe"), rs_Mon.getDate("dateNaissance"), rs_Mon.getString("pseudo"), rs_Mon.getString("mdp"),
-						rs_Mon.getInt("typeUtilisateur"), listeAccred); }
+				while (rs_Sem.next()) {
+					S.setNumSemaine(rs_Sem.getInt("numSemaine"));
+					S.setCongeScolaire(rs_Sem.getBoolean("CongeScolaireOuNon"));
+					S.setDateDebut(rs_Sem.getDate("dateDebut"));
+					S.setDateFin(rs_Sem.getDate("dateFin"));
+					S.setNumSemaineDansAnnee(rs_Sem.getInt("numSemaineDansAnnee"));
+					}
+				while (rs_Cou.next()) {
+					C.setNumCours(rs_Cou.getInt("numCours"));
+					C.setNomSport(rs_Cou.getString("nomSport"));
+					C.setPrix(rs_Cou.getInt("prix"));
+					C.setMinEl(rs_Cou.getInt("minEleve"));
+					C.setMaxEl(rs_Cou.getInt("maxEleve"));
+					C.setPeriodeCours(rs_Cou.getString("periodeCours"));
+					}
+				while (rs_Ele.next()) {
+					E.setNumEleve(rs_Ele.getInt("numEleve"));
+					E.setCategorie(rs_Ele.getString("categorie"));
+					E.setNumPersonne(rs_Ele.getInt("numEleve"));
+					E.setNom(rs_Ele.getString("nom"));
+					E.setPre(rs_Ele.getString("prenom"));
+					E.setDateNaissance(rs_Ele.getDate("dateNaissance"));
+					E.setAdresse(rs_Ele.getString("adresse"));
+					E.setSexe(rs_Ele.getString("sexe"));
+					}
+				while (rs_Cli.next()) { 
+					Cli.setAdresseFacturation(rs_Cli.getString("adresseFacturation"));
+					Cli.setNumClient(rs_Cli.getInt("numClient"));
+					Cli.setPseudo(rs_Cli.getString("pseudo"));
+					Cli.setMdp(rs_Cli.getString("mdp"));
+					Cli.setTypeUtilisateur(rs_Cli.getInt("typeUtilisateur"));
+					Cli.setNumPersonne(rs_Cli.getInt("numPersonne"));
+					Cli.setNom(rs_Cli.getString("nom"));
+					Cli.setPre(rs_Cli.getString("prenom"));
+					Cli.setDateNaissance(rs_Cli.getDate("dateNaissance"));
+					Cli.setAdresse(rs_Cli.getString("adresse"));
+					Cli.setSexe(rs_Cli.getString("sexe"));
+				}
+				while(rs_Acc.next()){
+					Accreditation A = new Accreditation();
+					A.setNomAccreditation(rs_Acc.getString("nomAccreditation"));
+					A.setNumAccreditation(rs_Acc.getInt("numAccreditation"));
+					}
+				while (rs_Mon.next()) {
+					M.setNumMoniteur(rs_Mon.getInt("numMoniteur"));
+				M.setAnneeExp(0);
+				M.setAccrediList(listeAccred);
+				M.setNumUtilisateur(rs_Mon.getInt("numUtilisateur"));
+				M.setPseudo(rs_Mon.getString("pseudo"));
+				M.setMdp(rs_Mon.getString("mdp"));
+				M.setTypeUtilisateur(rs_Mon.getInt("typeUtilisateur"));
+				M.setNumPersonne(rs_Mon.getInt("numPersonne"));
+				M.setNom(rs_Mon.getString("nom"));
+				M.setPre(rs_Mon.getString("prenom"));
+				M.setDateNaissance(rs_Mon.getDate("dateNaissance"));
+				M.setAdresse(rs_Mon.getString("adresse"));
+				M.setSexe(rs_Mon.getString("sexe")); 
+					}
 
-				Reservation reservation = new Reservation(rs.getInt("heureDebut"), rs.getInt("heureFin"), rs.getInt("numReservation"), rs.getBoolean("aPrisAssurance"), S, C, E, Cli, M);
-				liste.add(reservation);
+				Reservation R = new Reservation();
+				R.setHeureDebut(rs.getInt("heureDebut"));
+				R.setHeureFin(rs.getInt("heureFin"));
+				R.setNumReservation(rs.getInt("numReservation"));
+				R.setAUneAssurance(rs.getBoolean("aPrisAssurance"));
+				R.setSemaine(S);
+				R.setCours(C);
+				R.setEleve(E);
+				R.setClient(Cli);
+				R.setMoniteur(M);
+				liste.add(R);
 			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
@@ -657,45 +880,36 @@ public class ReservationDAO extends DAO<Reservation> {
 		return sommeReduc;
 	}
 
-	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
-	@Override public ArrayList<Reservation> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Reservation> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Reservation> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Reservation> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
-	@Override public void creerTouteDisponibilites() { }
-	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
-	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Reservation> getListDispo(int numSemaine, String periode) { return null; }
-	@Override public Reservation returnUser(String mdp, String pseudo) { return null; }
-
 	@Override
-	public int getNumPersonne(String string, String pre, String adresse) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getNumCoursCollectif(String nomSport, String periode, String categorie, String niveauCours) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getNumCoursParticulier(String nomSport, String periode) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public ArrayList<Reservation> getListSemaineSelonDateDuJour() {
+	public Reservation getId(Reservation obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int getNumSemaine(Date dateDebut) {
+	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
+
+	@Override
+	public void creerTouteDisponibilites() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void creerTouteDisponibilitesSelonMoniteur(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void AjouterSemainesDansDB(String start, String end) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 }
 

@@ -1,7 +1,6 @@
 package be.mousty.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -87,7 +86,7 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		return liste;
 	}
 	
-	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, String periode, int numSemaine){
+	public ArrayList<CoursCollectif> getMyListSelonID(int idMoniteur, int idEleve, int numSemaine, String periode){
 		//System.out.println("Entree fonc");
 		/*ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur);
 		ArrayList<CoursCollectif> listFull = getList();
@@ -187,20 +186,31 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		return listSelonId;
 	}
 	
-	public int getNumCoursCollectif(String nomSport, String periode, String categorie, String niveauCours){
+	@Override
+	public CoursCollectif getId(CoursCollectif obj) {
 		PreparedStatement pst = null;
-		int id = -1;
+		CoursCollectif CC = new CoursCollectif();
 		try {
 			String sql = "SELECT numCours FROM cours "
 					+ "INNER JOIN CoursCollectif ON numCoursCollectif = numCours "
 					+ "WHERE nomSport = ? AND periodeCours = ? AND categorieAge = ? AND niveauCours = ?;";
 			pst = this.connect.prepareStatement(sql);
-			pst.setString(1, nomSport);
-			pst.setString(2, periode);
-			pst.setString(3, categorie);
-			pst.setString(4, niveauCours);
+			pst.setString(1, obj.getNomSport());
+			pst.setString(2, obj.getPeriodeCours());
+			pst.setString(3, obj.getCategorieAge());
+			pst.setString(4, obj.getNiveauCours());
 			ResultSet res_Rec_CC = pst.executeQuery();
-			while (res_Rec_CC.next()) { id = res_Rec_CC.getInt("numCoursCollectif"); }
+			while (res_Rec_CC.next()) {
+				CC.setNumCoursCollectif(res_Rec_CC.getInt("numCoursCollectif"));
+				CC.setCategorieAge(res_Rec_CC.getString("categorieAge"));
+				CC.setNiveauCours(res_Rec_CC.getString("niveauCours"));
+				CC.setNumCours(res_Rec_CC.getInt("numCours"));
+				CC.setNomSport(res_Rec_CC.getString("nomSport"));
+				CC.setPrix(res_Rec_CC.getInt("prix"));
+				CC.setMinEl(res_Rec_CC.getInt("minEleve"));
+				CC.setMaxEl(res_Rec_CC.getInt("maxEleve"));
+				CC.setPeriodeCours(res_Rec_CC.getString("periodeCours"));
+				}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
@@ -209,45 +219,48 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return id;
-	}
-	
-	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
-	@Override public ArrayList<CoursCollectif> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<CoursCollectif> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<CoursCollectif> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<CoursCollectif> getMyList(int idPersonne) { return null; }
-	@Override public ArrayList<CoursCollectif> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
-	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
-	@Override public void creerTouteDisponibilites() { }
-	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
-	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<CoursCollectif> getListDispo(int numSemaine, String periode) { return null; }
-	@Override public CoursCollectif returnUser(String mdp, String pseudo) { return null; }
-	@Override public int valeurReduction(int numSem) { return 0; }
-
-	@Override
-	public int getNumPersonne(String string, String pre, String adresse) {
-		// TODO Auto-generated method stub
-		return 0;
+		return CC;
 	}
 
 	@Override
-	public int getNumCoursParticulier(String nomSport, String periode) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public ArrayList<CoursCollectif> getListSemaineSelonDateDuJour() {
+	public ArrayList<CoursCollectif> getListSelonCriteres(CoursCollectif obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int getNumSemaine(Date dateDebut) {
+	public boolean updateAssurance(int numEleve, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int valeurReduction(int numSem) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-}
 
+	@Override
+	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void creerTouteDisponibilites() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void creerTouteDisponibilitesSelonMoniteur(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void AjouterSemainesDansDB(String start, String end) {
+		// TODO Auto-generated method stub
+		
+	}	
+}

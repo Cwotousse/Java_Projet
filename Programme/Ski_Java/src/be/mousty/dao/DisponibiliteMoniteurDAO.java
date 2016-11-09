@@ -1,7 +1,6 @@
 package be.mousty.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,7 +49,7 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 		}
 		return -1;
 	}
-	
+
 	public boolean delete	(DisponibiliteMoniteur obj) { return false; }
 	public boolean update	(DisponibiliteMoniteur obj) { return false; }
 
@@ -85,7 +84,7 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 	}
 
 	public ArrayList<DisponibiliteMoniteur> getList() { 
-	ArrayList<DisponibiliteMoniteur> liste = new ArrayList<DisponibiliteMoniteur>();
+		ArrayList<DisponibiliteMoniteur> liste = new ArrayList<DisponibiliteMoniteur>();
 
 		PreparedStatement pst = null;
 		try {
@@ -110,40 +109,40 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 		}
 		return liste;
 	}
-	
+
 	@Override
-	public ArrayList<DisponibiliteMoniteur> getMyList(int idMoniteur) { 
+	public ArrayList<DisponibiliteMoniteur> getMyListSelonID(int idMoniteur, int nonUsed, int nonUsed2, String nonUsed3) { 
 		ArrayList<DisponibiliteMoniteur> liste = new ArrayList<DisponibiliteMoniteur>();
 
-			PreparedStatement pst = null;
-			try {
-				String sql = "SELECT * FROM DisponibiliteMoniteur WHERE numMoniteur = ? ";
-				pst = this.connect.prepareStatement(sql);
-				pst.setInt(1, idMoniteur);
-				ResultSet res_rec_disp_mon = pst.executeQuery();
-				while (res_rec_disp_mon.next()) {
-					DisponibiliteMoniteur DM = new DisponibiliteMoniteur();
-					DM.setNumDispo(res_rec_disp_mon.getInt("numDispo"));
-					DM.setNumMoniteur(res_rec_disp_mon.getInt("numMoniteur"));
-					DM.setNumSemaine(res_rec_disp_mon.getInt("numSemaine"));
-					DM.setDisponible( res_rec_disp_mon.getBoolean("disponible"));
-					liste.add(DM);
-				}
+		PreparedStatement pst = null;
+		try {
+			String sql = "SELECT * FROM DisponibiliteMoniteur WHERE numMoniteur = ? ";
+			pst = this.connect.prepareStatement(sql);
+			pst.setInt(1, idMoniteur);
+			ResultSet res_rec_disp_mon = pst.executeQuery();
+			while (res_rec_disp_mon.next()) {
+				DisponibiliteMoniteur DM = new DisponibiliteMoniteur();
+				DM.setNumDispo(res_rec_disp_mon.getInt("numDispo"));
+				DM.setNumMoniteur(res_rec_disp_mon.getInt("numMoniteur"));
+				DM.setNumSemaine(res_rec_disp_mon.getInt("numSemaine"));
+				DM.setDisponible( res_rec_disp_mon.getBoolean("disponible"));
+				liste.add(DM);
 			}
-			catch (SQLException e) { e.printStackTrace(); }
-			finally {
-				if (pst != null) {
-					try { pst.close(); }
-					catch (SQLException e) { e.printStackTrace(); }
-				}
-			}
-			return liste;
 		}
-	
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst != null) {
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return liste;
+	}
+
 	public void creerTouteDisponibilites(){
 		for (Moniteur M : MoniteurDAO.getList()){ creerTouteDisponibilitesSelonMoniteur(M.getNumPersonne()); }
 	}
-	
+
 	public void creerTouteDisponibilitesSelonMoniteur(int numMoniteur){
 		ArrayList<Semaine> S = SemaineDAO.getList();
 		for (int i = S.get(0).getNumSemaine(); i < (S.get(0).getNumSemaine() + S.size()); i++){
@@ -155,36 +154,39 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 			create(DM);
 		}
 	}
-	
-	public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur){
+
+	// Change la disponibilite du moniteur, retroune null si n'a pas fonctionné
+	@Override
+	public ArrayList<DisponibiliteMoniteur> getListSelonCriteres(DisponibiliteMoniteur obj) {
 		PreparedStatement pst_get_val = null;
+		ArrayList<DisponibiliteMoniteur> listBoolean = new ArrayList<DisponibiliteMoniteur>();
 		try {
 			boolean resBool = false;
 			String sql_getValue = "Select disponible from DisponibiliteMoniteur wHERE numSemaine = ? and numMoniteur = ?;";
 			String sql_update = "Update DisponibiliteMoniteur SET disponible=? WHERE numSemaine = ? and numMoniteur = ?;";
-			
+
 			pst_get_val = connect.prepareStatement(sql_getValue);
 
-			pst_get_val.setInt(1, numSemaine);
-			pst_get_val.setInt(2, numMoniteur);
+			pst_get_val.setInt(1, obj.getNumSemaine());
+			pst_get_val.setInt(2,  obj.getNumMoniteur());
 
 			ResultSet res_get_val = pst_get_val.executeQuery();
 			while (res_get_val.next()) { resBool = res_get_val.getBoolean("disponible"); }
-			
+
 			PreparedStatement pst_upt = connect.prepareStatement(sql_update);
-			
+
 			pst_upt.setBoolean(1, !resBool); // L'inverse qu'actuellement
-			pst_upt.setInt(2, numSemaine);
-			pst_upt.setInt(3, numMoniteur);
-			
+			pst_upt.setInt(2, obj.getNumSemaine());
+			pst_upt.setInt(3, obj.getNumMoniteur());
+
 			pst_upt.executeUpdate();
 			pst_upt.close();
-			return true;
+			listBoolean = null;
 		} 
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-			
+
 		}
 		finally {
 			if (pst_get_val != null) {
@@ -192,49 +194,39 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return false;
-	}
-
-	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
-	@Override public ArrayList<DisponibiliteMoniteur> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<DisponibiliteMoniteur> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<DisponibiliteMoniteur> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<DisponibiliteMoniteur> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
-	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
-	@Override public ArrayList<DisponibiliteMoniteur> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<DisponibiliteMoniteur> getListDispo(int numSemaine, String periode) { return null; }
-	@Override public DisponibiliteMoniteur returnUser(String mdp, String pseudo) { return null; }
-	@Override public int valeurReduction(int numSem) { return 0; }
-
-	@Override
-	public int getNumPersonne(String string, String pre, String adresse) {
-		// TODO Auto-generated method stub
-		return 0;
+		return listBoolean;
+		// anciennement un boolean
+		// s'il retourne null alors ça a bien modifie
 	}
 
 	@Override
-	public int getNumCoursCollectif(String nomSport, String periode, String categorie, String niveauCours) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getNumCoursParticulier(String nomSport, String periode) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public ArrayList<DisponibiliteMoniteur> getListSemaineSelonDateDuJour() {
+	public DisponibiliteMoniteur getId(DisponibiliteMoniteur obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int getNumSemaine(Date dateDebut) {
+	public boolean updateAssurance(int numEleve, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int valeurReduction(int numSem) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void AjouterSemainesDansDB(String start, String end) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
-
-

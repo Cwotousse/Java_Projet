@@ -1,34 +1,31 @@
 package be.mousty.fenetre;
 
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.HashSet;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import be.mousty.accessToDao.ReservationATD;
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.Reservation;
 import be.mousty.utilitaire.ButtonColumn;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class F_AfficherRDV extends JFrame {
 	/**
@@ -112,7 +109,8 @@ public class F_AfficherRDV extends JFrame {
 
 
 			// Liste RDV
-			ArrayList<Reservation> listReserv = ReservationDAO.getMyList(idPersonne);
+			ReservationATD R = new ReservationATD();
+			ArrayList<Reservation> listReserv = R.getMyList(idPersonne);
 			int somme = 0;
 			int sommeAssurance = 0;
 			int sommeReduction = 0;

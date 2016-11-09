@@ -1,7 +1,6 @@
 package be.mousty.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -111,7 +110,7 @@ public class SemaineDAO extends DAO<Semaine> {
 		return liste;
 	}
 
-	public ArrayList<Semaine> getListSemaineSelonDateDuJour(){
+	public ArrayList<Semaine> getListSelonCriteres(Semaine S){
 		//AjouterSemainesDansDB();
 		// ATTENTION SEMAINE NUMANNEE 44 A 47 SONT A SUPPRIMER
 		ArrayList<Semaine> listeRetour = new ArrayList<Semaine>();
@@ -135,7 +134,8 @@ public class SemaineDAO extends DAO<Semaine> {
 	}
 
 	// Juste faire tourner une fois pour ajouter les semaines dans la DB 
-	public void AjouterSemainesDansDB(){
+	@Override
+	public void AjouterSemainesDansDB(String startD, String endD){
 		// Date de début d'ajout
 		//int jour = 03;
 		//int mois = 12;
@@ -146,8 +146,8 @@ public class SemaineDAO extends DAO<Semaine> {
 
 			// test internet 
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			java.util.Date startDate = formatter.parse("2016-10-30");
-			java.util.Date endDate = formatter.parse("2016-11-25");
+			java.util.Date startDate = formatter.parse(startD); //"2016-10-30"
+			java.util.Date endDate = formatter.parse(endD); //"2016-11-25"
 			java.util.Date startDateWeek = null;
 			java.util.Date endDateWeek = null;
 			Calendar start = Calendar.getInstance();
@@ -189,16 +189,25 @@ public class SemaineDAO extends DAO<Semaine> {
 		}
 		catch (Exception e) { e.printStackTrace(); }
 	}
-
-	public int getNumSemaine (Date dateDebut) {
+	
+	@Override
+	public Semaine getId (Semaine obj) {
 		PreparedStatement pst = null;
-		int id = -1;
+		Semaine S = new Semaine ();
+		//int id = -1;
 		try {
-			String sql = "SELECT numSemaine FROM Semaine WHERE dateDebut = ?;";
+			String sql = "SELECT * FROM Semaine WHERE dateDebut = ?;";
 			pst = this.connect.prepareStatement(sql);
-			pst.setDate(1, dateDebut);
+			pst.setDate(1, obj.getDateDebut());
 			ResultSet res_Rec_Sem = pst.executeQuery();
-			while (res_Rec_Sem.next()) { id = res_Rec_Sem.getInt("numSemaine"); }
+			while (res_Rec_Sem.next()) {
+				//id = res_Rec_Sem.getInt("numSemaine"); 
+				S.setNumSemaine(res_Rec_Sem.getInt("numSemaine"));
+				S.setCongeScolaire(res_Rec_Sem.getBoolean("CongeScolaireOuNon"));
+				S.setDateDebut(res_Rec_Sem.getDate("dateDebut"));
+				S.setDateFin(res_Rec_Sem.getDate("dateFin"));
+				S.setNumSemaineDansAnnee(res_Rec_Sem.getInt("numSemaineDansAnnee"));
+				}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
@@ -207,8 +216,45 @@ public class SemaineDAO extends DAO<Semaine> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return id;
+		return S;
 	}
+
+	@Override
+	public ArrayList<Semaine> getMyListSelonID(int id1, int id2, int id3, String str1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean updateAssurance(int numEleve, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int valeurReduction(int numSem) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void creerTouteDisponibilites() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void creerTouteDisponibilitesSelonMoniteur(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/*public ArrayList<Semaine> getListSemaineSelonDateDuJour(){
 		//AjouterSemainesDansDB();
 		// ATTENTION SEMAINE NUMANNEE 44 A 47 SONT A SUPPRIMER
@@ -233,37 +279,6 @@ public class SemaineDAO extends DAO<Semaine> {
 		return listeRetour;
 	}*/
 
-	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
-	@Override public ArrayList<Semaine> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Semaine> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Semaine> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Semaine> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<Semaine> getMyList(int idPersonne) { return null; }
-	@Override public ArrayList<Semaine> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
-	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
-	@Override public void creerTouteDisponibilites() { }
-	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
-	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Semaine> getListDispo(int numSemaine, String periode) { return null; }
-	@Override public Semaine returnUser(String mdp, String pseudo) { return null; }
-	@Override public int valeurReduction(int numSem) { return 0; }
 
-	@Override
-	public int getNumPersonne(String string, String pre, String adresse) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getNumCoursCollectif(String nomSport, String periode, String categorie, String niveauCours) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getNumCoursParticulier(String nomSport, String periode) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }
 

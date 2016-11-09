@@ -1,35 +1,33 @@
 package be.mousty.fenetre;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
-
-import be.mousty.dao.AbstractDAOFactory;
-import be.mousty.dao.DAO;
-import be.mousty.pojo.DisponibiliteMoniteur;
-import be.mousty.pojo.Semaine;
-import be.mousty.utilitaire.ButtonColumn;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 import java.awt.Font;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.awt.Color;
-import java.awt.Component;
 
-import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+import be.mousty.accessToDao.DisponibiliteMoniteurATD;
+import be.mousty.accessToDao.SemaineATD;
+import be.mousty.pojo.DisponibiliteMoniteur;
+import be.mousty.pojo.Semaine;
+import be.mousty.utilitaire.ButtonColumn;
 
 public class F_Moniteur extends JFrame {
 	/**
@@ -37,9 +35,8 @@ public class F_Moniteur extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	static int numMoniteur = -1;
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<DisponibiliteMoniteur> DisponibiliteMoniteurDAO = adf.getDisponibiliteMoniteurDAO();
-	DAO<Semaine> SemaineDAO = adf.getSemaineDAO();
+	DisponibiliteMoniteurATD DM = new DisponibiliteMoniteurATD();
+	SemaineATD S = new SemaineATD();
 
 	private JPanel contentPane;
 	private final JLabel lblMoniteur = new JLabel("Moniteur");
@@ -178,8 +175,11 @@ public class F_Moniteur extends JFrame {
 	}
 
 	public  void afficherTable(){
-		ArrayList<DisponibiliteMoniteur> listDispo = DisponibiliteMoniteurDAO.getMyList(numMoniteur);
-		ArrayList<Semaine> listSemaine = SemaineDAO.getList();
+		
+		//ArrayList<DisponibiliteMoniteur> listDispo = DisponibiliteMoniteurDAO.getMyList(numMoniteur);
+		ArrayList<DisponibiliteMoniteur> listDispo  = DM.getMyListSelonID(numMoniteur);
+		//ArrayList<Semaine> listSemaine = SemaineDAO.getList();
+		ArrayList<Semaine> listSemaine = S.getList();
 		//headers for the table
 		String[] columns = new String[] { "Dispo","Période", "Modifier" };
 
@@ -207,7 +207,11 @@ public class F_Moniteur extends JFrame {
 			{
 				JTable mytableClicked = (JTable)e.getSource();
 				String[] parts = mytableClicked.getModel().getValueAt(mytableClicked.getSelectedRow(), mytableClicked.getSelectedColumn()).toString().split(",");
-				DisponibiliteMoniteurDAO.changeDispoSelonIdSemaine(Integer.parseInt(parts[0]), F_Moniteur.numMoniteur);
+				//DisponibiliteMoniteurDAO.changeDispoSelonIdSemaine(Integer.parseInt(parts[0]), F_Moniteur.numMoniteur);
+				DisponibiliteMoniteur DMon = new DisponibiliteMoniteur();
+				DMon.setNumMoniteur(F_Moniteur.numMoniteur);
+				DMon.setNumSemaine(Integer.parseInt(parts[0]));
+				DM.getListSelonCriteres(DMon);
 				JOptionPane.showMessageDialog(null, "Disponibilité modifiée!");
 				table.removeAll();
 				afficherTable();

@@ -1,7 +1,6 @@
 package be.mousty.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -107,19 +106,28 @@ public class ClientDAO extends DAO<Client> {
 		return C;
 	}
 
-	@SuppressWarnings("null")
 	public ArrayList<Client> getList() {
-		Client client = null;
+		
 		ArrayList<Client> liste = new ArrayList<Client>();
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM Client";
 			pst = this.connect.prepareStatement(sql);
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				client.setNumUtilisateur(rs.getInt("numUtilisateur"));
-				client.setNumClient(rs.getInt("numClient"));
-				liste.add(client);
+			ResultSet res_Rec_Cli = pst.executeQuery();
+			while (res_Rec_Cli.next()) {
+				Client C = new Client();
+				C.setAdresseFacturation(res_Rec_Cli.getString("adresseFacturation"));
+				C.setNumClient(res_Rec_Cli.getInt("numClient"));
+				C.setPseudo(res_Rec_Cli.getString("pseudo"));
+				C.setMdp(res_Rec_Cli.getString("mdp"));
+				C.setTypeUtilisateur(res_Rec_Cli.getInt("typeUtilisateur"));
+				C.setNumPersonne(res_Rec_Cli.getInt("numPersonne"));
+				C.setNom(res_Rec_Cli.getString("nom"));
+				C.setPre(res_Rec_Cli.getString("prenom"));
+				C.setDateNaissance(res_Rec_Cli.getDate("dateNaissance"));
+				C.setAdresse(res_Rec_Cli.getString("adresse"));
+				C.setSexe(res_Rec_Cli.getString("sexe"));
+				liste.add(C);
 			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
@@ -131,19 +139,31 @@ public class ClientDAO extends DAO<Client> {
 		}
 		return liste;
 	}
-	
+
 	@Override
-	public int getNumPersonne(String nom, String pre, String adr) {
+	public Client getId(Client obj) {
 		PreparedStatement pst = null;
-		int id = -1;
+		Client C = new Client();
 		try {
 			String sql = "SELECT numPersonne FROM Personne WHERE nom = ? AND prenom = ? AND adresse = ? ;";
 			pst = this.connect.prepareStatement(sql);
-			pst.setString(1, nom);
-			pst.setString(2, pre);
-			pst.setString(3, adr);
-			ResultSet res_Rec_Accr = pst.executeQuery();
-			while (res_Rec_Accr.next()) { id = res_Rec_Accr.getInt("numPersonne"); }
+			pst.setString(1, obj.getNom());
+			pst.setString(2, obj.getPre());
+			pst.setString(3, obj.getAdresse());
+			ResultSet res_Rec_Cli = pst.executeQuery();
+			while (res_Rec_Cli.next()) {
+				C.setAdresseFacturation(res_Rec_Cli.getString("adresseFacturation"));
+				C.setNumClient(res_Rec_Cli.getInt("numClient"));
+				C.setPseudo(res_Rec_Cli.getString("pseudo"));
+				C.setMdp(res_Rec_Cli.getString("mdp"));
+				C.setTypeUtilisateur(res_Rec_Cli.getInt("typeUtilisateur"));
+				C.setNumPersonne(res_Rec_Cli.getInt("numPersonne"));
+				C.setNom(res_Rec_Cli.getString("nom"));
+				C.setPre(res_Rec_Cli.getString("prenom"));
+				C.setDateNaissance(res_Rec_Cli.getDate("dateNaissance"));
+				C.setAdresse(res_Rec_Cli.getString("adresse"));
+				C.setSexe(res_Rec_Cli.getString("sexe"));
+			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
@@ -152,45 +172,56 @@ public class ClientDAO extends DAO<Client> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return id;
-	}
-
-	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
-	@Override public ArrayList<Client> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Client> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Client> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Client> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<Client> getMyList(int idPersonne) { return null; }
-	@Override public ArrayList<Client> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
-	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
-	@Override public void creerTouteDisponibilites() { }
-	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
-	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Client> getListDispo(int numSemaine, String periode) { return null; }
-	@Override public Client returnUser(String mdp, String pseudo) { return null; }
-	@Override public int valeurReduction(int numSem) { return 0; }
-
-	@Override
-	public int getNumCoursCollectif(String nomSport, String periode, String categorie, String niveauCours) {
-		// TODO Auto-generated method stub
-		return 0;
+		return C;
 	}
 
 	@Override
-	public int getNumCoursParticulier(String nomSport, String periode) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public ArrayList<Client> getListSemaineSelonDateDuJour() {
+	public ArrayList<Client> getListSelonCriteres(Client obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int getNumSemaine(Date dateDebut) {
+	public ArrayList<Client> getMyListSelonID(int id1, int id2, int id3, String str1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean updateAssurance(int numEleve, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int valeurReduction(int numSem) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void creerTouteDisponibilites() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void creerTouteDisponibilitesSelonMoniteur(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void AjouterSemainesDansDB(String start, String end) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

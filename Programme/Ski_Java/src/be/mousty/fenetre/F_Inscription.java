@@ -1,48 +1,40 @@
 package be.mousty.fenetre;
 
+import java.awt.Color;
 import java.awt.EventQueue;
-
-import javax.swing.JFormattedTextField.AbstractFormatter;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.SqlDateModel;
-
-import be.mousty.dao.AbstractDAOFactory;
-import be.mousty.dao.DAO;
-import be.mousty.pojo.Accreditation;
-import be.mousty.pojo.Client;
-import be.mousty.pojo.Cours;
-import be.mousty.pojo.CoursCollectif;
-import be.mousty.pojo.CoursParticulier;
-import be.mousty.pojo.DisponibiliteMoniteur;
-import be.mousty.pojo.Eleve;
-import be.mousty.pojo.Moniteur;
-import be.mousty.pojo.Reservation;
-import be.mousty.pojo.Semaine;
-
-import javax.swing.JLabel;
 import java.awt.Font;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Properties;
-
-import javax.swing.JTextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 //import java.util.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import javax.swing.JRadioButton;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Properties;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Color;
+import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
+import org.jdatepicker.impl.SqlDateModel;
+
+import be.mousty.accessToDao.ClientATD;
+import be.mousty.accessToDao.DisponibiliteMoniteurATD;
+import be.mousty.accessToDao.MoniteurATD;
+import be.mousty.pojo.Accreditation;
+import be.mousty.pojo.Client;
+import be.mousty.pojo.Moniteur;
 
 public class F_Inscription extends JFrame {
 
@@ -50,17 +42,6 @@ public class F_Inscription extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 5174575610200719333L;
-	// ADF
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Reservation> 			ReservationDAO 				= adf.getReservationDAO();
-	DAO<Client> 				ClientDAO 					= adf.getClientDAO();
-	DAO<Eleve> 					EleveDAO 					= adf.getEleveDAO();
-	DAO<Moniteur> 				MoniteurDAO 				= adf.getMoniteurDAO();
-	DAO<Cours> 					CoursDAO 					= adf.getCoursDAO();
-	DAO<Semaine> 				SemaineDAO 					= adf.getSemaineDAO();
-	DAO<CoursCollectif> 		CoursCollectifDAO 			= adf.getCoursCollectifDAO();
-	DAO<CoursParticulier> 		CoursParticulierDAO	 		= adf.getCoursParticulierDAO();
-	DAO<DisponibiliteMoniteur> 	DisponibiliteMoniteurDAO 	= adf.getDisponibiliteMoniteurDAO();
 
 	private JPanel contentPane;
 	private JTextField txtF_userName;
@@ -127,8 +108,8 @@ public class F_Inscription extends JFrame {
 		txtF_userName 				= new JTextField("mon6");
 		txtF_mdp 					= new JTextField("test");
 		txtF_nom 					= new JTextField("moniteur");
-		txtF_pre 					= new JTextField("6");
-		txtF_adresse 				= new JTextField("Rue des sports");
+		txtF_pre 					= new JTextField("7");
+		txtF_adresse 				= new JTextField("test");
 		txtF_adresseFact 			= new JTextField();
 
 		// Visibility
@@ -312,7 +293,6 @@ public class F_Inscription extends JFrame {
 
 		btn_inscrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 				try {
 
 					//Utilisateur u = UtilisateurDao.verifPseudoMdp(txtNomDutilisateur.getText(), pwdPassword.getText());
@@ -324,9 +304,19 @@ public class F_Inscription extends JFrame {
 					java.sql.Date sd = new java.sql.Date(ud.getTime());
 
 					if(rdbtnClient.isSelected()){
-						DAO<Client> ClientDao = adf.getClientDAO();
-						numUtilisateur = ClientDao.create(new Client(-1, txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, sd,
-								txtF_userName.getText(), txtF_mdp.getText(), 2, txtF_adresseFact.getText()));
+						//DAO<Client> ClientDao = adf.getClientDAO();
+						ClientATD CATD = new ClientATD();
+						Client C = new Client();
+						C.setAdresseFacturation(txtF_adresseFact.getText());
+						C.setPseudo(txtF_userName.getText());
+						C.setMdp(txtF_mdp.getText());
+						C.setTypeUtilisateur(2);
+						C.setNom(txtF_nom.getText());
+						C.setPre(txtF_pre.getText());
+						C.setDateNaissance(sd);
+						C.setAdresse(txtF_adresse.getText());
+						C.setSexe(sexe);
+						numUtilisateur = CATD.create(C);
 						if (numUtilisateur != -1){
 							// Afficher la fenetre client
 							setVisible(false); //you can't see me!
@@ -338,19 +328,64 @@ public class F_Inscription extends JFrame {
 						else { lbl_errLab.setText("Verifiez vos donnees");}
 					}
 					else {
-						DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
-
-						if(chkb_snow.isSelected()) 		listAccreditation.add(new Accreditation("Snowboard"));
-						if(chkb_skiAlpin.isSelected())	listAccreditation.add(new Accreditation("Ski"));
-						if(chkb_skiFond.isSelected())	listAccreditation.add(new Accreditation("Ski de fond"));
-						if(chkb_telemark.isSelected())	listAccreditation.add(new Accreditation("Telemark"));
-						if(chkb_jeune.isSelected())		listAccreditation.add(new Accreditation("Enfant"));
-						if(chkb_adulte.isSelected())	listAccreditation.add(new Accreditation("Adulte"));
-						numUtilisateur = MoniteurDao.create(new Moniteur(-1, txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe,
-								sd, txtF_userName.getText(), txtF_mdp.getText(), 1, listAccreditation));
+						MoniteurATD MATD = new MoniteurATD();
+						//DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
+						
+						if(chkb_snow.isSelected()){
+							Accreditation A = new Accreditation();
+							A.setNomAccreditation("Snowboard");
+							A.setNumAccreditation(1);
+							listAccreditation.add(A);
+						}
+						if(chkb_skiAlpin.isSelected()){	
+							Accreditation A = new Accreditation();
+							A.setNomAccreditation("Ski");
+							A.setNumAccreditation(2);
+							listAccreditation.add(A);
+						}
+						if(chkb_skiFond.isSelected()){
+							Accreditation A = new Accreditation();
+							A.setNomAccreditation("Ski de fond");
+							A.setNumAccreditation(3);
+							listAccreditation.add(A);
+						}
+						if(chkb_telemark.isSelected()){
+							Accreditation A = new Accreditation();
+							A.setNomAccreditation("Telemark");
+							A.setNumAccreditation(4);
+							listAccreditation.add(A);
+						}
+						if(chkb_jeune.isSelected()){
+							Accreditation A = new Accreditation();
+							A.setNomAccreditation("Enfant");
+							A.setNumAccreditation(5);
+							listAccreditation.add(A);
+						}
+						if(chkb_adulte.isSelected()){
+							Accreditation A = new Accreditation();
+							A.setNomAccreditation("Adulte");
+							A.setNumAccreditation(6);
+							listAccreditation.add(A);
+						}
+						
+						Moniteur M = new Moniteur();
+						M.setAnneeExp(0);
+						M.setAccrediList(listAccreditation);
+						M.setPseudo(txtF_userName.getText());
+						M.setMdp(txtF_mdp.getText());
+						M.setTypeUtilisateur(1);
+						M.setNom(txtF_nom.getText());
+						M.setPre(txtF_pre.getText());
+						M.setDateNaissance(sd);
+						M.setAdresse(txtF_adresse.getText());
+						M.setSexe(sexe);
+						
+						numUtilisateur = MATD.create(M);
 						if (numUtilisateur != -1){
 							// Ajout de ses disponibilités
-							DisponibiliteMoniteurDAO.creerTouteDisponibilitesSelonMoniteur(numUtilisateur);
+							//DisponibiliteMoniteurDAO.creerTouteDisponibilitesSelonMoniteur(numUtilisateur);
+							DisponibiliteMoniteurATD DATD = new DisponibiliteMoniteurATD();
+							DATD.creerTouteDisponibilitesSelonMoniteur(numUtilisateur);
 
 							setVisible(false); //you can't see me!
 							//dispose(); //Destroy the JFrame object

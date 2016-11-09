@@ -1,9 +1,14 @@
 package be.mousty.accessToDao;
 
+import java.util.ArrayList;
+
+import be.mousty.dao.AbstractDAOFactory;
+import be.mousty.dao.DAO;
 import be.mousty.pojo.Client;
 import be.mousty.pojo.Cours;
 import be.mousty.pojo.Eleve;
 import be.mousty.pojo.Moniteur;
+import be.mousty.pojo.Reservation;
 import be.mousty.pojo.Semaine;
 
 public class ReservationATD {
@@ -17,8 +22,6 @@ public class ReservationATD {
 	private int heureFin;
 	private int numReservation;
 	private boolean aUneAssurance;
-	//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	//DAO<Reservation> ReservationDAO = adf.getReservationDAO();
 	
 	// CONSTRUCTEURS
 	public ReservationATD(){}
@@ -34,6 +37,21 @@ public class ReservationATD {
 		this.M 					= M;
 	}
 	
+	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Reservation> ReservationDAO = adf.getReservationDAO();
+	public int					 	create				(Reservation r) 	{ return ReservationDAO.create(r); 						}
+	public boolean 					delete				(Reservation r)	 	{ return ReservationDAO.delete(r); 						}
+	public Reservation 				getId				(Reservation r) 	{ return ReservationDAO.getId(r); 						}
+	public boolean 					update				(Reservation r) 	{ return ReservationDAO.update(r); 						}
+	public Reservation 				find				(int id) 			{ return ReservationDAO.find(id); 						} 
+	public ArrayList<Reservation> 	getListRes			() 					{ return ReservationDAO.getList(); 						} 
+	public ArrayList<Reservation> 	getMyList			(int id) 			{ return ReservationDAO.getMyListSelonID(id, -1, -1, "");}
+	public ArrayList<Reservation> 	getListSelonCriteres(Reservation r) 	{ return ReservationDAO.getListSelonCriteres(r);		}
+	public int valeurReduction							(int numSemaine)	{ return ReservationDAO.valeurReduction(numSemaine);	}
+	public boolean updateAssurance(int numEleve, int numSemaine, String periode) 
+	{ return ReservationDAO.updateAssurance(numEleve, numSemaine, periode); }
+	
 	// FONCTION SURCHARGEE
 	@Override
 	public String toString() { 
@@ -47,7 +65,20 @@ public class ReservationATD {
 			+ M.toString() + System.getProperty("line.separator"); }
 	
 	// METHODE
-	//public int createReservation	() { return ReservationDAO.create(this); }
+	
+	public int createReservation	() { 
+		Reservation R = new Reservation();
+		R.setHeureDebut(this.getHeureDebut());
+		R.setHeureFin(this.getHeureFin());
+		//R.setNumReservation(this.getNumReservation());
+		R.setAUneAssurance(this.getAUneAssurance());
+		R.setSemaine(S);
+		R.setCours(C);
+		R.setEleve(E);
+		R.setClient(Cli);
+		R.setMoniteur(M);
+		return ReservationDAO.create(R); 
+	}
 	//public void deleteReservation	() { ReservationDAO.delete(null); }
 	
 	// PROPRIETE

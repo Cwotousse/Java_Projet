@@ -1,7 +1,6 @@
 package be.mousty.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,12 +19,20 @@ public class EleveDAO extends DAO<Eleve> {
 		try {
 			System.out.println("EleveDao -> " + obj.getNumPersonne());
 			//int numPersonne = obj.getNumPersonne();
-			int numPersonne = PersonneDao.getNumPersonne((obj.getNom()),obj.getPre(), obj.getAdresse());
+			Personne P = new Personne();
+			P.setNumPersonne(obj.getNumPersonne());
+			P.setNom(obj.getNom());
+			P.setPre(obj.getPre());
+			P.setDateNaissance(obj.getDateNaissance());
+			P.setAdresse(obj.getAdresse());
+			P.setSexe(obj.getSexe());
+			P = PersonneDao.getId(P);
+			int numPersonne = P.getNumPersonne();
 			//Vérification que la personne n'est pas encore inscrite en tant qu'élève.
 			Eleve e = find(numPersonne);
 			// La personne n'existe pas
 			if (e == null || numPersonne == -1){
-				Personne P = new Personne();
+				//Personne P = new Personne();
 				P.setNumPersonne(numPersonne);
 				P.setNom(obj.getNom());
 				P.setPre(obj.getPre());
@@ -160,8 +167,9 @@ public class EleveDAO extends DAO<Eleve> {
 		}
 		return listeFiltree;
 	}*/
-	
-	public ArrayList<Eleve> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode){
+	// getListEleveSelonAccredProfEtCours
+	@Override
+	public ArrayList<Eleve> getMyListSelonID(int numMoniteur, int numSemaine, int nonUsed, String periode){
 		ArrayList<Eleve> liste = new ArrayList<Eleve>();
 		PreparedStatement pst = null;
 		try {
@@ -241,17 +249,26 @@ public class EleveDAO extends DAO<Eleve> {
 	}
 	
 	@Override
-	public int getNumPersonne(String nom, String pre, String adr) {
+	public Eleve getId(Eleve obj) {
 		PreparedStatement pst = null;
-		int id = -1;
+		Eleve E = new Eleve();
 		try {
 			String sql = "SELECT numPersonne FROM Personne WHERE nom = ? AND prenom = ? AND adresse = ? ;";
 			pst = this.connect.prepareStatement(sql);
-			pst.setString(1, nom);
-			pst.setString(2, pre);
-			pst.setString(3, adr);
-			ResultSet res_Rec_Accr = pst.executeQuery();
-			while (res_Rec_Accr.next()) { id = res_Rec_Accr.getInt("numPersonne"); }
+			pst.setString(1, obj.getNom());
+			pst.setString(2, obj.getPre());
+			pst.setString(3, obj.getAdresse());
+			ResultSet res_Rec_el = pst.executeQuery();
+			while (res_Rec_el.next()) {
+				E.setNumEleve(res_Rec_el.getInt("numEleve"));
+				E.setCategorie(res_Rec_el.getString("categorie"));
+				E.setNumPersonne(res_Rec_el.getInt("numEleve"));
+				E.setNom(res_Rec_el.getString("nom"));
+				E.setPre(res_Rec_el.getString("prenom"));
+				E.setDateNaissance(res_Rec_el.getDate("dateNaissance"));
+				E.setAdresse(res_Rec_el.getString("adresse"));
+				E.setSexe(res_Rec_el.getString("sexe"));
+				}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
@@ -260,46 +277,53 @@ public class EleveDAO extends DAO<Eleve> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return id;
-	}
-
-	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
-	@Override public ArrayList<Eleve> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Eleve> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Eleve> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Eleve> getMyList(int idPersonne) { return null; }
-	@Override public ArrayList<Eleve> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
-	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
-	@Override public void creerTouteDisponibilites() { }
-	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
-	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Eleve> getListDispo(int numSemaine, String periode) { return null; }
-	@Override public Eleve returnUser(String mdp, String pseudo) { return null; }
-	@Override public int valeurReduction(int numSem) { return 0; }
-
-	@Override
-	public int getNumCoursCollectif(String nomSport, String periode, String categorie, String niveauCours) {
-		// TODO Auto-generated method stub
-		return 0;
+		return E;
 	}
 
 	@Override
-	public int getNumCoursParticulier(String nomSport, String periode) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public ArrayList<Eleve> getListSemaineSelonDateDuJour() {
+	public ArrayList<Eleve> getListSelonCriteres(Eleve obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public int getNumSemaine(Date dateDebut) {
+	public boolean updateAssurance(int numEleve, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int valeurReduction(int numSem) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void creerTouteDisponibilites() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void creerTouteDisponibilitesSelonMoniteur(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void AjouterSemainesDansDB(String start, String end) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
 
 	
 }

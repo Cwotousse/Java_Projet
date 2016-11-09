@@ -57,4 +57,5 @@
 <fullyQualifiedTypeName name="be.mousty.accessToDao.ClientATD"/>
 <fullyQualifiedTypeName name="java.sql.Date"/>
 <fullyQualifiedTypeName name="be.mousty.accessToDao.EleveATD"/>
+<fullyQualifiedTypeName name="be.mousty.pojo.Personne"/>
 </qualifiedTypeNameHistroy>

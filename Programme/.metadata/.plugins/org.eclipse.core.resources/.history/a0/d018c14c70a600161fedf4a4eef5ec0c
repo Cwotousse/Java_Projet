@@ -1,0 +1,50 @@
+package be.mousty.accessToDao;
+
+import java.sql.Date;
+import java.util.ArrayList;
+
+public class MoniteurATD extends UtilisateurATD{
+	// VARIABLES 
+	private int anneeDexp;
+	private ArrayList<AccreditationATD> listAccreditation = new ArrayList<AccreditationATD>();
+	//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	//DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
+	
+	// CONSTRUCTEURS
+	public MoniteurATD(){}
+	public MoniteurATD(String nom, String pre, String adresse, String sexe, Date dateNaissance, 
+			String pseudo, String mdp, int typeUtilisateur, ArrayList<AccreditationATD> listAccreditation){
+		super(nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
+		this.anneeDexp 	= 0 ;
+		this.listAccreditation = listAccreditation;
+	}
+	
+	// METHODES 
+		
+	// Pour ne pas additionner 2 fois le même moniteur
+	public void addAccreditation(AccreditationATD ac){
+		if(!listAccreditation.contains(ac))
+			listAccreditation.add(ac);
+	}
+	public void 		removeAccreditation(Accreditation ac){ this.listAccreditation.remove(ac); }
+	//public boolean 		equals(Moniteur mo){ return this.getNumMoniteur() == mo.getNumMoniteur(); }
+	
+	public			 	ArrayList<MoniteurATD> getListMoniteur(){ return MoniteurDao.getList(); }
+	
+	public MoniteurATD findMoniteur(int id){ return MoniteurDao.find(id); }
+	
+	// METHODE SURCHARGEE
+	@Override
+	public String toString() { 
+		return 
+			super.toString()+ System.getProperty("line.separator")
+			+ "MONITEUR, a accumule" + anneeDexp + " année(s) d'exérience." + System.getProperty("line.separator");
+	}
+	
+	// PROPRIETES
+	public int getAnneeExp		() 			{ return anneeDexp; }
+	public void setAnneeExp 	(int el) 	{ this.anneeDexp = el; }
+	public ArrayList<AccreditationATD> getAccrediList() { return listAccreditation; }
+	public void setAccrediList	(ArrayList<AccreditationATD> accrediList) { this.listAccreditation = accrediList; 	}
+}
+

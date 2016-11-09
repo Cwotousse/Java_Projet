@@ -1,7 +1,6 @@
 package be.mousty.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +16,7 @@ public class AccreditationDAO extends DAO<Accreditation> {
 
 	// On cherche une Accreditation grâce à son id
 	public Accreditation find(int id) {
-		Accreditation accred = new Accreditation();
+		Accreditation A = new Accreditation();
 		PreparedStatement pst = null;
 		try {
 			String sql = "SELECT * FROM Accreditation WHERE numAccreditation = ?;";
@@ -27,11 +26,11 @@ public class AccreditationDAO extends DAO<Accreditation> {
 			// int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance
 			while (res_Rec_Accr.next()) {
 				//accred = new Accreditation(result.getString("nom")); 
-				accred  = new Accreditation();
-				accred.setNomAccreditation(res_Rec_Accr.getString("nomAccreditation"));
-				accred.setNumAccreditation(res_Rec_Accr.getInt("numAccreditation"));
+				A  = new Accreditation();
+				A.setNomAccreditation(res_Rec_Accr.getString("nomAccreditation"));
+				A.setNumAccreditation(res_Rec_Accr.getInt("numAccreditation"));
 			}
-			return accred;
+			return A;
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
@@ -70,15 +69,19 @@ public class AccreditationDAO extends DAO<Accreditation> {
 		return liste;
 	}
 	
-	public int getNumAccred(String nomAccreditation) {
+	@Override
+	public Accreditation getId(Accreditation obj){
 		PreparedStatement pst = null;
-		int id = -1;
+		Accreditation A = new Accreditation();
 		try {
 			String sql = "SELECT numAccreditation FROM Accreditation WHERE nomAccreditation = ?;";
 			pst = this.connect.prepareStatement(sql);
-			pst.setString(1, nomAccreditation);
+			pst.setString(1, obj.getNomAccreditation());
 			ResultSet res_Rec_Accr = pst.executeQuery();
-			while (res_Rec_Accr.next()) { id = res_Rec_Accr.getInt("numAccreditation"); }
+			while (res_Rec_Accr.next()) {
+				A.setNomAccreditation(res_Rec_Accr.getString("nom"));
+				A.setNumAccreditation(res_Rec_Accr.getInt("numAccreditation"));
+				}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
@@ -87,46 +90,48 @@ public class AccreditationDAO extends DAO<Accreditation> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return id;
-	}
-
-	@Override public String calculerPlaceCours(int numCours, int numSemaine, int numMoniteur) { return -1 + ""; }
-	@Override public ArrayList<Accreditation> getListCoursSelonId(int idMoniteur) { return null; }
-	@Override public ArrayList<Accreditation> getListCoursCollectifSelonId(int numMoniteur, int numEleve, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Accreditation> getListCoursParticulierSelonId(int numMoniteur, String periode, int numSemaine) { return null; }
-	@Override public ArrayList<Accreditation> getListEleveSelonAccredProfEtCours(int numSemaine, int numMoniteur, String periode) { return null; }
-	@Override public ArrayList<Accreditation> getMyList(int idPersonne) { return null; }
-	@Override public ArrayList<Accreditation> getListSemainePerdiodeMoniteur(int numMoniteur, int numSemaine, String periode) { return null; }
-	@Override public boolean updateAssurance(int numEleve, int numSemaine, String periode) { return false; }
-	@Override public void creerTouteDisponibilites() { }
-	@Override public void creerTouteDisponibilitesSelonMoniteur(int i) { }
-	@Override public boolean changeDispoSelonIdSemaine(int numSemaine, int numMoniteur) { return false; }
-	@Override public ArrayList<Accreditation> getListDispo(int numSemaine, String periode) { return null; }
-	@Override public Accreditation returnUser(String mdp, String pseudo) { return null; }
-	@Override public int valeurReduction(int numSem) { return 0; }
-	@Override
-	public int getNumPersonne(String string, String pre, String adresse) {
-		// TODO Auto-generated method stub
-		return 0;
+		return A;
 	}
 	@Override
-	public int getNumCoursCollectif(String nomSport, String periode, String categorie, String niveauCours) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public int getNumCoursParticulier(String nomSport, String periode) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public ArrayList<Accreditation> getListSemaineSelonDateDuJour() {
+	public ArrayList<Accreditation> getListSelonCriteres(Accreditation obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public int getNumSemaine(Date dateDebut) {
+	public ArrayList<Accreditation> getMyListSelonID(int id1, int id2, int id3, String str1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean updateAssurance(int numEleve, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public int valeurReduction(int numSem) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	@Override
+	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void creerTouteDisponibilites() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void creerTouteDisponibilitesSelonMoniteur(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void AjouterSemainesDansDB(String start, String end) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 }

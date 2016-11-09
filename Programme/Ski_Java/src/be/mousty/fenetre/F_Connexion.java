@@ -87,8 +87,12 @@ public class F_Connexion extends JFrame {
 				try {
 					
 					@SuppressWarnings("deprecation")
-					UtilisateurATD U = new UtilisateurATD(pwdPassword.getText(), txtNomDutilisateur.getText());//UtilisateurDAO.returnUser(pwdPassword.getText(),txtNomDutilisateur.getText());
-					//numUtilisateur 
+					UtilisateurATD U = new UtilisateurATD(pwdPassword.getText(), txtNomDutilisateur.getText());
+					//UtilisateurDAO.returnUser(pwdPassword.getText(),txtNomDutilisateur.getText());
+					Utilisateur usr= new Utilisateur();
+					usr.setPseudo(U.getPseudo());
+					usr.setMdp(U.getMdp());
+					int numUtilisateur = U.getId(usr).getNumUtilisateur(); 
 					// 
 					//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 					//DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
@@ -96,18 +100,18 @@ public class F_Connexion extends JFrame {
 					//numUtilisateur = U.returnTypeUser();//.createos(new Utilisateur(-1, txtNomDutilisateur.getText(), pwdPassword.getText(), -1));
 					/*Utilisateur */ //U = U.rechercherUtilisateur(numUtilisateur);
 					//System.out.println(U.getTypeUtilisateur());
-					switch(U.getTypeUtilisateur()){
+					switch(U.getId(usr).getTypeUtilisateur()){
 					// -1 car le type est inconnu
 					case 1 : // moniteur
 						setVisible(false); //you can't see me!
-						F_Moniteur frameMoni = new F_Moniteur(U.getNumPersonne());
+						F_Moniteur frameMoni = new F_Moniteur(numUtilisateur);
 						frameMoni.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						frameMoni.setVisible(true);
 						//F_Moniteur.
 						break;
 					case 2 : 
 						setVisible(false); //you can't see me!
-						F_Client frameCli = new F_Client(U.getNumPersonne());
+						F_Client frameCli = new F_Client(numUtilisateur);
 						frameCli.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						frameCli.setVisible(true);
 						break;

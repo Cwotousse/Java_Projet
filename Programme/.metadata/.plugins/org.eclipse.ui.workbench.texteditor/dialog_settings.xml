@@ -2,30 +2,30 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="res_cou_col2" key="selection"/>
+		<item value="" key="selection"/>
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="res_cou_col2"/>
-			<item value="CC"/>
-			<item value="res_mon"/>
-			<item value="res_min"/>
-			<item value="result"/>
-			<item value="rs"/>
-			<item value="res_Rec_Util"/>
-			<item value="res_Rec_Accr"/>
+			<item value="changeDispoSelonIdSemaine"/>
+			<item value="Reservation"/>
+			<item value="AjouterSemainesDansDB"/>
+			<item value="Utilisateur"/>
+			<item value="DisponibiliteMoniteur"/>
+			<item value="CoursCollectif"/>
+			<item value="CoursParticulier"/>
+			<item value="Cours"/>
 		</list>
 		<list key="replacehistory">
-			<item value="res_lst_cou1"/>
-			<item value="CP"/>
-			<item value="res_cli"/>
-			<item value="res_mon"/>
-			<item value="res"/>
-			<item value="res_Rec_Util"/>
-			<item value="Moniteur"/>
+			<item value="Accreditation"/>
+			<item value="Reservation"/>
+			<item value=""/>
 			<item value="Semaine"/>
+			<item value="DisponibiliteMoniteur"/>
+			<item value="CoursCollectif"/>
+			<item value="CoursParticulier"/>
+			<item value="CoursParticulierDAO"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
