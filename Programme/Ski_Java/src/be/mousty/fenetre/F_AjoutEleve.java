@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Properties;
 
 import javax.swing.JButton;
@@ -19,21 +18,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.border.EmptyBorder;
 
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.SqlDateModel;
 
-import be.mousty.dao.AbstractDAOFactory;
-import be.mousty.dao.DAO;
-import be.mousty.pojo.Client;
-import be.mousty.pojo.Cours;
-import be.mousty.pojo.Eleve;
-import be.mousty.pojo.Moniteur;
-import be.mousty.pojo.Reservation;
-import be.mousty.pojo.Semaine;
+import be.mousty.accessToDao.EleveATD;
+import be.mousty.utilitaire.DateLabelFormatter;
 
 public class F_AjoutEleve extends JFrame {
 
@@ -48,14 +40,6 @@ public class F_AjoutEleve extends JFrame {
 	private String sexe = "H"; 
 	//private JTable table;
 
-	// ADF
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Reservation> 	ReservationDAO 	= adf.getReservationDAO();
-	DAO<Client> 		ClientDAO 		= adf.getClientDAO();
-	DAO<Eleve> 			EleveDAO 		= adf.getEleveDAO();
-	DAO<Moniteur> 		MoniteurDAO 	= adf.getMoniteurDAO();
-	DAO<Cours> 			CoursDAO 		= adf.getCoursDAO();
-	DAO<Semaine> 		SemaineDAO 		= adf.getSemaineDAO();
 
 	/**
 	 * Launch the application.
@@ -200,8 +184,17 @@ public class F_AjoutEleve extends JFrame {
 
 
 					//DAO<Eleve> EleveDao = adf.getEleveDAO();
-					Eleve E = new Eleve(-1, txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, sd);
-					int numEleve = EleveDAO.create(E);
+					EleveATD EATD = new EleveATD();
+					//Eleve E = new Eleve();
+					//E.setNumEleve(res.getInt("numEleve"));
+					//E.setCategorie(res.getString("categorie"));
+					//E.setNumPersonne(res.getInt("numEleve"));
+					EATD.setNom(txtF_nom.getText());
+					EATD.setPre(txtF_pre.getText());
+					EATD.setDateNaissance(sd);
+					EATD.setAdresse(txtF_adresse.getText());
+					EATD.setSexe(sexe);
+					int numEleve = EATD.inscriptionEleve(numClient);
 					if (numEleve != -1){
 						// Afficher la fenetre client
 						setVisible(false); //you can't see me!
@@ -240,28 +233,5 @@ public class F_AjoutEleve extends JFrame {
 
 	}
 
-	public class DateLabelFormatter extends AbstractFormatter {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		private String datePattern = "dd-MM-yyyy";
-		private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
-
-		@Override
-		public Object stringToValue(String text) throws ParseException {
-			return dateFormatter.parseObject(text);
-		}
-
-		@Override
-		public String valueToString(Object value) throws ParseException {
-			if (value != null) {
-				Calendar cal = (Calendar) value;
-				return dateFormatter.format(cal.getTime());
-			}
-
-			return "";
-		}
-	}
+	
 }

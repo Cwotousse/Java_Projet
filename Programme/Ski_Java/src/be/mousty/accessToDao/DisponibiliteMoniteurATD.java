@@ -1,10 +1,12 @@
 package be.mousty.accessToDao;
 
+import java.sql.Date;
 import java.util.ArrayList;
 
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.DisponibiliteMoniteur;
+import be.mousty.pojo.Semaine;
 
 public class DisponibiliteMoniteurATD {
 	// VARIABLES
@@ -13,6 +15,7 @@ public class DisponibiliteMoniteurATD {
 	// CONSTRUCTEURS
 	public DisponibiliteMoniteurATD(){}
 	public DisponibiliteMoniteurATD(boolean disponible){ this.disponible 	= disponible; }
+	public DisponibiliteMoniteurATD(DisponibiliteMoniteur DM){ this.disponible 	= DM.getDisponible(); }
 
 	
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
@@ -33,8 +36,33 @@ public class DisponibiliteMoniteurATD {
 		return valRetour; // Si true, ça a fonctionné.
 	}
 	
+	
 	// FONCTION SURCHARGEE
 	@Override public String toString() { return  "Le moniteur est disponible : " + disponible + "."; }
+	
+	// METHODES
+	public ArrayList<DisponibiliteMoniteurATD> getListDispo(int numMoniteur){
+		ArrayList<DisponibiliteMoniteur> listDispo  = getMyListSelonID(numMoniteur);
+		ArrayList<DisponibiliteMoniteurATD> listDispoATD = new ArrayList<DisponibiliteMoniteurATD>();
+		for(int i = 0; i < listDispo.size(); i++){
+			DisponibiliteMoniteurATD DMATD = new DisponibiliteMoniteurATD();
+			//DMATD.setNom(A.get(i).getNomAccreditation());
+			DMATD.setDisponible(listDispo.get(i).getDisponible());
+			listDispoATD.add(DMATD);
+		}
+		return listDispoATD;
+	}
+	
+	public boolean updateDispo(Date dateDebut, int numMoniteur){
+		SemaineATD SATD = new SemaineATD();
+		Semaine S = new Semaine();
+		S.setDateDebut(dateDebut);
+		S = SATD.getId(S); // numéro de semaine
+		DisponibiliteMoniteur DM = new DisponibiliteMoniteur();
+		DM.setNumSemaine(S.getNumSemaine());
+		DM.setNumMoniteur(numMoniteur);
+		return getListSelonCriteres(DM);
+	}
 
 	// PROPRIETE
 	public boolean 	getDisponible	() 						{ return disponible; 			}

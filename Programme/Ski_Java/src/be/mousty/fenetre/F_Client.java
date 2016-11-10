@@ -1,26 +1,19 @@
 package be.mousty.fenetre;
 
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import be.mousty.dao.AbstractDAOFactory;
-import be.mousty.dao.DAO;
-import be.mousty.pojo.Client;
-import be.mousty.pojo.Cours;
-import be.mousty.pojo.Eleve;
-import be.mousty.pojo.Moniteur;
-import be.mousty.pojo.Reservation;
-import be.mousty.pojo.Semaine;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.border.EmptyBorder;
+
+import be.mousty.accessToDao.ClientATD;
+import be.mousty.accessToDao.EleveATD;
 
 public class F_Client extends JFrame {
 
@@ -30,16 +23,12 @@ public class F_Client extends JFrame {
 	private static final long serialVersionUID = 3858120588993719215L;
 
 	private JPanel contentPane;
-	
-	// ADF
-	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-	DAO<Reservation> 	ReservationDAO 	= adf.getReservationDAO();
-	DAO<Client> 		ClientDAO 		= adf.getClientDAO();
-	DAO<Eleve> 			EleveDAO 		= adf.getEleveDAO();
-	DAO<Moniteur> 		MoniteurDAO 	= adf.getMoniteurDAO();
-	DAO<Cours> 			CoursDAO 		= adf.getCoursDAO();
-	DAO<Semaine> 		SemaineDAO 		= adf.getSemaineDAO();
-	
+
+	//Eleve E = new Eleve();
+	//Client C = new Client();
+	EleveATD EATD = new EleveATD();
+	ClientATD CATD = new ClientATD();
+
 	/**
 	 * Launch the application.
 	 */
@@ -68,7 +57,7 @@ public class F_Client extends JFrame {
 		contentPane.setLayout(null);
 
 		// Instanciation
-		JLabel labStatut = new JLabel(""+idClient);
+		JLabel labStatut = new JLabel("" + idClient);
 		JLabel lblClient = new JLabel("Client");
 		JButton btn_sajouterCli = new JButton("S'ajouter comme eleve");
 		JButton btnNewButton = new JButton("Deconnexion");
@@ -96,7 +85,7 @@ public class F_Client extends JFrame {
 		contentPane.add(separator);
 		contentPane.add(btn_ajoutEleve);
 		contentPane.add(btn_reserverCours);
-		
+
 		JButton btnAfficherMesCours = new JButton("Afficher mes cours");
 		btnAfficherMesCours.addMouseListener(new MouseAdapter() {
 			@Override
@@ -114,21 +103,16 @@ public class F_Client extends JFrame {
 		// ONCLICK
 		// S'ajouter en tant qu'élève
 		btn_sajouterCli.addMouseListener(new MouseAdapter() {
-			@SuppressWarnings("unused")
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				
 				try {
-					Client C = ClientDAO.find(idClient);
-					System.out.println(C.getAdresse());
-					if(C != null){
-						System.out.println("F_Client -> ajout eleve");
-						Eleve E = new Eleve(C.getNumPersonne(), C.getNom(), C.getPre(), C.getAdresse(), C.getSexe(), C.getDateNaissance());
-						if (EleveDAO.create(E) != -1) labStatut.setText("Vous avez étés ajoutés en tant qu'élève.");
-						else labStatut.setText("Verifiez vos donnees");
-					}
-					else{ labStatut.setText("ID relié à aucune personne."); }
+					if (CATD.changeClientToEleve(idClient))
+						labStatut.setText("Vous avez étés ajoutés en tant qu'élève.");
+					else
+						labStatut.setText("Verifiez vos donnees");
 				}
+				// else{ labStatut.setText("ID relié à aucune personne."); }
+				// }
 				catch (Exception e) {
 					labStatut.setText("Verifiez vos donnees");
 					e.printStackTrace();
@@ -148,7 +132,7 @@ public class F_Client extends JFrame {
 				frame.setVisible(true);
 			}
 		});
-		
+
 		// Ajouter RDV
 		btn_reserverCours.addMouseListener(new MouseAdapter() {
 			@Override
@@ -159,9 +143,7 @@ public class F_Client extends JFrame {
 				frame.setVisible(true);
 			}
 		});
-		
-		
-		
+
 		// Deconnexion
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override

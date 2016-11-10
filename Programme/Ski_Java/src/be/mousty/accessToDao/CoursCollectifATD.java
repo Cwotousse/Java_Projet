@@ -25,6 +25,12 @@ public class CoursCollectifATD extends CoursATD{
 		this.categorieAge 	= categorieAge;
 		this.niveauCours 	= niveauCours;
 	}
+	
+	public CoursCollectifATD(CoursCollectif C){
+		super(C.getNomSport(), C.getPrix(), C.getMinEl(), C.getMaxEl(), C.getPeriodeCours());
+		this.categorieAge 	= C.getCategorieAge();
+		this.niveauCours 	= C.getNiveauCours();
+	}
 
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
@@ -34,10 +40,42 @@ public class CoursCollectifATD extends CoursATD{
 	public CoursCollectif 	getId				(CoursCollectif c) 		{ return CoursCollectifDAO.getId(c); 		}
 	public boolean 				update				(CoursCollectif c) 		{ return CoursCollectifDAO.update(c); 	}
 	public CoursCollectif 	find				(int id) 					{ return CoursCollectifDAO.find(id); 		} 
-	public ArrayList<CoursCollectif> 	getListCP 	() 							{ return CoursCollectifDAO.getList(); 	} 
+	public ArrayList<CoursCollectif> 	getListCC 	() 							{ return CoursCollectifDAO.getList(); 	} 
 	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, int numSemaine,  String periode)
 	{ return CoursCollectifDAO.getMyListSelonID(idMoniteur, idEleve, numSemaine, periode); 	}
 
+	// METHODES
+	public ArrayList<CoursCollectifATD> getListCoursCollectifSelonIdATD(int numMoniteur, int idEleve,  int numSemaine, String periode){
+		ArrayList<CoursCollectif> listCC  = getListCoursCollectifSelonId(numMoniteur, idEleve,  numSemaine, periode);
+		ArrayList<CoursCollectifATD> listCCATP = new ArrayList<CoursCollectifATD>();
+		for(int i = 0; i < listCC.size(); i++){
+			CoursCollectifATD CCATD = new CoursCollectifATD();
+			//DMATD.setNom(A.get(i).getNomAccreditation());
+			CCATD.setMaxEl(listCC.get(i).getMaxEl());
+			CCATD.setMinEl(listCC.get(i).getMinEl());
+			CCATD.setNiveauCours(listCC.get(i).getNiveauCours());
+			CCATD.setCategorieAge(listCC.get(i).getCategorieAge());
+			CCATD.setNomSport(listCC.get(i).getNomSport());
+			CCATD.setPeriodeCours(listCC.get(i).getPeriodeCours());
+			CCATD.setPrix(listCC.get(i).getPrix());
+			listCCATP.add(CCATD);
+		}
+		return listCCATP;
+	}
+	
+	public int getIdATD(CoursCollectifATD CCATD){
+		CoursCollectif CC = new CoursCollectif();
+		CC.setMaxEl(CCATD.getMaxEl());
+		CC.setMinEl(CCATD.getMinEl());
+		CC.setNiveauCours(CCATD.getNiveauCours());
+		CC.setCategorieAge(CCATD.getCategorieAge());
+		CC.setNomSport(CCATD.getNomSport());
+		CC.setPeriodeCours(CCATD.getPeriodeCours());
+		CC.setPrix(CCATD.getPrix());
+		CC = getId(CC);
+		return CC.getNumCoursCollectif();
+	}
+	
 	// FONCTION SURCHARGEE
 	@Override
 	public String toString() { 

@@ -163,7 +163,7 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 		try {
 			boolean resBool = false;
 			String sql_getValue = "Select disponible from DisponibiliteMoniteur wHERE numSemaine = ? and numMoniteur = ?;";
-			String sql_update = "Update DisponibiliteMoniteur SET disponible=? WHERE numSemaine = ? and numMoniteur = ?;";
+			String sql_update = "Update DisponibiliteMoniteur SET disponible= ? WHERE numSemaine = ? and numMoniteur = ?;";
 
 			pst_get_val = connect.prepareStatement(sql_getValue);
 

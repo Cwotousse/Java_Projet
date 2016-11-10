@@ -81,37 +81,27 @@ public class F_Connexion extends JFrame {
 
 		JButton btnSeConnecter = new JButton("Se connecter");
 		btnSeConnecter.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				int typeUtilisateur = -1;
 				try {
-					
-					@SuppressWarnings("deprecation")
-					UtilisateurATD U = new UtilisateurATD(pwdPassword.getText(), txtNomDutilisateur.getText());
+					UtilisateurATD UATD = new UtilisateurATD(pwdPassword.getText(), txtNomDutilisateur.getText());
+					UATD = UATD.connexion();
 					//UtilisateurDAO.returnUser(pwdPassword.getText(),txtNomDutilisateur.getText());
-					Utilisateur usr= new Utilisateur();
-					usr.setPseudo(U.getPseudo());
-					usr.setMdp(U.getMdp());
-					int numUtilisateur = U.getId(usr).getNumUtilisateur(); 
-					// 
-					//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-					//DAO<Utilisateur> UtilisateurDao = adf.getUtilisateurDAO();
-					// Chercher comment récupérer le numéro d'utilisateur
-					//numUtilisateur = U.returnTypeUser();//.createos(new Utilisateur(-1, txtNomDutilisateur.getText(), pwdPassword.getText(), -1));
-					/*Utilisateur */ //U = U.rechercherUtilisateur(numUtilisateur);
-					//System.out.println(U.getTypeUtilisateur());
-					switch(U.getId(usr).getTypeUtilisateur()){
+					
+					switch(UATD.getTypeUtilisateur()){
 					// -1 car le type est inconnu
 					case 1 : // moniteur
 						setVisible(false); //you can't see me!
-						F_Moniteur frameMoni = new F_Moniteur(numUtilisateur);
+						F_Moniteur frameMoni = new F_Moniteur(UATD.getNumId());
 						frameMoni.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						frameMoni.setVisible(true);
 						//F_Moniteur.
 						break;
 					case 2 : 
 						setVisible(false); //you can't see me!
-						F_Client frameCli = new F_Client(numUtilisateur);
+						F_Client frameCli = new F_Client(UATD.getNumId());
 						frameCli.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						frameCli.setVisible(true);
 						break;

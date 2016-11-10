@@ -191,7 +191,7 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		PreparedStatement pst = null;
 		CoursCollectif CC = new CoursCollectif();
 		try {
-			String sql = "SELECT numCours FROM cours "
+			String sql = "SELECT * FROM cours "
 					+ "INNER JOIN CoursCollectif ON numCoursCollectif = numCours "
 					+ "WHERE nomSport = ? AND periodeCours = ? AND categorieAge = ? AND niveauCours = ?;";
 			pst = this.connect.prepareStatement(sql);

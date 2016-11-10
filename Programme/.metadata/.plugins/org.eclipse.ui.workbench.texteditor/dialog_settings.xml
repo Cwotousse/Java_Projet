@@ -2,30 +2,30 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="" key="selection"/>
+		<item value="getId" key="selection"/>
 		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="changeDispoSelonIdSemaine"/>
-			<item value="Reservation"/>
-			<item value="AjouterSemainesDansDB"/>
-			<item value="Utilisateur"/>
-			<item value="DisponibiliteMoniteur"/>
-			<item value="CoursCollectif"/>
+			<item value="getId"/>
+			<item value="GetId"/>
+			<item value="SATD"/>
+			<item value="CP"/>
 			<item value="CoursParticulier"/>
-			<item value="Cours"/>
+			<item value="CoursParticulierATD"/>
+			<item value="listSemaine.get(i)"/>
+			<item value="EleveATD"/>
 		</list>
 		<list key="replacehistory">
+			<item value="CCATD"/>
+			<item value="CC"/>
+			<item value="CoursCollectif"/>
+			<item value="SATD"/>
+			<item value="MoniteurATD"/>
+			<item value="MATD"/>
 			<item value="Accreditation"/>
 			<item value="Reservation"/>
-			<item value=""/>
-			<item value="Semaine"/>
-			<item value="DisponibiliteMoniteur"/>
-			<item value="CoursCollectif"/>
-			<item value="CoursParticulier"/>
-			<item value="CoursParticulierDAO"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

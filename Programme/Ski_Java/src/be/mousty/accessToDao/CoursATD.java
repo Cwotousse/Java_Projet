@@ -24,6 +24,14 @@ public class CoursATD {
 		this.periodeCours 	= periodeCours;
 		this.nomSport 		= nomSport;
 	}
+	
+	public CoursATD(Cours C){
+		this.prix 			= C.getPrix();
+		this.minEleve 		= C.getMinEl();
+		this.maxEleve 		= C.getMaxEl();
+		this.periodeCours 	= C.getPeriodeCours();
+		this.nomSport 		= C.getNomSport();
+	}
 
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
@@ -34,6 +42,8 @@ public class CoursATD {
 	public boolean 				update				(Cours c) 		{ return CoursDAO.update(c); 	}
 	public Cours 				find				(int id) 		{ return CoursDAO.find(id); 	} 
 	public ArrayList<Cours> 	getListC			() 				{ return CoursDAO.getList(); 	} 
+	public String 				calculerPlaceCours 	(int idCours, int idSemaine, int idMoniteur) 
+	{ return CoursDAO.calculerPlaceCours(idCours, idSemaine, idMoniteur); }
 	public ArrayList<Cours> 	getListCoursSelonId	(int idMoniteur){ return CoursDAO.getMyListSelonID(idMoniteur, -1, -1, ""); 	}
 
 	// FONCTION SURCHARGEE

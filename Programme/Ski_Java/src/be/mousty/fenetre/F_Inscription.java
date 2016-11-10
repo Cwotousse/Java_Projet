@@ -7,17 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-//import java.util.Date;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFormattedTextField.AbstractFormatter;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,12 +26,11 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.SqlDateModel;
 
+import be.mousty.accessToDao.AccreditationATD;
 import be.mousty.accessToDao.ClientATD;
 import be.mousty.accessToDao.DisponibiliteMoniteurATD;
 import be.mousty.accessToDao.MoniteurATD;
-import be.mousty.pojo.Accreditation;
-import be.mousty.pojo.Client;
-import be.mousty.pojo.Moniteur;
+import be.mousty.utilitaire.DateLabelFormatter;
 
 public class F_Inscription extends JFrame {
 
@@ -52,7 +48,7 @@ public class F_Inscription extends JFrame {
 	private String sexe = "H"; 
 	//private JTable table;
 	private JTextField txtF_adresseFact;
-	private ArrayList<Accreditation> listAccreditation = new ArrayList<Accreditation>();
+	private ArrayList<AccreditationATD> listAccreditation = new ArrayList<AccreditationATD>();
 	private int numUtilisateur;
 
 	/**
@@ -304,19 +300,17 @@ public class F_Inscription extends JFrame {
 					java.sql.Date sd = new java.sql.Date(ud.getTime());
 
 					if(rdbtnClient.isSelected()){
-						//DAO<Client> ClientDao = adf.getClientDAO();
 						ClientATD CATD = new ClientATD();
-						Client C = new Client();
-						C.setAdresseFacturation(txtF_adresseFact.getText());
-						C.setPseudo(txtF_userName.getText());
-						C.setMdp(txtF_mdp.getText());
-						C.setTypeUtilisateur(2);
-						C.setNom(txtF_nom.getText());
-						C.setPre(txtF_pre.getText());
-						C.setDateNaissance(sd);
-						C.setAdresse(txtF_adresse.getText());
-						C.setSexe(sexe);
-						numUtilisateur = CATD.create(C);
+						CATD.setAdresseFacturation(txtF_adresseFact.getText());
+						CATD.setPseudo(txtF_userName.getText());
+						CATD.setMdp(txtF_mdp.getText());
+						CATD.setTypeUtilisateur(2);
+						CATD.setNom(txtF_nom.getText());
+						CATD.setPre(txtF_pre.getText());
+						CATD.setDateNaissance(sd);
+						CATD.setAdresse(txtF_adresse.getText());
+						CATD.setSexe(sexe);
+						numUtilisateur = CATD.inscriptionClient();
 						if (numUtilisateur != -1){
 							// Afficher la fenetre client
 							setVisible(false); //you can't see me!
@@ -329,58 +323,56 @@ public class F_Inscription extends JFrame {
 					}
 					else {
 						MoniteurATD MATD = new MoniteurATD();
-						//DAO<Moniteur> MoniteurDao = adf.getMoniteurDAO();
-						
 						if(chkb_snow.isSelected()){
-							Accreditation A = new Accreditation();
-							A.setNomAccreditation("Snowboard");
-							A.setNumAccreditation(1);
+							AccreditationATD A = new AccreditationATD();
+							A.setNom("Snowboard");
+							//A.setNumAccreditation(1);
 							listAccreditation.add(A);
 						}
 						if(chkb_skiAlpin.isSelected()){	
-							Accreditation A = new Accreditation();
-							A.setNomAccreditation("Ski");
-							A.setNumAccreditation(2);
+							AccreditationATD A = new AccreditationATD();
+							A.setNom("Ski");
+							//A.setNumAccreditation(2);
 							listAccreditation.add(A);
 						}
 						if(chkb_skiFond.isSelected()){
-							Accreditation A = new Accreditation();
-							A.setNomAccreditation("Ski de fond");
-							A.setNumAccreditation(3);
+							AccreditationATD A = new AccreditationATD();
+							A.setNom("Ski de fond");
+							//A.setNumAccreditation(3);
 							listAccreditation.add(A);
 						}
 						if(chkb_telemark.isSelected()){
-							Accreditation A = new Accreditation();
-							A.setNomAccreditation("Telemark");
-							A.setNumAccreditation(4);
+							AccreditationATD A = new AccreditationATD();
+							A.setNom("Telemark");
+							//A.setNumAccreditation(4);
 							listAccreditation.add(A);
 						}
 						if(chkb_jeune.isSelected()){
-							Accreditation A = new Accreditation();
-							A.setNomAccreditation("Enfant");
-							A.setNumAccreditation(5);
+							AccreditationATD A = new AccreditationATD();
+							A.setNom("Enfant");
+							//A.setNumAccreditation(5);
 							listAccreditation.add(A);
 						}
 						if(chkb_adulte.isSelected()){
-							Accreditation A = new Accreditation();
-							A.setNomAccreditation("Adulte");
-							A.setNumAccreditation(6);
+							AccreditationATD A = new AccreditationATD();
+							A.setNom("Adulte");
+							//A.setNumAccreditation(6);
 							listAccreditation.add(A);
 						}
 						
-						Moniteur M = new Moniteur();
-						M.setAnneeExp(0);
-						M.setAccrediList(listAccreditation);
-						M.setPseudo(txtF_userName.getText());
-						M.setMdp(txtF_mdp.getText());
-						M.setTypeUtilisateur(1);
-						M.setNom(txtF_nom.getText());
-						M.setPre(txtF_pre.getText());
-						M.setDateNaissance(sd);
-						M.setAdresse(txtF_adresse.getText());
-						M.setSexe(sexe);
 						
-						numUtilisateur = MATD.create(M);
+						MATD.setAnneeExp(0);
+						MATD.setAccrediList(listAccreditation);
+						MATD.setPseudo(txtF_userName.getText());
+						MATD.setMdp(txtF_mdp.getText());
+						MATD.setTypeUtilisateur(1);
+						MATD.setNom(txtF_nom.getText());
+						MATD.setPre(txtF_pre.getText());
+						MATD.setDateNaissance(sd);
+						MATD.setAdresse(txtF_adresse.getText());
+						MATD.setSexe(sexe);
+						
+						numUtilisateur = MATD.inscriptionMoniteur();
 						if (numUtilisateur != -1){
 							// Ajout de ses disponibilités
 							//DisponibiliteMoniteurDAO.creerTouteDisponibilitesSelonMoniteur(numUtilisateur);
@@ -424,30 +416,5 @@ public class F_Inscription extends JFrame {
 
 		rdbtnMoniteur.setSelected(false);
 
-	}
-
-	public class DateLabelFormatter extends AbstractFormatter {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 8759328320201922662L;
-		private String datePattern = "dd-MM-yyyy";
-		private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
-
-		@Override
-		public Object stringToValue(String text) throws ParseException {
-			return dateFormatter.parseObject(text);
-		}
-
-		@Override
-		public String valueToString(Object value) throws ParseException {
-			if (value != null) {
-				Calendar cal = (Calendar) value;
-				return dateFormatter.format(cal.getTime());
-			}
-
-			return "";
-		}
 	}
 }

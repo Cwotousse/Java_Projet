@@ -22,6 +22,11 @@ public class CoursParticulierATD extends CoursATD{
 		this.nombreHeures = nombreHeures;
 	}
 	
+	public CoursParticulierATD(CoursParticulier C){
+		super(C.getNomSport(), C.getPrix(), C.getMinEl(), C.getMaxEl(), C.getPeriodeCours());
+		this.nombreHeures = C.getNombreHeures();
+	}
+	
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<CoursParticulier> CoursParticulierDAO = adf.getCoursParticulierDAO();
@@ -33,6 +38,36 @@ public class CoursParticulierATD extends CoursATD{
 	public ArrayList<CoursParticulier> 	getListCP 	() 							{ return CoursParticulierDAO.getList(); 	} 
 	public ArrayList<CoursParticulier> getListCoursParticulierSelonId(int idMoniteur, String periode, int numSemaine)
 	{ return CoursParticulierDAO.getMyListSelonID(idMoniteur, numSemaine, -1, periode); 	}
+	
+	
+	public ArrayList<CoursParticulierATD> getListCoursParticulierSelonIdATD(int numMoniteur, String periode, int numSemaine){
+		ArrayList<CoursParticulier> listCP  = getListCoursParticulierSelonId(numMoniteur, periode, numSemaine);
+		ArrayList<CoursParticulierATD> listCPATP = new ArrayList<CoursParticulierATD>();
+		for(int i = 0; i < listCP.size(); i++){
+			CoursParticulierATD CPATD = new CoursParticulierATD();
+			//DMATD.setNom(A.get(i).getNomAccreditation());
+			CPATD.setMaxEl(listCP.get(i).getMaxEl());
+			CPATD.setMinEl(listCP.get(i).getMinEl());
+			CPATD.setNombreHeures(listCP.get(i).getNombreHeures());
+			CPATD.setNomSport(listCP.get(i).getNomSport());
+			CPATD.setPeriodeCours(listCP.get(i).getPeriodeCours());
+			CPATD.setPrix(listCP.get(i).getPrix());
+			listCPATP.add(CPATD);
+		}
+		return listCPATP;
+	}
+	
+	public int getIdATD(CoursParticulierATD CPATD){
+		CoursParticulier CP = new CoursParticulier();
+		CP.setMaxEl(CPATD.getMaxEl());
+		CP.setMinEl(CPATD.getMinEl());
+		CP.setNombreHeures(CPATD.getNombreHeures());
+		CP.setNomSport(CPATD.getNomSport());
+		CP.setPeriodeCours(CPATD.getPeriodeCours());
+		CP.setPrix(CPATD.getPrix());
+		CP = getId(CP);
+		return CP.getNumCoursParticulier();
+	}
 	
 	// FONCTION SURCHARGEE
 		@Override

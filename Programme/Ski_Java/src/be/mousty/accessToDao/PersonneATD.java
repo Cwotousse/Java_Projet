@@ -19,7 +19,7 @@ public class PersonneATD {
 	private String 	sexe;
 	private Date 	dateNaissance;
 
-		
+
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 	// CONSTRUCTEURS
 	public PersonneATD(){}
@@ -30,8 +30,15 @@ public class PersonneATD {
 		this.sexe 			= sexe;
 		this.dateNaissance 	= dateNaissance;
 	}
-	
-	
+
+	public PersonneATD(Personne P){
+		this.nom 			= P.getNom();
+		this.pre 			= P.getPre();
+		this.adresse 		= P.getAdresse();
+		this.sexe 			= P.getSexe();
+		this.dateNaissance 	= P.getDateNaissance();
+	}
+
 	// METHODES
 	public double calculerAge(){
 		try {
@@ -39,12 +46,20 @@ public class PersonneATD {
 			long diffInMillies = now.getTime() - this.getDateNaissance().getTime();
 			long tu =  TimeUnit.DAYS.convert(diffInMillies,TimeUnit.MILLISECONDS);
 			return (double)tu/365;
-			
+
 		}
 		catch (Exception e) { e.getStackTrace(); }
 		return -1;
 	}
-	
+
+	// METHODES
+	public String attributerCategorie(){
+		String categorie = "Erreur";
+		if(this.calculerAge() <= 12 && this.calculerAge() > 4){ categorie = "Enfant"; }
+		if(this.calculerAge() > 12){ categorie = "Adulte"; }
+		return categorie;
+	}
+
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Personne> PersonneDAO = adf.getPersonneDAO();
@@ -55,16 +70,16 @@ public class PersonneATD {
 	public Personne 			find				(int id) 		{ return PersonneDAO.find(id); 					} 
 	public ArrayList<Personne> 	getList				() 				{ return PersonneDAO.getList(); 				} 
 	public ArrayList<Personne> 	getListSelonCriteres(Personne p) 	{ return PersonneDAO.getListSelonCriteres(p); 	}
-	
+
 	// METHODE SURCHARGEE
 	@Override
 	public String toString() { 
 		return 
-			nom.toUpperCase() + " " + pre + ", " + sexe + System.getProperty("line.separator") 
-			+ "Date de naissance : " + dateFormat.format(dateNaissance) + " (" + (int)calculerAge() + ")" + System.getProperty("line.separator") 
-			+ "Residence : " + adresse.toUpperCase() + System.getProperty("line.separator");
+				nom.toUpperCase() + " " + pre + ", " + sexe + System.getProperty("line.separator") 
+				+ "Date de naissance : " + dateFormat.format(dateNaissance) + " (" + (int)calculerAge() + ")" + System.getProperty("line.separator") 
+				+ "Residence : " + adresse.toUpperCase() + System.getProperty("line.separator");
 	}
-	
+
 	// PROPRIETES
 	public String getNom		() { return nom; }
 	public String getPre		() { return pre; }

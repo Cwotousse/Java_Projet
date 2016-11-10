@@ -107,7 +107,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 
 	// On cherche une Moniteur grâce à son id
 	public Moniteur find(int id) {
-		Moniteur moniteur = null;
+		Moniteur M = new Moniteur();
 		PreparedStatement pst = null;
 		PreparedStatement pstAccred = null;
 		try {
@@ -132,7 +132,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 					A.setNumAccreditation(rsAccred.getInt("numAccreditation"));
 					listeAccred.add(A);
 				}
-				Moniteur M = new Moniteur();
+				M = new Moniteur();
 				M.setNumMoniteur(res_mon.getInt("numMoniteur"));
 				M.setAnneeExp(0);
 				M.setAccrediList(listeAccred);
@@ -155,7 +155,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return moniteur;
+		return M;
 	}
 
 
@@ -303,15 +303,19 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		PreparedStatement pst = null;
 		Moniteur M = new Moniteur();
 		try {
-			String sql = "SELECT numPersonne FROM Personne WHERE nom = ? AND prenom = ? AND adresse = ? ;";
+			String sql = "SELECT * FROM Personne INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Personne.numPersonne "
+					+ "INNER JOIN Moniteur ON Moniteur.numMoniteur = Utilisateur.numUtilisateur "
+					+ "WHERE nom = ? AND prenom = ? AND adresse = ? ;";
 			pst = this.connect.prepareStatement(sql);
 			pst.setString(1, obj.getNom());
 			pst.setString(2, obj.getPre());
 			pst.setString(3, obj.getAdresse());
 			ResultSet res_Rec_Mon = pst.executeQuery();
+			//System.out.println("trouve");
 			while (res_Rec_Mon.next()) {
 				M.setNumMoniteur(res_Rec_Mon.getInt("numMoniteur"));
-				M.setAnneeExp(0);
+				M.setNumPersonne(res_Rec_Mon.getInt("numPersonne"));
+				M.setAnneeExp(res_Rec_Mon.getInt("anneeDexp"));
 				M.setAccrediList(null); // no need
 				M.setNumUtilisateur(res_Rec_Mon.getInt("numUtilisateur"));
 				M.setPseudo(res_Rec_Mon.getString("pseudo"));

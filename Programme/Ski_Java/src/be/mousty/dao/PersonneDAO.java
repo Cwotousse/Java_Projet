@@ -69,6 +69,7 @@ public class PersonneDAO  extends DAO<Personne> {
 	public Personne getId (Personne obj) {
 		PreparedStatement pst = null;
 		Personne P = new Personne ();
+		P.setNumPersonne(-1);
 		//int id = -1;
 		try {
 			String sql = "SELECT * FROM Personne WHERE nom = ? AND prenom = ? AND adresse = ? ;";

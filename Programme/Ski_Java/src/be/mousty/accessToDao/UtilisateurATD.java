@@ -29,6 +29,14 @@ public class UtilisateurATD extends PersonneATD{
 		this.mdp 				= mdp;
 		this.typeUtilisateur 	= typeUtilisateur;
 	}
+	
+	public UtilisateurATD(Utilisateur U){
+		super(U.getNom(), U.getPre(), U.getAdresse(), U.getSexe(), U.getDateNaissance());
+		this.pseudo 			= U.getPseudo();
+		this.mdp 				= U.getMdp();
+		this.typeUtilisateur 	= U.getTypeUtilisateur();
+	}
+	
 
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
@@ -49,7 +57,24 @@ public class UtilisateurATD extends PersonneATD{
 				+ "User name    : " + pseudo +  System.getProperty("line.separator")
 				+ "Mot de passe : " + mdp + System.getProperty("line.separator");
 	}
-
+	
+	// METHODES
+	public UtilisateurATD connexion(){
+		Utilisateur usr= new Utilisateur();
+		usr.setPseudo(this.getPseudo());
+		usr.setMdp(this.getMdp());
+		Utilisateur U =  this.getId(usr);
+		return  new UtilisateurATD(U);
+	}
+	
+	public int getNumId(){
+		Utilisateur usr= new Utilisateur();
+		usr.setPseudo(this.getPseudo());
+		usr.setMdp(this.getMdp());
+		Utilisateur U =  this.getId(usr);
+		return U.getNumPersonne();
+	}
+	
 	// PROPRIETES
 	public String getPseudo			() { return pseudo; }
 	public String getMdp			() { return mdp; }

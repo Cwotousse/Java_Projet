@@ -78,6 +78,8 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 		}
 		return liste;
 	}
+	
+	
 
 	/*public ArrayList<CoursParticulier> getListCoursParticulierSelonId(int idMoniteur, String periode){
 		//System.out.println("Entree fonc");
@@ -180,7 +182,7 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 			PreparedStatement pst = null;
 			CoursParticulier CP = new CoursParticulier();
 			try {
-				String sql = "SELECT numCoursParticulier FROM cours INNER JOIN CoursParticulier ON numCoursParticulier = numCours "
+				String sql = "SELECT * FROM cours INNER JOIN CoursParticulier ON numCoursParticulier = numCours "
 						+ " WHERE nomSport = ? AND periodeCours = ?;";
 				pst = this.connect.prepareStatement(sql);
 				pst.setString(1, obj.getNomSport());

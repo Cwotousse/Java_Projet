@@ -65,6 +65,7 @@ public class SemaineDAO extends DAO<Semaine> {
 			pst.setInt(1, id);
 			ResultSet res_rec_sem = pst.executeQuery();
 			while (res_rec_sem.next()) {
+				S = new Semaine();
 				//public Semaine(int numSemaine,  boolean congeScolaire, Date dateDebut, Date dateFin, int numSemaineDansAnnee){
 				S.setNumSemaine(res_rec_sem.getInt("numSemaine"));
 				S.setCongeScolaire(res_rec_sem.getBoolean("CongeScolaireOuNon"));
@@ -80,7 +81,7 @@ public class SemaineDAO extends DAO<Semaine> {
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return null;
+		return S;
 	}
 
 	public  ArrayList<Semaine> getList() {

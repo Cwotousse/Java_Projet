@@ -12,9 +12,10 @@ public class AccreditationATD {
 
 	// CONSTRUCTEURS
 	public AccreditationATD(){}
-	public AccreditationATD(String nom){
-		this.nom = nom;
-	}
+	public AccreditationATD(String nom){ this.nom = nom; }
+	public AccreditationATD(Accreditation A){ this.nom = A.getNomAccreditation(); }
+	
+	
 
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);

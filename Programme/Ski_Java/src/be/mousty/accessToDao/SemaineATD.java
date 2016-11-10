@@ -1,5 +1,6 @@
 package be.mousty.accessToDao;
 
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,8 +9,6 @@ import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.Semaine;
 
-import java.sql.Date;
-
 public class SemaineATD {
 	// VARIABLES
 	private Date dateDebut;
@@ -17,18 +16,23 @@ public class SemaineATD {
 	//private String descriptif;
 	private boolean congeScolaire;
 	private int numSemaineDansAnnee;
-	private int numSemaine;
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	// CONSTRUCTEURS
 	public SemaineATD(){}
-	public SemaineATD(int numSemaine,  boolean congeScolaire, Date dateDebut, Date dateFin, int numSemaineDansAnnee){
-		this.numSemaine 			= numSemaine;
+	public SemaineATD( boolean congeScolaire, Date dateDebut, Date dateFin, int numSemaineDansAnnee){
 		this.dateDebut 				= dateDebut;
 		this.dateFin 				= dateFin;
 		//this.descriptif 			= descriptif;
 		this.congeScolaire 			= congeScolaire;
 		this.numSemaineDansAnnee 	= numSemaineDansAnnee;
+	}
+
+	public SemaineATD(Semaine S){
+		this.dateDebut 				= S.getDateDebut();
+		this.dateFin 				= S.getDateFin();
+		this.congeScolaire 			= S.getCongeScolaire();
+		this.numSemaineDansAnnee 	= S.getNumSemaineDansAnnee();
 	}
 
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
@@ -54,6 +58,44 @@ public class SemaineATD {
 		catch (ParseException e) { e.printStackTrace(); return false; }
 	}
 
+	public ArrayList<SemaineATD> getListSemaineSelonDateDuJour(){
+		ArrayList<Semaine> listS = getListSelonCriteres(null);
+		ArrayList<SemaineATD> listSATD = new ArrayList<SemaineATD>();
+		for (int i = 0; i < listS.size(); i++) {
+			SemaineATD SATD = new SemaineATD();
+			SATD.setCongeScolaire(listS.get(i).getCongeScolaire());
+			SATD.setDateDebut(listS.get(i).getDateDebut());
+			SATD.setDateFin(listS.get(i).getDateFin());
+			SATD.setNumSemaineDansAnnee(listS.get(i).getNumSemaineDansAnnee());
+			listSATD.add(SATD);
+		}
+		return listSATD;
+	}
+
+	public ArrayList<SemaineATD> getListSem(){
+		ArrayList<Semaine> listSemaine  = getList();
+		ArrayList<SemaineATD> listSemaineoATD = new ArrayList<SemaineATD>();
+		for(int i = 0; i < listSemaine.size(); i++){
+			SemaineATD SATD = new SemaineATD();
+			//DMATD.setNom(A.get(i).getNomAccreditation());
+			SATD.setCongeScolaire(listSemaine.get(i).getCongeScolaire());
+			SATD.setDateDebut(listSemaine.get(i).getDateDebut());
+			SATD.setDateFin(listSemaine.get(i).getDateFin());
+			SATD.setNumSemaineDansAnnee(listSemaine.get(i).getNumSemaineDansAnnee());
+			listSemaineoATD.add(SATD);
+		}
+		return listSemaineoATD;
+	}
+
+	public int getIdATD(SemaineATD SATD){
+		Semaine S = new Semaine();
+		S.setCongeScolaire(SATD.getCongeScolaire());
+		S.setDateDebut(SATD.getDateDebut());
+		S.setDateFin(SATD.getDateFin());
+		S.setNumSemaineDansAnnee(SATD.getNumSemaineDansAnnee());
+		return getId(S).getNumSemaine();
+	}
+	
 	// FONCTION SURCHARGEE
 	@Override
 	public String toString() { 
@@ -69,12 +111,12 @@ public class SemaineATD {
 	//public String getDescriptif			() { return descriptif; }
 	public boolean getCongeScolaire		() { return congeScolaire; }
 	public int getNumSemaineDansAnnee	() { return numSemaineDansAnnee; }
-	public int getNumSemaine			() { return numSemaine; }
+	//public int getNumSemaine			() { return numSemaine; }
 	public void setDateDebut			(Date dateDebut) 			{ this.dateDebut = dateDebut; }
 	public void setDateFin				(Date dateFin) 				{ this.dateFin = dateFin; }
 	//public void setDescriptif			(String descriptif) 		{ this.descriptif = descriptif; }
 	public void setCongeScolaire		(boolean congeScolaire) 	{ this.congeScolaire = congeScolaire; }
 	public void setNumSemaineDansAnnee	(int numSemaineDansAnnee) 	{ this.numSemaineDansAnnee = numSemaineDansAnnee; }
-	public void setNumSemaine			(int numSemaine) 			{ this.numSemaine = numSemaine; }
+	//public void setNumSemaine			(int numSemaine) 			{ this.numSemaine = numSemaine; }
 }
 
