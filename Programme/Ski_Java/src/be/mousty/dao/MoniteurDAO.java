@@ -214,7 +214,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		return liste;
 	}
 
-	public ArrayList<Moniteur> getMyListSelonID(int nonUsed,  int numSemaine, int nonUsed2, String periode) {
+	public ArrayList<Moniteur> getMyListSelonID(int nonUsed,  long numSemaine, int nonUsed2, String periode) {
 		ArrayList<Moniteur> liste = new ArrayList<Moniteur>();
 		PreparedStatement pst_mon = null;
 		PreparedStatement pstAccred = null;
@@ -250,9 +250,9 @@ public class MoniteurDAO extends DAO<Moniteur>{
 							+ "(SELECT CoursMoniteur.numMoniteur FROM CoursMoniteur WHERE  numCours IN "
 							+ "(SELECT numCours FROM Cours WHERE numSemaine = ? AND disponible = 1 AND periodeCours "+ verifPeriode +" ));";
 			pst_mon = this.connect.prepareStatement(sql_mon);
-			pst_mon.setInt(1, numSemaine);
+			pst_mon.setLong(1, numSemaine);
 			//pst_mon.setString(2, periode);
-			pst_mon.setInt(2, numSemaine);
+			pst_mon.setLong(2, numSemaine);
 			ResultSet res_mon = pst_mon.executeQuery();
 			while (res_mon.next()) {
 				ArrayList<Accreditation> listeAccred = new ArrayList<Accreditation>();
@@ -352,13 +352,13 @@ public class MoniteurDAO extends DAO<Moniteur>{
 	}
 
 	@Override
-	public int valeurReduction(int numSem) {
+	public int valeurReduction(int numSem, int numEleve, double prixCours) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+	public String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -379,6 +379,18 @@ public class MoniteurDAO extends DAO<Moniteur>{
 	public void AjouterSemainesDansDB(String start, String end) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public long getDateDebutReserv(int numReserv) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ArrayList<Moniteur> getReservationAnnulee(int numUtilisateur, int typeUtilisateur) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

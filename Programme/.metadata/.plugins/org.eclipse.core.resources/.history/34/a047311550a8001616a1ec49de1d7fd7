@@ -1,0 +1,90 @@
+package be.mousty.fenetre;
+
+import java.awt.Color;
+import java.awt.EventQueue;
+
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.Timer;
+import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
+import be.mousty.utilitaire.ProgressCircleUI;
+
+public class F_PayerReservation extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1722632999901224579L;
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					F_PayerReservation frame = new F_PayerReservation();
+					frame.setVisible(true);
+					
+					frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+					frame.getContentPane().add(new CircularProgressTest().makeUI());
+					frame.setSize(320, 240);
+					frame.setLocationRelativeTo(null);
+					frame.setVisible(true);
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public F_PayerReservation() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 400);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		/*public static void main(String... args) {
+			EventQueue.invokeLater(() -> {
+				JFrame f = new JFrame();
+				f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+				f.getContentPane().add(new CircularProgressTest().makeUI());
+				f.setSize(320, 240);
+				f.setLocationRelativeTo(null);
+				f.setVisible(true);
+			});
+		}*/
+	}
+}
+
+class CircularProgressTest {
+	public JComponent makeUI() {
+		JProgressBar progress = new JProgressBar();
+		// use JProgressBar#setUI(...) method
+		progress.setUI(new ProgressCircleUI());
+		progress.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+		progress.setStringPainted(true);
+		progress.setFont(progress.getFont().deriveFont(24f));
+		progress.setForeground(Color.ORANGE);
+
+		(new Timer(50, e -> {
+			int iv = Math.min(100, progress.getValue() + 1);
+			progress.setValue(iv);
+		})).start();
+
+		JPanel p = new JPanel();
+		p.add(progress);
+		return p;
+	}
+}

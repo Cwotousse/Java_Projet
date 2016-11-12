@@ -98,7 +98,7 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 		return listSelonId;
 	}*/
 	@Override
-	public ArrayList<CoursParticulier> getMyListSelonID (int idMoniteur, int numSemaine, int nonUsed, String periode){
+	public ArrayList<CoursParticulier> getMyListSelonID (int idMoniteur, long numSemaine, int nonUsed, String periode){
 		PreparedStatement pst_lst_cou1 = null;
 		PreparedStatement pst_lst_cou2 = null;
 		ArrayList<CoursParticulier> listSelonId = new ArrayList<CoursParticulier>();
@@ -127,7 +127,7 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
             + "(SELECT CoursSemaine.numCours FROM Cours WHERE CoursSemaine.numSemaine = ? AND periodeCours " + verifPeriode + " AND numMoniteur = ?));";
 			pst_lst_cou1 = this.connect.prepareStatement(sql1);
 			pst_lst_cou1.setInt(1, idMoniteur);
-			pst_lst_cou1.setInt(2, numSemaine);
+			pst_lst_cou1.setLong(2, numSemaine);
 			//pst_lst_cou1.setString(4, periode);
 			pst_lst_cou1.setInt(3, idMoniteur);
 			ResultSet res_lst_cou1 = pst_lst_cou1.executeQuery();
@@ -135,6 +135,7 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 				CoursParticulier CP = new CoursParticulier();
 				CP.setNombreHeures(res_lst_cou1.getInt("nombreHeures"));
 				CP.setNumCours(res_lst_cou1.getInt("numCours"));
+				CP.setNumCoursParticulier(res_lst_cou1.getInt("numCoursParticulier"));
 				CP.setNomSport(res_lst_cou1.getString("nomSport"));
 				CP.setPrix(res_lst_cou1.getInt("prix"));
 				CP.setMinEl(res_lst_cou1.getInt("minEleve"));
@@ -156,6 +157,7 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 							CoursParticulier CP = new CoursParticulier();
 							CP.setNombreHeures(res_lst_cou2.getInt("nombreHeures"));
 							CP.setNumCours(res_lst_cou2.getInt("numCours"));
+							CP.setNumCoursParticulier(res_lst_cou2.getInt("numCoursParticulier"));
 							CP.setNomSport(res_lst_cou2.getString("nomSport"));
 							CP.setPrix(res_lst_cou2.getInt("prix"));
 							CP.setMinEl(res_lst_cou2.getInt("minEleve"));
@@ -191,6 +193,7 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 				while (res_Rec_CP.next()) { 
 					CP.setNombreHeures(res_Rec_CP.getInt("nombreHeures"));
 					CP.setNumCours(res_Rec_CP.getInt("numCours"));
+					CP.setNumCoursParticulier(res_Rec_CP.getInt("numCoursParticulier"));
 					CP.setNomSport(res_Rec_CP.getString("nomSport"));
 					CP.setPrix(res_Rec_CP.getInt("prix"));
 					CP.setMinEl(res_Rec_CP.getInt("minEleve"));
@@ -221,13 +224,13 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 	}
 
 	@Override
-	public int valeurReduction(int numSem) {
+	public int valeurReduction(int numSem, int numEleve, double prixCours) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+	public String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -248,6 +251,18 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 	public void AjouterSemainesDansDB(String start, String end) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public long getDateDebutReserv(int numReserv) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ArrayList<CoursParticulier> getReservationAnnulee(int numUtilisateur, int typeUtilisateur) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

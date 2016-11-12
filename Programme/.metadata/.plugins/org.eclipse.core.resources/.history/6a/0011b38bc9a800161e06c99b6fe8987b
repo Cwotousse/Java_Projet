@@ -1,0 +1,94 @@
+package be.mousty.fenetre;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
+import javax.swing.border.EmptyBorder;
+
+import be.mousty.utilitaire.ProgressCircleUI;
+
+public class F_PayerReservation extends JFrame {
+
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					F_PayerReservation frame = new F_PayerReservation();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public F_PayerReservation() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPane);
+		
+		private final JProgressBar progress2 = new JProgressBar() {
+	        @Override public void updateUI() {
+	            super.updateUI();
+	            setUI(new ProgressCircleUI());
+	            setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+	        }
+	    };
+	    //public F_PayerReservation() {
+	        //super(new BorderLayout());
+	       
+	        progress2.setStringPainted(true);
+	        progress2.setFont(progress2.getFont().deriveFont(24f));
+	        progress2.setVisible(false);
+
+	        add(new JButton(new AbstractAction("start") {
+	            @Override public void actionPerformed(ActionEvent e) {
+	            	progress2.setVisible(true);
+	                final JButton b = (JButton) e.getSource();
+	                b.setEnabled(false);
+	                SwingWorker<String, Void> worker = new Task() {
+	                    @Override public void done() {
+	                        if (b.isDisplayable()) {
+	                        	
+	                            b.setEnabled(true);
+	                            setVisible(false);
+	                            System.exit(0);
+	            				F_Client frame = new F_Client(118);
+	            				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+	            				frame.setVisible(true);
+	                        }
+	                    }
+	                };
+	                worker.addPropertyChangeListener(new ProgressListener(progress2));
+	                worker.execute();
+	            }
+	        }), BorderLayout.SOUTH);
+
+	        JPanel p = new JPanel(new GridLayout(1, 2));
+	        p.add(progress2);
+	        add(p);
+	        setPreferredSize(new Dimension(320, 240));
+	}
+
+}

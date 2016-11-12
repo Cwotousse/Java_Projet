@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import be.mousty.accessToDao.DisponibiliteMoniteurATD;
+import be.mousty.accessToDao.MoniteurATD;
 import be.mousty.accessToDao.SemaineATD;
 import be.mousty.utilitaire.ButtonColumn;
 
@@ -69,7 +70,7 @@ public class F_Moniteur extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		lblMoniteur.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
-		lblMoniteur.setBounds(10, 11, 73, 36);
+		lblMoniteur.setBounds(10, 11, 117, 36);
 		contentPane.add(lblMoniteur);
 
 		JLabel errMsg = new JLabel("");
@@ -107,7 +108,12 @@ public class F_Moniteur extends JFrame {
 		});
 		btn_cours.setBounds(10, 58, 117, 23);
 		contentPane.add(btn_cours);
-
+		
+		// Affiche le nom du moniteur
+		MoniteurATD MATD = new MoniteurATD();
+		MATD = MATD.findM(numMoniteur);
+		lblMoniteur.setText(MATD.getNom().toUpperCase() + " " + MATD.getPre());
+		
 		if (premierPassage)
 			afficherTable();
 		premierPassage = false;
@@ -124,9 +130,9 @@ public class F_Moniteur extends JFrame {
 		String[] columns = new String[] { "Dispo", "Debut", "Fin", "Modifier" };
 
 		// actual data for the table in a 2d array
-		Object[][] data = new Object[listDispo.size()][4];
+		Object[][] data = new Object[listSemaine.size()][4];
 
-		for (int i = 0; i < listDispo.size(); i++) {
+		for (int i = 0; i < listSemaine.size(); i++) {
 			data[i][0] = listDispo.get(i).getDisponible();
 			data[i][1] = listSemaine.get(i).getDateDebut();
 			data[i][2] = listSemaine.get(i).getDateFin();
@@ -172,11 +178,8 @@ public class F_Moniteur extends JFrame {
 				super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
 				boolean status = (boolean) table.getModel().getValueAt(row, 0);
-				if (status) {
-					setBackground(new Color(102, 255, 51));
-				} else {
-					setBackground(new Color(255, 77, 0));
-				}
+				if (status) { setBackground(new Color(102, 255, 51)); } 
+				else { setBackground(new Color(255, 77, 0)); }
 				return this;
 			}
 		});

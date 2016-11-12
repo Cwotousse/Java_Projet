@@ -88,7 +88,8 @@ public class SemaineDAO extends DAO<Semaine> {
 		ArrayList<Semaine> liste = new ArrayList<Semaine>();
 		PreparedStatement pst = null;
 		try {
-			String sql = "SELECT * FROM Semaine";
+			java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+			String sql = "SELECT * FROM Semaine WHERE dateDebut > " + now.getTime();
 			pst = this.connect.prepareStatement(sql);
 			ResultSet res_rec_sem = pst.executeQuery();
 			while (res_rec_sem.next()) {
@@ -221,7 +222,7 @@ public class SemaineDAO extends DAO<Semaine> {
 	}
 
 	@Override
-	public ArrayList<Semaine> getMyListSelonID(int id1, int id2, int id3, String str1) {
+	public ArrayList<Semaine> getMyListSelonID(int id1, long id2, int id3, String str1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -233,13 +234,13 @@ public class SemaineDAO extends DAO<Semaine> {
 	}
 
 	@Override
-	public int valeurReduction(int numSem) {
+	public int valeurReduction(int numSem, int numEleve, double prixCours) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+	public String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -254,6 +255,18 @@ public class SemaineDAO extends DAO<Semaine> {
 	public void creerTouteDisponibilitesSelonMoniteur(int i) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public long getDateDebutReserv(int numReserv) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ArrayList<Semaine> getReservationAnnulee(int numUtilisateur, int typeUtilisateur) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/*public ArrayList<Semaine> getListSemaineSelonDateDuJour(){

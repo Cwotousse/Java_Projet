@@ -86,7 +86,8 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		return liste;
 	}
 	
-	public ArrayList<CoursCollectif> getMyListSelonID(int idMoniteur, int idEleve, int numSemaine, String periode){
+	@Override
+	public ArrayList<CoursCollectif> getMyListSelonID(int idMoniteur, long numSemaine, int idEleve, String periode){
 		//System.out.println("Entree fonc");
 		/*ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur);
 		ArrayList<CoursCollectif> listFull = getList();
@@ -130,7 +131,7 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 			pst_lst_cou1.setString(1, periode);
 			pst_lst_cou1.setInt(2, idEleve);
 			pst_lst_cou1.setInt(3, idMoniteur);
-			pst_lst_cou1.setInt(4, numSemaine);
+			pst_lst_cou1.setLong(4, numSemaine);
 			pst_lst_cou1.setString(5, periode);
 			pst_lst_cou1.setInt(6, idMoniteur);
 			ResultSet res_cou_col = pst_lst_cou1.executeQuery();
@@ -235,13 +236,13 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 	}
 
 	@Override
-	public int valeurReduction(int numSem) {
+	public int valeurReduction(int numSem, int numEleve, double prixCours) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+	public String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -262,5 +263,17 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 	public void AjouterSemainesDansDB(String start, String end) {
 		// TODO Auto-generated method stub
 		
-	}	
+	}
+
+	@Override
+	public long getDateDebutReserv(int numReserv) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ArrayList<CoursCollectif> getReservationAnnulee(int numUtilisateur, int typeUtilisateur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

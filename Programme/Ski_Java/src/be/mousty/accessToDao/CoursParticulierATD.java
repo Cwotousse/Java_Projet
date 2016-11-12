@@ -36,11 +36,11 @@ public class CoursParticulierATD extends CoursATD{
 	public boolean 				update				(CoursParticulier c) 		{ return CoursParticulierDAO.update(c); 	}
 	public CoursParticulier 	find				(int id) 					{ return CoursParticulierDAO.find(id); 		} 
 	public ArrayList<CoursParticulier> 	getListCP 	() 							{ return CoursParticulierDAO.getList(); 	} 
-	public ArrayList<CoursParticulier> getListCoursParticulierSelonId(int idMoniteur, String periode, int numSemaine)
+	public ArrayList<CoursParticulier> getListCoursParticulierSelonId(int idMoniteur, String periode, long numSemaine)
 	{ return CoursParticulierDAO.getMyListSelonID(idMoniteur, numSemaine, -1, periode); 	}
 	
 	
-	public ArrayList<CoursParticulierATD> getListCoursParticulierSelonIdATD(int numMoniteur, String periode, int numSemaine){
+	public ArrayList<CoursParticulierATD> getListCoursParticulierSelonIdATD(int numMoniteur, String periode, long numSemaine){
 		ArrayList<CoursParticulier> listCP  = getListCoursParticulierSelonId(numMoniteur, periode, numSemaine);
 		ArrayList<CoursParticulierATD> listCPATP = new ArrayList<CoursParticulierATD>();
 		for(int i = 0; i < listCP.size(); i++){

@@ -1,0 +1,25 @@
+package be.mousty.pojo;
+
+import java.sql.Date;
+
+public class  CoursSemaine{
+	// VARIABLES
+	private int numSemaine;
+	private int numCours;
+	private Date dateDebutReserv;
+	private Date dateFinReserv;
+	
+	
+	// CONSTRUCTEUR SANS ARGUMENTS
+	public CoursSemaine(){}
+	
+	// PROPRIETE
+	public int getNumCours			() 			{ return numCours; 			}
+	public int getNumSemaine		() 			{ return numSemaine; 		}
+	public Date getDateDebutReserv	()	 		{ return dateDebutReserv; 	}
+	public Date getDateFinReserv	() 			{ return dateFinReserv; 	}
+	public void setNumCours			(int el) 	{ this.numCours = el; 		}
+	public void setNumSemaine		(int el) 	{ this.numSemaine = el; 	}
+	public void setDateDebutReserv	(Date dateDebutReserv) 	{ this.dateDebutReserv = dateDebutReserv; 	}
+	public void setDateFinReserv	(Date dateFinReserv) 	{ this.dateFinReserv = dateFinReserv; 		}
+}

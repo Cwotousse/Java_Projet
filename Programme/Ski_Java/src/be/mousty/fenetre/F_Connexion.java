@@ -36,8 +36,6 @@ public class F_Connexion extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					/*Semaine S = new Semaine();
-					S.AjouterSemainesDansDB();*/
 					F_Connexion frame = new F_Connexion();
 					frame.setVisible(true);
 				} catch (Exception e) {

@@ -39,7 +39,7 @@ public class EleveATD extends PersonneATD{
 	public Eleve 				find				(int id) 	{ return EleveDAO.find(id); 	} 
 	public ArrayList<Eleve> 	getListEl			() 			{ return EleveDAO.getList(); 	} 
 	public ArrayList<Eleve> 	getListSelonCriteres(Eleve e) 	{ return EleveDAO.getListSelonCriteres(e); 	}
-	public ArrayList<Eleve> getListEleveSelonAccredProfEtCours(int numMoniteur, int numSemaine, int numClient, String periode)
+	public ArrayList<Eleve> getListEleveSelonAccredProfEtCours(int numMoniteur, long numSemaine, int numClient, String periode)
 	{ return EleveDAO.getMyListSelonID(numMoniteur, numSemaine, numClient,  periode); }
 	
 
@@ -56,7 +56,7 @@ public class EleveATD extends PersonneATD{
 		E.setSexe(getSexe());
 		return create(E);
 	}
-	public ArrayList<EleveATD> getListEleveSelonAccredProfEtCoursATD(int numMoniteur, int numSemaine, int numClient, String periode){
+	public ArrayList<EleveATD> getListEleveSelonAccredProfEtCoursATD(int numMoniteur, long numSemaine, int numClient, String periode){
 		ArrayList<Eleve>  listE = getListEleveSelonAccredProfEtCours(numMoniteur, numSemaine, numClient, periode);
 		ArrayList<EleveATD> listEATD = new ArrayList<EleveATD>();
 		for (int i = 0; i < listE.size(); i++) {

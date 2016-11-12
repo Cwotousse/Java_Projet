@@ -42,7 +42,7 @@ public class CoursATD {
 	public boolean 				update				(Cours c) 		{ return CoursDAO.update(c); 	}
 	public Cours 				find				(int id) 		{ return CoursDAO.find(id); 	} 
 	public ArrayList<Cours> 	getListC			() 				{ return CoursDAO.getList(); 	} 
-	public String 				calculerPlaceCours 	(int idCours, int idSemaine, int idMoniteur) 
+	public String 				calculerPlaceCours 	(int idCours, long idSemaine, int idMoniteur) 
 	{ return CoursDAO.calculerPlaceCours(idCours, idSemaine, idMoniteur); }
 	public ArrayList<Cours> 	getListCoursSelonId	(int idMoniteur){ return CoursDAO.getMyListSelonID(idMoniteur, -1, -1, ""); 	}
 

@@ -44,7 +44,7 @@ public class MoniteurATD extends UtilisateurATD{
 	public Moniteur 			find				(int id) 		{ return MoniteurDAO.find(id); 					} 
 	public ArrayList<Moniteur> 	getListMon			() 				{ return MoniteurDAO.getList(); 				} 
 	public ArrayList<Moniteur> 	getListSelonCriteres(Moniteur m) 	{ return MoniteurDAO.getListSelonCriteres(m); 	}
-	public ArrayList<Moniteur> 	getListDispo		(int numSemaine, String periode) { return MoniteurDAO.getMyListSelonID(-1, numSemaine, -1,  periode); }
+	public ArrayList<Moniteur> 	getListDispo		(long numSemaine, String periode) { return MoniteurDAO.getMyListSelonID(-1, numSemaine, -1,  periode); }
 
 	// METHODES 
 

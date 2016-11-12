@@ -19,14 +19,14 @@ public abstract class AbstractDAOFactory {
 
 	public abstract DAO<Utilisateur> 			getUtilisateurDAO();
 	public abstract DAO<Personne> 				getPersonneDAO();
-	public abstract DAO<Client> 					getClientDAO();
+	public abstract DAO<Client> 				getClientDAO();
 	public abstract DAO<Moniteur> 				getMoniteurDAO();
 	public abstract DAO<Eleve> 					getEleveDAO();
 	public abstract DAO<Accreditation> 			getAccreditationDAO();
 	public abstract DAO<Semaine> 				getSemaineDAO();
 	public abstract DAO<Cours> 					getCoursDAO();
 	public abstract DAO<CoursParticulier> 		getCoursParticulierDAO();
-	public abstract DAO<CoursCollectif> 			getCoursCollectifDAO();
+	public abstract DAO<CoursCollectif> 		getCoursCollectifDAO();
 	public abstract DAO<Reservation> 			getReservationDAO();
 	public abstract DAO<DisponibiliteMoniteur> 	getDisponibiliteMoniteurDAO();
 

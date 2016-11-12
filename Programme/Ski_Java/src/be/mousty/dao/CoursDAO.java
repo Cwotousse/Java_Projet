@@ -73,7 +73,7 @@ public class CoursDAO extends DAO<Cours> {
 		return liste;
 	}
 	
-	public ArrayList<Cours> getMyListSelonID(int idMoniteur, int nonUsed, int nonUsed2, String nonUsed3){
+	public ArrayList<Cours> getMyListSelonID(int idMoniteur, long nonUsed, int nonUsed2, String nonUsed3){
 		PreparedStatement pst_rec_cou = null;
 		ArrayList<Cours> listSelonId = new ArrayList<Cours>();
 		try {
@@ -109,38 +109,49 @@ public class CoursDAO extends DAO<Cours> {
 		return listSelonId;
 	}
 	
-	public String calculerPlaceCours(int idCours, int idSemaine, int idMoniteur){
+	public String calculerPlaceCours(int idCours, long idSemaine, int idMoniteur){
 		PreparedStatement pst_rec_cou = null;
 		PreparedStatement pst_cpt_cou = null;
 		try {
 			int min = 0;
 			int max = 0;
-			int placeActuelle = 0;
+			// Recherch des cours
 			String sql_rec_cou = "SELECT * FROM Cours WHERE numCours = ?";
+			
 			pst_rec_cou = this.connect.prepareStatement(sql_rec_cou);
 			pst_rec_cou.setInt(1, idCours);
 			ResultSet res_rec_cou = pst_rec_cou.executeQuery();
-			
-			String sql_cpt_res = "SELECT Count(*) AS total FROM ReservationCours "
-					+ "INNER JOIN Cours ON Cours.numCours = ReservationCours.numCours "
-					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
-					+ "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = Cours.numCours "
-					+ "WHERE ReservationCours.numCours = ? AND CoursSemaine.numSemaine = ? AND CoursMoniteur.numMoniteur = ? ;";
-			
-			pst_cpt_cou = this.connect.prepareStatement(sql_cpt_res);
-			
-			pst_cpt_cou.setInt(1, idCours);
-			pst_cpt_cou.setInt(2, idSemaine);
-			pst_cpt_cou.setInt(3, idMoniteur);
-			
-			
-			ResultSet res_cpt_cou = pst_cpt_cou.executeQuery();
-			
 			while (res_rec_cou.next()) {
 				min = res_rec_cou.getInt("minEleve");
 				max = res_rec_cou.getInt("maxEleve");
 			}
 			
+			
+			String semaineOuJournee = " WHERE numSemaine = ? "; // semaine
+			if (idSemaine > 1000 || idSemaine < 0) // journée
+				semaineOuJournee = " WHERE dateDebutReserv = ? ";
+			int placeActuelle = 0;
+			
+			/*String sql_cpt_res = "SELECT Count(*) AS total FROM ReservationCours "
+					+ "INNER JOIN Cours ON Cours.numCours = ReservationCours.numCours "
+					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
+					+ "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = Cours.numCours "
+					+ "WHERE ReservationCours.numCours = ? " + semaineOuJournee + " AND CoursMoniteur.numMoniteur = ? "
+					+ "GROUP BY ReservationCours.numCours;";*/
+			String sql_cpt_res = "SELECT count(*) as total FROM ReservationCours WHERE numCours IN "
+					+ "(SELECT numCours FROM Cours WHERE numCours IN "
+					+ "(SELECT numCours FROM ReservationCours WHERE numCours = ? AND numCours IN "
+					+ "(SELECT numCours FROM CoursSemaine  " + semaineOuJournee + " AND numCours IN "
+					+ "(SELECT numCours FROM CoursMoniteur WHERE numMoniteur = ?)))) "
+					+ "group by numCours;";
+			
+			pst_cpt_cou = this.connect.prepareStatement(sql_cpt_res);
+			
+			pst_cpt_cou.setInt(1, idCours);
+			pst_cpt_cou.setLong(2, idSemaine);
+			pst_cpt_cou.setInt(3, idMoniteur);
+			
+			ResultSet res_cpt_cou = pst_cpt_cou.executeQuery();
 			while (res_cpt_cou.next()) { placeActuelle = res_cpt_cou.getInt("total"); }
 			int seuilMini = min - placeActuelle;
 			if (seuilMini < 0){ seuilMini = 0; }
@@ -178,7 +189,7 @@ public class CoursDAO extends DAO<Cours> {
 	}
 
 	@Override
-	public int valeurReduction(int numSem) {
+	public int valeurReduction(int numSem, int numEleve, double prixCours) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -199,6 +210,18 @@ public class CoursDAO extends DAO<Cours> {
 	public void AjouterSemainesDansDB(String start, String end) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public long getDateDebutReserv(int numReserv) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ArrayList<Cours> getReservationAnnulee(int numUtilisateur, int typeUtilisateur) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

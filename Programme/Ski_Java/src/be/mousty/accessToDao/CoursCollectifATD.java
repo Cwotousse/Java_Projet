@@ -41,11 +41,11 @@ public class CoursCollectifATD extends CoursATD{
 	public boolean 				update				(CoursCollectif c) 		{ return CoursCollectifDAO.update(c); 	}
 	public CoursCollectif 	find				(int id) 					{ return CoursCollectifDAO.find(id); 		} 
 	public ArrayList<CoursCollectif> 	getListCC 	() 							{ return CoursCollectifDAO.getList(); 	} 
-	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, int numSemaine,  String periode)
-	{ return CoursCollectifDAO.getMyListSelonID(idMoniteur, idEleve, numSemaine, periode); 	}
+	public ArrayList<CoursCollectif> getListCoursCollectifSelonId(int idMoniteur, int idEleve, long numSemaine,  String periode)
+	{ return CoursCollectifDAO.getMyListSelonID(idMoniteur, numSemaine, idEleve, periode); 	}
 
 	// METHODES
-	public ArrayList<CoursCollectifATD> getListCoursCollectifSelonIdATD(int numMoniteur, int idEleve,  int numSemaine, String periode){
+	public ArrayList<CoursCollectifATD> getListCoursCollectifSelonIdATD(int numMoniteur, int idEleve,  long numSemaine, String periode){
 		ArrayList<CoursCollectif> listCC  = getListCoursCollectifSelonId(numMoniteur, idEleve,  numSemaine, periode);
 		ArrayList<CoursCollectifATD> listCCATP = new ArrayList<CoursCollectifATD>();
 		for(int i = 0; i < listCC.size(); i++){

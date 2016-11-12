@@ -1,6 +1,9 @@
 package be.mousty.accessToDao;
 
+import java.sql.Date;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
@@ -20,7 +23,6 @@ public class ReservationATD {
 	Moniteur M;
 	private int heureDebut;
 	private int heureFin;
-	private int numReservation;
 	private boolean aUneAssurance;
 
 	// CONSTRUCTEURS
@@ -31,7 +33,7 @@ public class ReservationATD {
 			Eleve E, Client Cli, Moniteur M) {
 		this.heureDebut = heureDebut;
 		this.heureFin = heureFin;
-		this.numReservation = numReservation;
+		//this.numReservation = numReservation;
 		this.aUneAssurance = aUneAssurance;
 		this.C = C;
 		this.S = S;
@@ -43,7 +45,7 @@ public class ReservationATD {
 	public ReservationATD(Reservation R) {
 		this.heureDebut = R.getHeureDebut();
 		this.heureFin = R.getHeureFin();
-		this.numReservation = R.getNumReservation();
+		//this.numReservation = R.getNumReservation();
 		this.aUneAssurance = R.getAUneAssurance();
 		this.C = R.getCours();
 		this.S = R.getSemaine();
@@ -88,12 +90,44 @@ public class ReservationATD {
 		return ReservationDAO.getListSelonCriteres(r);
 	}
 
-	public int valeurReduction(int numSemaine) {
-		return ReservationDAO.valeurReduction(numSemaine);
+	public int valeurReduction(int numSemaine, int numEleve, double prixCours) {
+		return ReservationDAO.valeurReduction(numSemaine, numEleve, prixCours);
 	}
 
 	public boolean updateAssurance(int numEleve, int numSemaine, String periode) {
 		return ReservationDAO.updateAssurance(numEleve, numSemaine, periode);
+	}
+	
+	public long getDateDebutReserv (int numReserv){
+		return ReservationDAO.getDateDebutReserv(numReserv);
+	}
+	
+	public void getReservationAnnulee (int numUtilisateur, int typeUtilisateur){
+		ArrayList<Reservation> listReserv =  ReservationDAO.getReservationAnnulee(numUtilisateur, typeUtilisateur); 
+		if (listReserv.size() == 0)
+			JOptionPane.showMessageDialog(null, "Suite à un scan de notre programme, aucuns de vos rendez-vous n'est susceptible d'être annulé.");
+		else {
+			for(Reservation R : listReserv){
+				if (typeUtilisateur == 1 )
+					JOptionPane.showMessageDialog(null,
+							"Les cours suivant risquent d'être annulés : " + "\n"
+							+ "Réservation n° : " + R.getNumReservation() + ", " +  R.getCours().getNomSport() + "\n"
+							+ "Moniteur : " + R.getMoniteur().getNom()  + " " + R.getMoniteur().getPre() + " \n"
+							+ "Client : " + R.getClient().getNom()  + " " + R.getClient().getPre() + " \n"
+							+ "Eleve : " + R.getEleve().getNom()  + " " +  R.getEleve().getPre()  + " \n"
+							+ "Semaine : " + R.getSemaine().getDateDebut() + "\n\n");
+				else 
+					JOptionPane.showMessageDialog(null,
+							"Les cours suivant risquent d'être annulés : " + "\n"
+							+ "Réservation n° : " + R.getNumReservation() + ", " +  R.getCours().getNomSport() + "\n"
+							+ "Moniteur : " + R.getMoniteur().getNom()  + " " + R.getMoniteur().getPre() + " \n"
+							+ "Client : " + R.getClient().getNom()  + " " + R.getClient().getPre() + " \n"
+							+ "Eleve : " + R.getEleve().getNom()  + " " +  R.getEleve().getPre()  + " \n"
+							+ "Semaine : " + R.getSemaine().getDateDebut() + "\n\n"
+							+ "Vous serez remboursé de " + R.getCours().getPrix() + "€" + "\n"
+							+ "Adresse de rembrousement : " + R.getClient().getAdresseFacturation());
+			}
+		}
 	}
 
 	// FONCTION SURCHARGEE
@@ -131,7 +165,7 @@ public class ReservationATD {
 		R.setCours(C);
 		R.setClient(Cli);
 		R.setEleve(this.getEleve());
-		return (getId(R).getNumReservation());
+		return getId(R).getNumReservation();
 	}
 
 	public int createReservation() {
@@ -145,10 +179,66 @@ public class ReservationATD {
 		R.setEleve(E);
 		R.setClient(Cli);
 		R.setMoniteur(M);
-		System.out.println(R.getHeureDebut());
 		return ReservationDAO.create(R);
 	}
 
+	public int effectuerReservation(boolean coursCollectif, boolean assurance, int numMoniteur, int idClient, int numEleve, int numSemaine,
+			Date dateJour, int numCours, String periode){
+		CoursATD CATD = new CoursATD ();
+		SemaineATD SATD = new SemaineATD();
+		EleveATD EATD = new EleveATD();
+		ClientATD CLIATD = new ClientATD();
+		MoniteurATD MATD = new MoniteurATD();
+		
+		String string;
+		if(!coursCollectif)
+			string = CATD.calculerPlaceCours(numCours, dateJour.getTime(), numMoniteur);
+		else 
+			string = CATD.calculerPlaceCours(numCours, numSemaine, numMoniteur);
+		//String string = CoursDAO.calculerPlaceCours(numCours, numSemaine, numMoniteur);
+		String[] parts = string.split("-");
+		String part1 = parts[0];
+		if(Integer.parseInt(part1) > 0){
+			//System.out.println("Réservation effectué");
+			String[] partsPer = periode.split("-");
+			String heureDebut = partsPer[0];
+			String heureFin = partsPer[1];
+			//boolean assurance = chkb_assur.isSelected();
+			//RATD = new ReservationATD();
+			this.setHeureDebut(Integer.parseInt(heureDebut));
+			this.setHeureFin(Integer.parseInt(heureFin));
+			this.setAUneAssurance(assurance);
+			// utilisé pour réservation coursParticulier.
+			if(!coursCollectif){
+				SATD = SATD.findATD(numSemaine);
+				SATD.setDateDebut(dateJour);
+				SATD.setDateFin(dateJour);
+				this.setSemaine(SATD.transformATDintoPojo(numSemaine));
+				System.out.println("F_AjoutRrdv -> cours particulier");
+			}
+			else { this.setSemaine(SATD.find(numSemaine)); System.out.println("F_AjoutRrdv -> cours collectif");}
+			
+			
+			this.setCours(CATD.find(numCours));
+			this.setEleve(EATD.find(numEleve));
+			this.setClient(CLIATD.find(idClient));
+			this.setMoniteur(MATD.find(numMoniteur));
+			int numReservation = this.createReservation();
+
+
+			if(numReservation != -1){
+				this.updateAssurance(numEleve, numSemaine, periode);
+				System.out.println("Num reserv : " + numReservation);
+				return numReservation;
+			}
+			//else { lbl_infoCours.setText("Reservation annulée. (6 ans mini pour faire du snow)"); }
+			else JOptionPane.showMessageDialog(null, "Reservation annulée. (6 ans mini pour faire du snow)");
+		}
+		//else { lbl_infoCours.setText("Vous ne pouvez plus réserver pour ce cours."); }
+		else JOptionPane.showMessageDialog(null, "Vous ne pouvez plus réserver pour ce cours.");
+		return -1;
+		
+	}
 	// public void deleteReservation () { ReservationDAO.delete(null); }
 
 	// PROPRIETE
@@ -158,10 +248,6 @@ public class ReservationATD {
 
 	public int getHeureFin() {
 		return heureFin;
-	}
-
-	public int getNumReservation() {
-		return numReservation;
 	}
 
 	public Semaine getSemaine() {
@@ -196,9 +282,6 @@ public class ReservationATD {
 		this.heureFin = heureFin;
 	}
 
-	public void setNumReservation(int numReservation) {
-		this.numReservation = numReservation;
-	}
 	// public void serMoniteur(Moniteur M) { this.M = M;}
 
 	public void setAUneAssurance(boolean aUneAssurance) {

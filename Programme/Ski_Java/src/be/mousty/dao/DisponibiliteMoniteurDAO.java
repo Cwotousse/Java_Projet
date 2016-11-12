@@ -111,7 +111,7 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 	}
 
 	@Override
-	public ArrayList<DisponibiliteMoniteur> getMyListSelonID(int idMoniteur, int nonUsed, int nonUsed2, String nonUsed3) { 
+	public ArrayList<DisponibiliteMoniteur> getMyListSelonID(int idMoniteur, long nonUsed, int nonUsed2, String nonUsed3) { 
 		ArrayList<DisponibiliteMoniteur> liste = new ArrayList<DisponibiliteMoniteur>();
 
 		PreparedStatement pst = null;
@@ -212,13 +212,13 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 	}
 
 	@Override
-	public int valeurReduction(int numSem) {
+	public int valeurReduction(int numSem, int numEleve, double prixCours) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+	public String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -227,6 +227,18 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 	public void AjouterSemainesDansDB(String start, String end) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public long getDateDebutReserv(int numReserv) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ArrayList<DisponibiliteMoniteur> getReservationAnnulee(int numUtilisateur, int typeUtilisateur) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

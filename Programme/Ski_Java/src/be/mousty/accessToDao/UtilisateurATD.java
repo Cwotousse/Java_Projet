@@ -42,7 +42,7 @@ public class UtilisateurATD extends PersonneATD{
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Utilisateur> UtilisateurDAO = adf.getUtilisateurDAO();
 	public int					 	create				(Utilisateur u) 	{ return UtilisateurDAO.create(u); 					}
-	public boolean 					delete				(Utilisateur u)	 	{ return UtilisateurDAO.delete(u); 				}
+	public boolean 					delete				(Utilisateur u)	 	{ return UtilisateurDAO.delete(u); 					}
 	public Utilisateur 				getId				(Utilisateur u) 	{ return UtilisateurDAO.getId(u); 					}
 	public boolean 					update				(Utilisateur u) 	{ return UtilisateurDAO.update(u); 					}
 	public Utilisateur 				find				(int id) 			{ return UtilisateurDAO.find(id); 					} 
@@ -64,6 +64,8 @@ public class UtilisateurATD extends PersonneATD{
 		usr.setPseudo(this.getPseudo());
 		usr.setMdp(this.getMdp());
 		Utilisateur U =  this.getId(usr);
+		ReservationATD RATD = new ReservationATD();
+		RATD.getReservationAnnulee(U.getNumUtilisateur(), U.getTypeUtilisateur());
 		return  new UtilisateurATD(U);
 	}
 	

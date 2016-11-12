@@ -185,7 +185,7 @@ public class EleveDAO extends DAO<Eleve> {
 	 */
 	// getListEleveSelonAccredProfEtCours
 	@Override
-	public ArrayList<Eleve> getMyListSelonID(int numMoniteur, int numSemaine, int numClient, String periode) {
+	public ArrayList<Eleve> getMyListSelonID(int numMoniteur, long numSemaine, int numClient, String periode) {
 		ArrayList<Eleve> liste = new ArrayList<Eleve>();
 		PreparedStatement pst = null;
 		try {
@@ -214,16 +214,18 @@ public class EleveDAO extends DAO<Eleve> {
 			String verifPeriode;
 			switch (periode) {
 			case "12-13":
-				verifPeriode = " IN('12-14',?) ";
+				// ATTENTION ici le numéro de semaine correspond à la date du jour choisi en miliseconde
+				verifPeriode = " IN('12-14',?) AND dateDebutReserv = DateFinReserv  AND dateDebutReserv = ? ";
 				break;
 			case "13-14":
-				verifPeriode = " IN('12-14',?) ";
+				verifPeriode = " IN('12-14',?) AND dateDebutReserv = DateFinReserv AND dateDebutReserv = ? ";
 				break;
 			case "12-14":
-				verifPeriode = " IN('12-13', '13-14', ?) ";
+				verifPeriode = " IN('12-13', '13-14', ?) AND dateDebutReserv = DateFinReserv AND dateDebutReserv = ? ";
 				break;
 			default:
-				verifPeriode = " = ? ";
+				// Ici le numéro de semaine est bien le numéro de semaine
+				verifPeriode = " = ? AND CoursSemaine.numSemaine = ? ";
 				break;
 			}
 			//System.out.println(numMoniteur + " " + numSemaine + " " + numClient + " " + periode);
@@ -235,14 +237,14 @@ public class EleveDAO extends DAO<Eleve> {
 					+ "(SELECT numReservation FROM ReservationCours WHERE ReservationCours.numCours IN "
 					+ "( SELECT Cours.numCours FROM COURS "
 						+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours " + "WHERE periodeCours "
-						+ verifPeriode + "AND CoursSemaine.numSemaine = ?))) "
+						+ verifPeriode + " ))) "
 			+ "AND numClient = ?;";
 			pst = this.connect.prepareStatement(sql);
 
 			pst.setInt(1, numMoniteur);
 			pst.setString(2, periode);
 			// pst.setInt(4, cours);
-			pst.setInt(3, numSemaine);
+			pst.setLong(3, numSemaine);
 			pst.setInt(4, numClient);
 			ResultSet res = pst.executeQuery();
 			// int numPersonne, String nom, String pre, String adresse, String
@@ -325,13 +327,13 @@ public class EleveDAO extends DAO<Eleve> {
 	}
 
 	@Override
-	public int valeurReduction(int numSem) {
+	public int valeurReduction(int numSem, int numEleve, double prixCours) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+	public String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -352,6 +354,18 @@ public class EleveDAO extends DAO<Eleve> {
 	public void AjouterSemainesDansDB(String start, String end) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public long getDateDebutReserv(int numReserv) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ArrayList<Eleve> getReservationAnnulee(int numUtilisateur, int typeUtilisateur) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

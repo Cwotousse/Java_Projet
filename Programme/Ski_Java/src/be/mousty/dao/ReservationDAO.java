@@ -5,7 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
+import be.mousty.accessToDao.CoursCollectifATD;
+import be.mousty.accessToDao.CoursParticulierATD;
+import be.mousty.accessToDao.ReservationATD;
 import be.mousty.pojo.Accreditation;
 import be.mousty.pojo.Client;
 import be.mousty.pojo.Cours;
@@ -35,11 +39,12 @@ public class ReservationDAO extends DAO<Reservation> {
 			//if(obj.getCours().getNomSport().equals("Snowboard") && E.calculerAge() < 6){ return -1; }
 
 			//else{
-			String insertReservation = "INSERT INTO Reservation (heureDebut, heurefin, aPrisAssurance) VALUES (?,?,?)";
+			String insertReservation = "INSERT INTO Reservation (heureDebut, heurefin, aPrisAssurance, aPaye) VALUES (?,?,?,?)";
 			pst_Res = connect.prepareStatement(insertReservation);
 			pst_Res.setInt(1, obj.getHeureDebut());
 			pst_Res.setInt(2, obj.getHeureFin());
 			pst_Res.setBoolean(3, obj.getAUneAssurance());
+			pst_Res.setBoolean(4, true);
 			pst_Res.executeUpdate();
 			//pst_Res.close();
 
@@ -62,18 +67,20 @@ public class ReservationDAO extends DAO<Reservation> {
 			pst_Res_Ele.setInt(2, obj.getEleve().getNumPersonne());
 			pst_Res_Ele.executeUpdate();
 			System.out.println("ReservationEleve insert");
-			
+
 			String insertCoursMoniteur 	= "INSERT INTO CoursMoniteur 		(numCours, numMoniteur) 	VALUES (?,?)";
 			pst_Cou_Mon = connect.prepareStatement(insertCoursMoniteur);
 			pst_Cou_Mon.setInt(1, obj.getCours().getNumCours());
 			pst_Cou_Mon.setInt(2, obj.getMoniteur().getNumPersonne());
 			pst_Cou_Mon.executeUpdate();
-			
+
 			System.out.println("CoursMoniteur insert");
-			String insertCoursSemaine 	= "INSERT INTO CoursSemaine 		(numCours, numSemaine)	 	VALUES (?,?)";
+			String insertCoursSemaine 	= "INSERT INTO CoursSemaine 		(numCours, numSemaine, dateDebutReserv, dateFinReserv)	 	VALUES (?,?,?,?)";
 			pst_Cou_Sem = connect.prepareStatement(insertCoursSemaine);
 			pst_Cou_Sem.setInt(1, obj.getCours().getNumCours());
 			pst_Cou_Sem.setInt(2, obj.getSemaine().getNumSemaine());
+			pst_Cou_Sem.setDate(3, obj.getSemaine().getDateDebut());
+			pst_Cou_Sem.setDate(4, obj.getSemaine().getDateFin());
 			pst_Cou_Sem.executeUpdate();
 			System.out.println("CoursSemaine insert");
 			String insertReservCours 	= "INSERT INTO ReservationCours 	(numReservation, numCours) 	VALUES (?,?)";
@@ -103,7 +110,7 @@ public class ReservationDAO extends DAO<Reservation> {
 			if (pst_Res != null ) {
 				try {
 					pst_Res_Cli.close();
-					
+
 				}
 				catch (SQLException e) { e.printStackTrace(); }
 			}
@@ -210,6 +217,11 @@ public class ReservationDAO extends DAO<Reservation> {
 					+ "WHERE numClient = ? AND Cours.numCours = ? AND numSemaine = ? AND numEleve = ? AND periodeCours = ? "
 					+ "GROUP BY Reservation.numReservation;";
 			// Modifier ReservationClient.numClient si ça ne va pas
+			/*System.out.println(obj.getClient().getNumClient());
+			System.out.println(obj.getCours().getNumCours());
+			System.out.println(obj.getSemaine().getNumSemaine());
+			System.out.println(obj.getEleve().getNumEleve());
+			System.out.println(obj.getCours().getPeriodeCours());*/
 			pst = this.connect.prepareStatement(sql);
 			pst.setInt(1, obj.getClient().getNumClient());
 			pst.setInt(2, obj.getCours().getNumCours());
@@ -645,7 +657,7 @@ public class ReservationDAO extends DAO<Reservation> {
 	}
 
 	@Override
-	public ArrayList<Reservation> getMyListSelonID(int idPersonne, int nonUsed, int nonUsed2, String nonUsed3) {
+	public ArrayList<Reservation> getMyListSelonID(int idPersonne, long nonUsed, int nonUsed2, String nonUsed3) {
 		ArrayList<Reservation> liste = new ArrayList<Reservation>();
 		//Reservation R = new Reservation();
 
@@ -674,6 +686,10 @@ public class ReservationDAO extends DAO<Reservation> {
 
 			if (res_Rec_Mon.isBeforeFirst() ) { innerTypePersonne = "INNER JOIN Personne On Personne.numPersonne = CoursMoniteur.numMoniteur "; } 
 
+
+			java.sql.Date dateNow = new java.sql.Date(Calendar.getInstance().getTimeInMillis());
+			//System.out.println(dateNow.getTime());
+
 			String sql = "SELECT distinct * FROM Cours "
 					+ "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = Cours.numCours "
 					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
@@ -682,8 +698,8 @@ public class ReservationDAO extends DAO<Reservation> {
 					+ "INNER JOIN ReservationClient ON ReservationClient.numReservation = Reservation.numReservation "
 					+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
 					+ innerTypePersonne
-					+ "WHERE Personne.numPersonne = ?"
-					+ "GROUP BY Reservation.numReservation;";
+					+ "WHERE Personne.numPersonne = ? AND dateDebutReserv > " + dateNow.getTime()
+					+ " GROUP BY Reservation.numReservation;";
 
 			pst = this.connect.prepareStatement(sql);
 			pst.setInt(1, idPersonne);
@@ -972,7 +988,8 @@ public class ReservationDAO extends DAO<Reservation> {
 	}
 
 	public boolean updateAssurance(int numEleve, int numSemaine, String periode){
-		PreparedStatement pst_upd = null;
+		PreparedStatement pst_rech = null;
+		boolean estUpdate = false;
 		try {
 			String verifPeriode;
 			switch(periode){
@@ -989,39 +1006,56 @@ public class ReservationDAO extends DAO<Reservation> {
 			default : verifPeriode = " = ? ";
 			break;
 			}
-
-
-			String upd_ass = "UPDATE Reservation SET aPrisAssurance = 0 WHERE Reservation.numReservation in ( "
+			// Si un résultat est retourné, une update va être faite, et donc l'assurance ne doit PLUS être payée.
+			String rech_ass = "SELECT aPrisAssurance FROM  Reservation WHERE Reservation.numReservation in ( "
 					+ "SELECT ReservationClient.numReservation FROM ReservationClient "
 					+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
 					+ "INNER JOIN ReservationCours ON ReservationCours.numReservation = Reservation.numReservation "
 					+ "INNER JOIN Cours ON ReservationCours.numCours = Cours.numCours "
 					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
 					+ "WHERE aPrisAssurance = 1 AND numEleve = ? AND numSemaine = ? AND Cours.periodeCours "+ verifPeriode +");";
+			pst_rech = this.connect.prepareStatement(rech_ass);
+			pst_rech.setInt(1, numEleve);
+			pst_rech.setInt(2, numSemaine);
+			ResultSet res_rech = pst_rech.executeQuery();
 
-			pst_upd = this.connect.prepareStatement(upd_ass);
-			pst_upd.setInt(1, numEleve);
-			pst_upd.setInt(2, numSemaine);
-			//pst_upd.setString(3, periode);
-			pst_upd.executeUpdate();
-			return true;
+			while (res_rech.next()) {
+
+
+				String upd_ass = "UPDATE Reservation SET aPrisAssurance = 0 WHERE Reservation.numReservation in ( "
+						+ "SELECT ReservationClient.numReservation FROM ReservationClient "
+						+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
+						+ "INNER JOIN ReservationCours ON ReservationCours.numReservation = Reservation.numReservation "
+						+ "INNER JOIN Cours ON ReservationCours.numCours = Cours.numCours "
+						+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
+						+ "WHERE aPrisAssurance = 1 AND numEleve = ? AND numSemaine = ? AND Cours.periodeCours "+ verifPeriode +");";
+
+				PreparedStatement pst_upd = this.connect.prepareStatement(upd_ass);
+				pst_upd.setInt(1, numEleve);
+				pst_upd.setInt(2, numSemaine);
+				//pst_upd.setString(3, periode);
+				pst_upd.executeUpdate();
+				estUpdate = true;
+			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
-			if (pst_upd != null) {
-				try { pst_upd.close(); }
+			if (pst_rech != null) {
+				try { pst_rech.close(); }
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return false;
+		return estUpdate;
 	}
 
-	public int valeurReduction(int numSemaine){
+	public int valeurReduction(int numSemaine, int numEleve, double prixCours){
 		PreparedStatement pst_rech_elev = null;
-		PreparedStatement pst_rech_reduc = null;
 		int sommeReduc = 0;
+		String ajoutParamEleve = "";
+		if (numEleve != -1)
+			ajoutParamEleve = " ReservationEleve.numEleve = " + numEleve + " AND ";
 		try {
-			String sql_rech_elev = "select distinct numEleve from ReservationEleve WHERE numReservation IN "
+			String sql_rech_elev = "select distinct numEleve from ReservationEleve WHERE " + ajoutParamEleve + "numReservation IN "
 					+ "(SELECT numReservation FROM ReservationCours WHERE numCours IN "
 					+ "(SELECT numCours FROM CoursSemaine WHERE numSemaine = ?));";
 			pst_rech_elev = this.connect.prepareStatement(sql_rech_elev);
@@ -1029,30 +1063,30 @@ public class ReservationDAO extends DAO<Reservation> {
 
 			ResultSet res_rech_Elev = pst_rech_elev.executeQuery();
 			while (res_rech_Elev.next()) {
-				int numEleve = res_rech_Elev.getInt("numEleve");
+				int numElv = res_rech_Elev.getInt("numEleve");
 
 				String sql_rech_reduc = "select count(*) AS cptCours, (sum(prix)*15 /100) AS somme FROM Cours WHERE numCours IN "
 						+ "( SELECT distinct Cours.numCours FROM Cours "
 						+ "INNER JOIN ReservationCours ON ReservationCours.numCours = Cours.numCours "
 						+ "INNER JOIN ReservationEleve ON ReservationCours.numReservation = ReservationEleve.numReservation "
 						+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
-						+ "WHERE numSemaine = ? AND periodeCours IN('09-12', '14-17') AND numEleve = " + numEleve + ");";
+						+ "WHERE numSemaine = ? AND periodeCours IN('09-12', '14-17') AND numEleve = " + numElv + ");";
 
-				pst_rech_reduc = this.connect.prepareStatement(sql_rech_reduc);
+				PreparedStatement pst_rech_reduc = this.connect.prepareStatement(sql_rech_reduc);
 				pst_rech_reduc.setInt(1, numSemaine);
 				ResultSet res_rech_reduc = pst_rech_reduc.executeQuery();
 				while (res_rech_reduc.next()) {
-					if (res_rech_reduc.getInt("cptCours") > 1)
-						sommeReduc+= res_rech_reduc.getInt("somme");
+					if(numEleve != -1 && res_rech_reduc.getInt("cptCours") >= 1){ sommeReduc+= res_rech_reduc.getInt("somme") + (prixCours*15/100); }
+					else if (res_rech_reduc.getInt("cptCours") > 1){ sommeReduc+= res_rech_reduc.getInt("somme"); }
 				}
+				pst_rech_reduc.close();
 			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
-			if (pst_rech_elev != null || pst_rech_reduc != null) {
+			if (pst_rech_elev != null) {
 				try { 
 					pst_rech_elev.close();
-					pst_rech_reduc.close();
 				}
 				catch (SQLException e) { e.printStackTrace(); }
 			}
@@ -1061,9 +1095,209 @@ public class ReservationDAO extends DAO<Reservation> {
 	}
 
 
+	public long getDateDebutReserv(int id) {
+		PreparedStatement pst = null;
+		long dateDebut = -1;
+		try {
+			String sql = "SELECT * from CoursSemaine "
+					+ "INNER JOIN ReservationCours ON ReservationCours.numCours = CoursSemaine.numCours "
+					+ "WHERE dateDebutReserv = dateFinReserv AND numReservation = ? "
+					+ "GROUP BY ReservationCours.numReservation;";
+
+			pst = this.connect.prepareStatement(sql);
+			pst.setInt(1, id);
+			ResultSet rs = pst.executeQuery();
+			while (rs.next()) { dateDebut= rs.getLong("dateDebutReserv"); }
+
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst != null) {
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return dateDebut;
+	}
+
+	public ArrayList<Reservation> getReservationAnnulee(int numUtilisateur, int typeUtilisateur){
+		ArrayList<Reservation> liste = new ArrayList<Reservation>();
+		PreparedStatement pst = null;
+		try {
+			Semaine S 	= new Semaine();
+			Cours C 	= new Cours();
+			Eleve E 	= new Eleve();
+			Client Cli 	= new Client();
+			Moniteur M 	= new Moniteur();
+			java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+			String typePers = " numMoniteur = ?";
+			if (typeUtilisateur == 2)
+				typePers = " numClient = ?";
+
+			String sql = "SELECT * FROM Cours "
+					+ "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = Cours.numCours "
+					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
+					+ "INNER JOIN ReservationCours ON ReservationCours.numCours = Cours.numCours "
+					+ "INNER JOIN Reservation ON Reservation.numReservation = ReservationCours.numReservation "
+					+ "INNER JOIN ReservationClient ON ReservationClient.numReservation = Reservation.numReservation "
+					+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
+					+ "WHERE " + typePers + " AND dateDebutReserv - " + now.getTime() + " < 86400000 AND dateDebutReserv - " + now.getTime() + " > 0 "
+					// 86400000 -> Un jour en milisecondes
+					+ "GROUP BY Reservation.numReservation ;";
+			pst = this.connect.prepareStatement(sql);
+			pst.setInt(1, numUtilisateur);
+			ResultSet res_resv_annul = pst.executeQuery();
+			while (res_resv_annul.next()) {
+				ArrayList<Accreditation> listeAccred = new ArrayList<Accreditation>();
+
+				String selectSemaine 	= "SELECT * FROM Semaine	WHERE numSemaine 	= ? ";
+				String selectCours 		= "SELECT * FROM Cours 		WHERE numCours 		= ? ";
+				String selectEleve 		= "SELECT * FROM Eleve "
+						+ "INNER JOIN Personne ON Personne.numPersonne = Eleve.numEleve "
+						+ "WHERE numPersonne =  ? ";
+				String selectClient 	= "SELECT * FROM Client 	INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Client.numClient "
+						+ "INNER JOIN Personne ON Personne.numPersonne = Utilisateur.numUtilisateur "
+						+ "WHERE numPersonne =  ?  ";
+				String selectMoniteur 	= "SELECT * FROM Moniteur	"
+						+ "INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Moniteur.numMoniteur "
+						+ "INNER JOIN Personne ON Personne.numPersonne = Utilisateur.numUtilisateur "
+						+ "WHERE numPersonne =  ? ";
+				String selectAccredMoni = "Select * from Accreditation INNER JOIN LigneAccreditation "
+						+ "ON Accreditation.numAccreditation = LigneAccreditation.numAccreditation WHERE numMoniteur = ?;";
+
+				PreparedStatement pst_Sem = connect.prepareStatement(selectSemaine);
+				PreparedStatement pst_Cou = connect.prepareStatement(selectCours);
+				PreparedStatement pst_Ele = connect.prepareStatement(selectEleve);
+				PreparedStatement pst_Cli = connect.prepareStatement(selectClient);
+				PreparedStatement pst_Mon = connect.prepareStatement(selectMoniteur);
+				PreparedStatement pst_Acc = connect.prepareStatement(selectAccredMoni);
+
+				pst_Sem.setInt(1, res_resv_annul.getInt("numSemaine"));
+				pst_Cou.setInt(1, res_resv_annul.getInt("numCours"));
+				pst_Ele.setInt(1, res_resv_annul.getInt("numEleve"));
+				pst_Cli.setInt(1, res_resv_annul.getInt("numClient"));
+				pst_Mon.setInt(1, res_resv_annul.getInt("numMoniteur"));
+				pst_Acc.setInt(1, res_resv_annul.getInt("numMoniteur"));
+
+				ResultSet rs_Sem = pst_Sem.executeQuery();
+				ResultSet rs_Cou = pst_Cou.executeQuery();
+				ResultSet rs_Ele = pst_Ele.executeQuery();
+				ResultSet rs_Cli = pst_Cli.executeQuery();
+				ResultSet rs_Acc = pst_Acc.executeQuery();
+				ResultSet rs_Mon = pst_Mon.executeQuery();
+
+				while (rs_Sem.next()) {
+					S = new Semaine();
+					S.setNumSemaine(rs_Sem.getInt("numSemaine"));
+					S.setCongeScolaire(rs_Sem.getBoolean("CongeScolaireOuNon"));
+					S.setDateDebut(rs_Sem.getDate("dateDebut"));
+					S.setDateFin(rs_Sem.getDate("dateFin"));
+					S.setNumSemaineDansAnnee(rs_Sem.getInt("numSemaineDansAnnee"));
+				}
+				while (rs_Cou.next()) {
+					C = new Cours();
+					C.setNumCours(rs_Cou.getInt("numCours"));
+					C.setNomSport(rs_Cou.getString("nomSport"));
+					C.setPrix(rs_Cou.getInt("prix"));
+					C.setMinEl(rs_Cou.getInt("minEleve"));
+					C.setMaxEl(rs_Cou.getInt("maxEleve"));
+					C.setPeriodeCours(rs_Cou.getString("periodeCours"));
+				}
+				while (rs_Ele.next()) {
+					E = new Eleve();
+					E.setNumEleve(rs_Ele.getInt("numEleve"));
+					E.setCategorie(rs_Ele.getString("categorie"));
+					E.setNumPersonne(rs_Ele.getInt("numEleve"));
+					E.setNom(rs_Ele.getString("nom"));
+					E.setPre(rs_Ele.getString("prenom"));
+					E.setDateNaissance(rs_Ele.getDate("dateNaissance"));
+					E.setAdresse(rs_Ele.getString("adresse"));
+					E.setSexe(rs_Ele.getString("sexe"));
+				}
+				while (rs_Cli.next()) {
+					Cli = new Client();
+					Cli.setAdresseFacturation(rs_Cli.getString("adresseFacturation"));
+					Cli.setNumClient(rs_Cli.getInt("numClient"));
+					Cli.setPseudo(rs_Cli.getString("pseudo"));
+					Cli.setMdp(rs_Cli.getString("mdp"));
+					Cli.setTypeUtilisateur(rs_Cli.getInt("typeUtilisateur"));
+					Cli.setNumPersonne(rs_Cli.getInt("numPersonne"));
+					Cli.setNom(rs_Cli.getString("nom"));
+					Cli.setPre(rs_Cli.getString("prenom"));
+					Cli.setDateNaissance(rs_Cli.getDate("dateNaissance"));
+					Cli.setAdresse(rs_Cli.getString("adresse"));
+					Cli.setSexe(rs_Cli.getString("sexe"));
+				}
+				while(rs_Acc.next()){
+					Accreditation A = new Accreditation();
+					A.setNomAccreditation(rs_Acc.getString("nomAccreditation"));
+					A.setNumAccreditation(rs_Acc.getInt("numAccreditation"));
+				}
+				while (rs_Mon.next()) {
+					M = new Moniteur();
+					M.setNumMoniteur(rs_Mon.getInt("numMoniteur"));
+					M.setAnneeExp(0);
+					M.setAccrediList(listeAccred);
+					M.setNumUtilisateur(rs_Mon.getInt("numUtilisateur"));
+					M.setPseudo(rs_Mon.getString("pseudo"));
+					M.setMdp(rs_Mon.getString("mdp"));
+					M.setTypeUtilisateur(rs_Mon.getInt("typeUtilisateur"));
+					M.setNumPersonne(rs_Mon.getInt("numPersonne"));
+					M.setNom(rs_Mon.getString("nom"));
+					M.setPre(rs_Mon.getString("prenom"));
+					M.setDateNaissance(rs_Mon.getDate("dateNaissance"));
+					M.setAdresse(rs_Mon.getString("adresse"));
+					M.setSexe(rs_Mon.getString("sexe")); 
+				}
+				
+				// ATTENTION : Maintenant il faut savoir s'il y a assez de personnes pour ce cours ou non.
+				String strPlaceCours = "";
+				if (C.getPrix() > 90){
+					CoursCollectifATD CCATD = new CoursCollectifATD();
+					strPlaceCours = CCATD.calculerPlaceCours(
+							C.getNumCours(),
+							S.getNumSemaine(),
+							M.getNumMoniteur());
+				}
+				else {
+					CoursParticulierATD CPATD = new CoursParticulierATD(); 
+					ReservationATD RATD = new ReservationATD();
+					strPlaceCours = CPATD.calculerPlaceCours(
+							C.getNumCours(),
+							RATD.getDateDebutReserv(res_resv_annul.getInt("numReservation")),
+							M.getNumMoniteur());
+				}
+				String[] parts = strPlaceCours.split("-");
+				// Si le nombre max d'élèves - le nombre actuel est plus petit que le nbr minimum d'élève, alors le cours risque d'être annulé.
+				//System.out.println(C.getMaxEl() + " - " + Integer.parseInt(parts[0]) + " < " +C.getMinEl());
+				if (C.getMaxEl() - Integer.parseInt(parts[0]) < C.getMinEl()){
+					Reservation R = new Reservation();
+					R.setHeureDebut(res_resv_annul.getInt("heureDebut"));
+					R.setHeureFin(res_resv_annul.getInt("heureFin"));
+					R.setNumReservation(res_resv_annul.getInt("numReservation"));
+					R.setAUneAssurance(res_resv_annul.getBoolean("aPrisAssurance"));
+					R.setSemaine(S);
+					R.setCours(C);
+					R.setEleve(E);
+					R.setClient(Cli);
+					R.setMoniteur(M);
+					liste.add(R);
+				}
+			}
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst != null) {
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return liste;
+	}
+
 
 	@Override
-	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+	public String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -23,7 +23,6 @@ public class SemaineATD {
 	public SemaineATD( boolean congeScolaire, Date dateDebut, Date dateFin, int numSemaineDansAnnee){
 		this.dateDebut 				= dateDebut;
 		this.dateFin 				= dateFin;
-		//this.descriptif 			= descriptif;
 		this.congeScolaire 			= congeScolaire;
 		this.numSemaineDansAnnee 	= numSemaineDansAnnee;
 	}
@@ -94,6 +93,26 @@ public class SemaineATD {
 		S.setDateFin(SATD.getDateFin());
 		S.setNumSemaineDansAnnee(SATD.getNumSemaineDansAnnee());
 		return getId(S).getNumSemaine();
+	}
+	
+	public SemaineATD findATD (int numSem){
+		Semaine S = find(numSem);
+		SemaineATD SATD = new SemaineATD();
+		SATD.setCongeScolaire(S.getCongeScolaire());
+		SATD.setDateDebut(S.getDateDebut());
+		SATD.setDateFin(S.getDateFin());
+		SATD.setNumSemaineDansAnnee(S.getNumSemaineDansAnnee());
+		return SATD;
+	}
+	
+	public Semaine transformATDintoPojo(int numSemaine){
+		Semaine S = new Semaine();
+		S.setCongeScolaire(this.getCongeScolaire());
+		S.setDateDebut(this.getDateDebut());
+		S.setDateFin(this.getDateFin());
+		S.setNumSemaineDansAnnee(this.getNumSemaineDansAnnee());
+		S.setNumSemaine(numSemaine);
+		return S;
 	}
 	
 	// FONCTION SURCHARGEE

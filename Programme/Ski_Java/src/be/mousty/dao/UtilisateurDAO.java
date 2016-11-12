@@ -146,7 +146,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 	}
 
 	@Override
-	public ArrayList<Utilisateur> getMyListSelonID(int id1, int id2, int id3, String str1) {
+	public ArrayList<Utilisateur> getMyListSelonID(int id1, long id2, int id3, String str1) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -158,13 +158,13 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 	}
 
 	@Override
-	public int valeurReduction(int numSem) {
+	public int valeurReduction(int numSem, int numEleve, double prixCours) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String calculerPlaceCours(int numCours, int numSemaine, int idMoniteur) {
+	public String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -185,6 +185,18 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 	public void AjouterSemainesDansDB(String start, String end) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public long getDateDebutReserv(int numReserv) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ArrayList<Utilisateur> getReservationAnnulee(int numUtilisateur, int typeUtilisateur) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
