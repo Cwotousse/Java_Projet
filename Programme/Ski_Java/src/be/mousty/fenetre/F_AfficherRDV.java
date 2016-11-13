@@ -46,7 +46,7 @@ public class F_AfficherRDV extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					F_AfficherRDV frame = new F_AfficherRDV(118);
+					F_AfficherRDV frame = new F_AfficherRDV(118, 1);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -59,7 +59,7 @@ public class F_AfficherRDV extends JFrame {
 	 * Create the frame.
 	 */
 	@SuppressWarnings("unchecked")
-	public F_AfficherRDV(int idPersonne) {
+	public F_AfficherRDV(int idPersonne, int typePersonne) {
 		
 		try{
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,7 +77,7 @@ public class F_AfficherRDV extends JFrame {
 			JLabel lblVosCours = new JLabel("Vos cours");
 			JSeparator separator = new JSeparator();
 			JLabel lbl_error = new JLabel("Error label");
-			JButton btn_fr = new JButton("D\u00E9connexion");
+			JButton btn_fr = new JButton("Retour");
 			JLabel lbl_somme = new JLabel("");
 
 
@@ -103,11 +103,19 @@ public class F_AfficherRDV extends JFrame {
 			btn_fr.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
-					// Deconnexion
 					setVisible(false);
-					F_Connexion frame = new F_Connexion();
-					frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-					frame.setVisible(true);
+					switch(typePersonne){
+					case 1 : 
+						F_Client frameC = new F_Client(idPersonne);
+						frameC.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frameC.setVisible(true);
+						break;
+					case 2 : 
+						F_Moniteur frameM = new F_Moniteur(idPersonne);
+						frameM.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frameM.setVisible(true);
+						break;
+					}
 				}
 			});
 
@@ -199,9 +207,23 @@ public class F_AfficherRDV extends JFrame {
 					Object numRes = mytableClicked.getModel().getValueAt(mytableClicked.getSelectedRow(), 0);
 					//if(ReservationDAO.delete(ReservationDAO.find(Integer.parseInt(numRes.toString()))))
 					if(RATD.delete(RATD.find(Integer.parseInt(numRes.toString()))))
-						JOptionPane.showMessageDialog(null, "Cours supprimé.\nLe tableau sera actualisé par la suite.");
+						JOptionPane.showMessageDialog(null, "Cours supprimé.");
 					else
 						JOptionPane.showMessageDialog(null, "Une erreur est intervenue, le cours n'est pas supprimé.");
+					
+					setVisible(false);
+					switch(typePersonne){
+					case 1 : 
+						F_Client frameC = new F_Client(idPersonne);
+						frameC.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frameC.setVisible(true);
+						break;
+					case 2 : 
+						F_Moniteur frameM = new F_Moniteur(idPersonne);
+						frameM.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frameM.setVisible(true);
+						break;
+					}
 				}
 			};
 

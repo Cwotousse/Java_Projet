@@ -95,51 +95,25 @@ public class ReservationATD {
 	}
 
 	public boolean updateAssurance(int numEleve, int numSemaine, String periode) {
-		return ReservationDAO.updateAssurance(numEleve, numSemaine, periode);
+		if(ReservationDAO.besoinDupdateOuNonAssurance(numEleve, numSemaine, periode)){
+			return ReservationDAO.updateAssurance(numEleve, numSemaine, periode);
+		}
+		return false;
 	}
+	
+	// Il faut d'aborde savoir s'il faut update l'assurance / faire payer SANS update car on peut annuler la réservation.
+	public boolean besoinDupdateOuNonAssurance (int numEleve, int numSemaine, String periode) {
+			return ReservationDAO.besoinDupdateOuNonAssurance(numEleve, numSemaine, periode);
+		}
 	
 	public long getDateDebutReserv (int numReserv){
 		return ReservationDAO.getDateDebutReserv(numReserv);
 	}
 	
-	public void getReservationAnnulee (int numUtilisateur, int typeUtilisateur){
-		ArrayList<Reservation> listReserv =  ReservationDAO.getReservationAnnulee(numUtilisateur, typeUtilisateur); 
-		if (listReserv.size() == 0)
-			JOptionPane.showMessageDialog(null, "Suite à un scan de notre programme, aucuns de vos rendez-vous n'est susceptible d'être annulé.");
-		else {
-			for(Reservation R : listReserv){
-				if (typeUtilisateur == 1 )
-					JOptionPane.showMessageDialog(null,
-							"Les cours suivant risquent d'être annulés : " + "\n"
-							+ "Réservation n° : " + R.getNumReservation() + ", " +  R.getCours().getNomSport() + "\n"
-							+ "Moniteur : " + R.getMoniteur().getNom()  + " " + R.getMoniteur().getPre() + " \n"
-							+ "Client : " + R.getClient().getNom()  + " " + R.getClient().getPre() + " \n"
-							+ "Eleve : " + R.getEleve().getNom()  + " " +  R.getEleve().getPre()  + " \n"
-							+ "Semaine : " + R.getSemaine().getDateDebut() + "\n\n");
-				else 
-					JOptionPane.showMessageDialog(null,
-							"Les cours suivant risquent d'être annulés : " + "\n"
-							+ "Réservation n° : " + R.getNumReservation() + ", " +  R.getCours().getNomSport() + "\n"
-							+ "Moniteur : " + R.getMoniteur().getNom()  + " " + R.getMoniteur().getPre() + " \n"
-							+ "Client : " + R.getClient().getNom()  + " " + R.getClient().getPre() + " \n"
-							+ "Eleve : " + R.getEleve().getNom()  + " " +  R.getEleve().getPre()  + " \n"
-							+ "Semaine : " + R.getSemaine().getDateDebut() + "\n\n"
-							+ "Vous serez remboursé de " + R.getCours().getPrix() + "€" + "\n"
-							+ "Adresse de rembrousement : " + R.getClient().getAdresseFacturation());
-			}
-		}
+	public String getAccredSelonCoursEtPeriode(int numMoniteur, int numSemaine, String periode){
+		return ReservationDAO.getCategorieReservation(numMoniteur, numSemaine, periode);
 	}
-
-	// FONCTION SURCHARGEE
-	@Override
-	public String toString() {
-		return "Heure de début de séance : " + heureDebut + System.getProperty("line.separator")
-				+ "Heure de fin de séance : " + heureFin + System.getProperty("line.separator") + S.toString()
-				+ System.getProperty("line.separator") + C.toString() + System.getProperty("line.separator")
-				+ E.toString() + System.getProperty("line.separator") + Cli.toString()
-				+ System.getProperty("line.separator") + M.toString() + System.getProperty("line.separator");
-	}
-
+	
 	// METHODES
 	public ArrayList<ReservationATD> getMyListATD(int id) {
 		ArrayList<Reservation> listDispo = getMyList(id);
@@ -227,6 +201,7 @@ public class ReservationATD {
 
 
 			if(numReservation != -1){
+				// On update l'assurance que si tout a fonctionné auparavant
 				this.updateAssurance(numEleve, numSemaine, periode);
 				System.out.println("Num reserv : " + numReservation);
 				return numReservation;
@@ -239,7 +214,44 @@ public class ReservationATD {
 		return -1;
 		
 	}
-	// public void deleteReservation () { ReservationDAO.delete(null); }
+	
+	public void getReservationAnnulee (int numUtilisateur, int typeUtilisateur){
+		ArrayList<Reservation> listReserv =  ReservationDAO.getReservationAnnulee(numUtilisateur, typeUtilisateur); 
+		if (listReserv.size() == 0)
+			JOptionPane.showMessageDialog(null, "Suite à un scan de notre programme, aucuns de vos rendez-vous n'est susceptible d'être annulé.");
+		else {
+			for(Reservation R : listReserv){
+				if (typeUtilisateur == 1 )
+					JOptionPane.showMessageDialog(null,
+							"Les cours suivant risquent d'être annulés : " + "\n"
+							+ "Réservation n° : " + R.getNumReservation() + ", " +  R.getCours().getNomSport() + "\n"
+							+ "Moniteur : " + R.getMoniteur().getNom()  + " " + R.getMoniteur().getPre() + " \n"
+							+ "Client : " + R.getClient().getNom()  + " " + R.getClient().getPre() + " \n"
+							+ "Eleve : " + R.getEleve().getNom()  + " " +  R.getEleve().getPre()  + " \n"
+							+ "Semaine : " + R.getSemaine().getDateDebut() + "\n\n");
+				else 
+					JOptionPane.showMessageDialog(null,
+							"Les cours suivant risquent d'être annulés : " + "\n"
+							+ "Réservation n° : " + R.getNumReservation() + ", " +  R.getCours().getNomSport() + "\n"
+							+ "Moniteur : " + R.getMoniteur().getNom()  + " " + R.getMoniteur().getPre() + " \n"
+							+ "Client : " + R.getClient().getNom()  + " " + R.getClient().getPre() + " \n"
+							+ "Eleve : " + R.getEleve().getNom()  + " " +  R.getEleve().getPre()  + " \n"
+							+ "Semaine : " + R.getSemaine().getDateDebut() + "\n\n"
+							+ "Vous serez remboursé de " + R.getCours().getPrix() + "€" + "\n"
+							+ "Adresse de rembrousement : " + R.getClient().getAdresseFacturation());
+			}
+		}
+	}
+
+	// FONCTION SURCHARGEE
+	@Override
+	public String toString() {
+		return "Heure de début de séance : " + heureDebut + System.getProperty("line.separator")
+				+ "Heure de fin de séance : " + heureFin + System.getProperty("line.separator") + S.toString()
+				+ System.getProperty("line.separator") + C.toString() + System.getProperty("line.separator")
+				+ E.toString() + System.getProperty("line.separator") + Cli.toString()
+				+ System.getProperty("line.separator") + M.toString() + System.getProperty("line.separator");
+	}
 
 	// PROPRIETE
 	public int getHeureDebut() {

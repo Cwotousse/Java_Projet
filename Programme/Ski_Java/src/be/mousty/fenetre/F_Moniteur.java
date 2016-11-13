@@ -101,7 +101,7 @@ public class F_Moniteur extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				// Affiche F_AfficherRDV
 				setVisible(false);
-				F_AfficherRDV frame = new F_AfficherRDV(idMoniteur);
+				F_AfficherRDV frame = new F_AfficherRDV(idMoniteur, 2);
 				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 				frame.setVisible(true);
 			}

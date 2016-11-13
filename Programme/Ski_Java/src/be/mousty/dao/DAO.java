@@ -20,6 +20,8 @@ public abstract class DAO<T> {
 	public abstract int valeurReduction(int numSem, int numEleve, double prixCours);
 	public abstract long getDateDebutReserv(int numReserv);
 	public abstract ArrayList<T> getReservationAnnulee(int numUtilisateur, int typeUtilisateur);
+	public abstract boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode);
+	public abstract String getCategorieReservation(int numMoniteur, int numSemaine, String periode);	
 	
 	// Cours
 	public abstract String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur);
@@ -30,5 +32,6 @@ public abstract class DAO<T> {
 	
 	// Semaine
 	public abstract void AjouterSemainesDansDB(String start, String end);
+
 	
 }

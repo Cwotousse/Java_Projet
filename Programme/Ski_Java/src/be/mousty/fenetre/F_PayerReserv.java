@@ -136,7 +136,8 @@ public class F_PayerReserv extends JFrame {
 		lbl_affCours.setText(CATD.find(numCours).getNomSport());
 		lbl_affPeriode.setText(periode);
 		lbl_affPrix.setText(CATD.find(numCours).getPrix() + "€");
-		int prixAssurance = RATD.updateAssurance(numEleve, numSemaine, periode) ? 0 : 15;
+		//System.out.println("F_payerReserv : " + RATD.updateAssurance(numEleve, numSemaine, periode));
+		int prixAssurance = assurance ? (RATD.besoinDupdateOuNonAssurance(numEleve, numSemaine, periode) ? 0 : 15) : 0; // Operateur ternaire imbriqué
 		lbl_affAssurance.setText(prixAssurance + "€");
 		lbl_affReduction.setText(RATD.valeurReduction(numSemaine, numEleve, CATD.find(numCours).getPrix()) + "€");
 		lbl_affPrixTotal.setText(CATD.find(numCours).getPrix() + prixAssurance - RATD.valeurReduction(numSemaine, numEleve, CATD.find(numCours).getPrix()) + "€");
@@ -148,7 +149,7 @@ public class F_PayerReserv extends JFrame {
 			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(pwdF_code.getText() != "" && txtF_numCompte.getText() != ""){
+				if(!pwdF_code.getText().equals("") && !txtF_numCompte.getText().equals("")){
 					/*String string;
 				if(!coursCollectif)
 					string = CATD.calculerPlaceCours(numCours, dateJour.getTime(), numMoniteur);

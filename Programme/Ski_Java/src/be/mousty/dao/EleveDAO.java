@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import be.mousty.accessToDao.ReservationATD;
 import be.mousty.pojo.Eleve;
 import be.mousty.pojo.Personne;
 
@@ -187,30 +188,15 @@ public class EleveDAO extends DAO<Eleve> {
 	@Override
 	public ArrayList<Eleve> getMyListSelonID(int numMoniteur, long numSemaine, int numClient, String periode) {
 		ArrayList<Eleve> liste = new ArrayList<Eleve>();
+		ReservationATD RATD = new ReservationATD();
+		String categorie = RATD.getAccredSelonCoursEtPeriode(numMoniteur, (int)numSemaine, periode);
 		PreparedStatement pst = null;
 		try {
 			/*
-			 * String sql = "SELECT * from Eleve " +
-			 * "INNER JOIN Personne ON Eleve.numEleve = Personne.numPersonne " +
-			 * "WHERE numEleve NOT IN " +
-			 * "(Select numEleve from ReservationEleve " +
-			 * "INNER JOIN ReservationCours ON ReservationCours.numReservation = ReservationEleve.numReservation "
-			 * +
-			 * "INNER JOIN Cours ON Cours.numCours = ReservationCours.numCours "
-			 * +
-			 * "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
-			 * +
-			 * "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = Cours.numCours "
-			 * +
-			 * "WHERE CoursSemaine.numSemaine = ? AND CoursMoniteur.numMoniteur = ? AND Cours.PeriodeCours = ? AND Cours.numCours = ?)"
-			 * + "AND categorie IN " +
-			 * "(SELECT NomAccreditation FROM Accreditation WHERE numAccreditation IN "
-			 * +
-			 * "(SELECT numAccreditation FROM LigneAccreditation WHERE numMoniteur =  ?));"
-			 * ; pst = this.connect.prepareStatement(sql); pst.setInt(1,
-			 * numSemaine); pst.setInt(2, numMoniteur); pst.setString(3,
-			 * periode); pst.setInt(4, cours); pst.setInt(5, numMoniteur);
-			 */
+			 * Il faut vérifier que l'élèves proposé soit de la même catégorie qu'un autre si un cours est déjà existant vis à vis du moniteur séelctionné
+			 * -> Si un cours pour enfant est choisi pour la période donnée, alors la requête n'affiche que les enfants.
+			 * -> Pas besoin de parse le numSemaine en long car la catégorie n'importe que pour les cours collectifs.
+			 * */
 			String verifPeriode;
 			switch (periode) {
 			case "12-13":
@@ -228,6 +214,10 @@ public class EleveDAO extends DAO<Eleve> {
 				verifPeriode = " = ? AND CoursSemaine.numSemaine = ? ";
 				break;
 			}
+			String verifCategorie = ";";
+			if (!categorie.equals(""))
+				verifCategorie = " AND categorie = '" + categorie + "';";
+			
 			//System.out.println(numMoniteur + " " + numSemaine + " " + numClient + " " + periode);
 			String sql = "SELECT * FROM Eleve " 
 			+ "INNER JOIN PERSONNE ON Personne.numPersonne = Eleve.numEleve "
@@ -238,7 +228,8 @@ public class EleveDAO extends DAO<Eleve> {
 					+ "( SELECT Cours.numCours FROM COURS "
 						+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours " + "WHERE periodeCours "
 						+ verifPeriode + " ))) "
-			+ "AND numClient = ?;";
+			+ "AND numClient = ?"
+			+ verifCategorie ;
 			pst = this.connect.prepareStatement(sql);
 
 			pst.setInt(1, numMoniteur);
@@ -364,6 +355,18 @@ public class EleveDAO extends DAO<Eleve> {
 
 	@Override
 	public ArrayList<Eleve> getReservationAnnulee(int numUtilisateur, int typeUtilisateur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getCategorieReservation(int numMoniteur, int numSemaine, String periode) {
 		// TODO Auto-generated method stub
 		return null;
 	}

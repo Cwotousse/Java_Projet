@@ -92,7 +92,7 @@ public class F_Client extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				// Affiche F_AfficherRDV
 				setVisible(false);
-				F_AfficherRDV frame = new F_AfficherRDV(idClient);
+				F_AfficherRDV frame = new F_AfficherRDV(idClient, 1);
 				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 				frame.setVisible(true);
 			}

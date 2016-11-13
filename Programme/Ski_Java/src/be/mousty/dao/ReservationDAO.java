@@ -988,6 +988,67 @@ public class ReservationDAO extends DAO<Reservation> {
 	}
 
 	public boolean updateAssurance(int numEleve, int numSemaine, String periode){
+		PreparedStatement upd_ass = null;
+		boolean estUpdate = false;
+		try {
+			String verifPeriode;
+			switch(periode){
+			case "09-12": verifPeriode = " = '14-17' ";
+			break;
+			case "14-17": verifPeriode = " = '09-12' ";
+			break;
+			case "12-13": verifPeriode = " IN('12-14', '13-14') ";
+			break;
+			case "13-14": verifPeriode = " IN('12-13', '12-14') ";
+			break;
+			case "12-14": verifPeriode = " IN('12-13', '13-14') ";
+			break;
+			default : verifPeriode = " = ? ";
+			break;
+			}
+			/*// Si un résultat est retourné, une update va être faite, et donc l'assurance ne doit PLUS être payée.
+			String rech_ass = "SELECT aPrisAssurance FROM  Reservation WHERE Reservation.numReservation in ( "
+					+ "SELECT ReservationClient.numReservation FROM ReservationClient "
+					+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
+					+ "INNER JOIN ReservationCours ON ReservationCours.numReservation = Reservation.numReservation "
+					+ "INNER JOIN Cours ON ReservationCours.numCours = Cours.numCours "
+					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
+					+ "WHERE aPrisAssurance = 1 AND numEleve = ? AND numSemaine = ? AND Cours.periodeCours "+ verifPeriode +");";
+			pst_rech = this.connect.prepareStatement(rech_ass);
+			pst_rech.setInt(1, numEleve);
+			pst_rech.setInt(2, numSemaine);
+			ResultSet res_rech = pst_rech.executeQuery();
+
+			while (res_rech.next()) {*/
+
+
+			String str_upd_ass = "UPDATE Reservation SET aPrisAssurance = 0 WHERE Reservation.numReservation in ( "
+					+ "SELECT ReservationClient.numReservation FROM ReservationClient "
+					+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
+					+ "INNER JOIN ReservationCours ON ReservationCours.numReservation = Reservation.numReservation "
+					+ "INNER JOIN Cours ON ReservationCours.numCours = Cours.numCours "
+					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
+					+ "WHERE aPrisAssurance = 1 AND numEleve = ? AND numSemaine = ? AND Cours.periodeCours "+ verifPeriode +");";
+
+			upd_ass = this.connect.prepareStatement(str_upd_ass);
+			upd_ass.setInt(1, numEleve);
+			upd_ass.setInt(2, numSemaine);
+			//pst_upd.setString(3, periode);
+			upd_ass.executeUpdate();
+			estUpdate = true;
+			//}
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (upd_ass != null) {
+				try { upd_ass.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return estUpdate;
+	}
+
+	public boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode){
 		PreparedStatement pst_rech = null;
 		boolean estUpdate = false;
 		try {
@@ -1020,21 +1081,6 @@ public class ReservationDAO extends DAO<Reservation> {
 			ResultSet res_rech = pst_rech.executeQuery();
 
 			while (res_rech.next()) {
-
-
-				String upd_ass = "UPDATE Reservation SET aPrisAssurance = 0 WHERE Reservation.numReservation in ( "
-						+ "SELECT ReservationClient.numReservation FROM ReservationClient "
-						+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
-						+ "INNER JOIN ReservationCours ON ReservationCours.numReservation = Reservation.numReservation "
-						+ "INNER JOIN Cours ON ReservationCours.numCours = Cours.numCours "
-						+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
-						+ "WHERE aPrisAssurance = 1 AND numEleve = ? AND numSemaine = ? AND Cours.periodeCours "+ verifPeriode +");";
-
-				PreparedStatement pst_upd = this.connect.prepareStatement(upd_ass);
-				pst_upd.setInt(1, numEleve);
-				pst_upd.setInt(2, numSemaine);
-				//pst_upd.setString(3, periode);
-				pst_upd.executeUpdate();
 				estUpdate = true;
 			}
 		}
@@ -1249,7 +1295,7 @@ public class ReservationDAO extends DAO<Reservation> {
 					M.setAdresse(rs_Mon.getString("adresse"));
 					M.setSexe(rs_Mon.getString("sexe")); 
 				}
-				
+
 				// ATTENTION : Maintenant il faut savoir s'il y a assez de personnes pour ce cours ou non.
 				String strPlaceCours = "";
 				if (C.getPrix() > 90){
@@ -1295,6 +1341,63 @@ public class ReservationDAO extends DAO<Reservation> {
 		return liste;
 	}
 
+	// Uniquement pour cours collectif.
+	public String getCategorieReservation(int numMoniteur, int numSemaine, String periode){
+		String categorie = "";
+		PreparedStatement pst = null;
+		try {
+			/*
+			 * Il faut vérifier que l'élèves proposé soit de la même catégorie qu'un autre si un cours est déjà existant vis à vis du moniteur séelctionné
+			 * -> Si un cours pour enfant est choisi pour la période donnée, alors la requête n'affiche que les enfants.
+			 * */
+			if (periode.equals("09-12") || periode.equals("14-17")){
+				String sql_categ = "SELECT categorie FROM  Reservation "
+						+ "INNER JOIN ReservationClient ON ReservationClient.numReservation = Reservation.numReservation  "
+						+ "INNER JOIN ReservationEleve ON ReservationEleve.numReservation = Reservation.numReservation "
+						+ "INNER JOIN Eleve ON Eleve.numEleve = ReservationEleve.numEleve "
+						+ "INNER JOIN ReservationCours ON ReservationCours.numReservation = Reservation.numReservation "
+						+ "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = ReservationCours.numCours "
+						+ "INNER JOIN Moniteur ON Moniteur.numMoniteur = CoursMoniteur.numMoniteur "
+						+ "INNER JOIN LigneAccreditation ON LigneAccreditation.numMoniteur = Moniteur.numMoniteur "
+						+ "INNER JOIN Accreditation ON Accreditation.numAccreditation = LigneAccreditation.numAccreditation "
+						+ "INNER JOIN Cours ON ReservationCours.numCours = Cours.numCours "
+						+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
+						+ "where Eleve.categorie = Accreditation.nomAccreditation "
+						+ "AND CoursSemaine.numSemaine = ? "
+						+ "AND Moniteur.numMoniteur = ? "
+						+ "AND periodeCours  = ? "
+						+ "GROUP BY categorie;";
+				pst = this.connect.prepareStatement(sql_categ);
+	
+				pst.setInt(1, numSemaine);
+				pst.setInt(2, numMoniteur);
+				pst.setString(3, periode);
+				ResultSet res = pst.executeQuery();
+				// int numPersonne, String nom, String pre, String adresse, String
+				// sexe, Date dateNaissance, boolean aUneAssurance
+	
+				while (res.next()) { 
+					// Retourne la catégorie du seul cours possible afin d'afficher les élèves qui entrent dans cette catégorie
+					categorie = res.getString("categorie");
+				}
+			}
+			return categorie;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (pst != null) {
+				try {
+					pst.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return categorie;
+
+
+
+	}
 
 	@Override
 	public String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur) {
