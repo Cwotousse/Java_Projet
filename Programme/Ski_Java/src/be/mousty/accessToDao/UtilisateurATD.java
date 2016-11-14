@@ -3,6 +3,8 @@ package be.mousty.accessToDao;
 import java.sql.Date;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.Utilisateur;
@@ -29,14 +31,14 @@ public class UtilisateurATD extends PersonneATD{
 		this.mdp 				= mdp;
 		this.typeUtilisateur 	= typeUtilisateur;
 	}
-	
+
 	public UtilisateurATD(Utilisateur U){
 		super(U.getNom(), U.getPre(), U.getAdresse(), U.getSexe(), U.getDateNaissance());
 		this.pseudo 			= U.getPseudo();
 		this.mdp 				= U.getMdp();
 		this.typeUtilisateur 	= U.getTypeUtilisateur();
 	}
-	
+
 
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
@@ -57,7 +59,7 @@ public class UtilisateurATD extends PersonneATD{
 				+ "User name    : " + pseudo +  System.getProperty("line.separator")
 				+ "Mot de passe : " + mdp + System.getProperty("line.separator");
 	}
-	
+
 	// METHODES
 	public UtilisateurATD connexion(){
 		Utilisateur usr= new Utilisateur();
@@ -68,7 +70,7 @@ public class UtilisateurATD extends PersonneATD{
 		RATD.getReservationAnnulee(U.getNumUtilisateur(), U.getTypeUtilisateur());
 		return  new UtilisateurATD(U);
 	}
-	
+
 	public int getNumId(){
 		Utilisateur usr= new Utilisateur();
 		usr.setPseudo(this.getPseudo());
@@ -76,7 +78,45 @@ public class UtilisateurATD extends PersonneATD{
 		Utilisateur U =  this.getId(usr);
 		return U.getNumPersonne();
 	}
-	
+
+	public int inscriptionClient(String adresseFact, String userName, String mdp, String nom, String pre, Date sd, String adresse, String sexe){
+		ClientATD CATD = new ClientATD();
+		CATD.setAdresseFacturation(adresseFact);
+		CATD.setPseudo(userName);
+		CATD.setMdp(mdp);
+		CATD.setTypeUtilisateur(2);
+		CATD.setNom(nom);
+		CATD.setPre(pre);
+		CATD.setDateNaissance(sd);
+		CATD.setAdresse(adresse);
+		CATD.setSexe(sexe);
+		return CATD.inscriptionClient();
+	}
+
+	public int inscriptionMoniteur(ArrayList<AccreditationATD> listAccreditation, String userName, String mdp, String nom, String pre, Date sd, String adresse, String sexe){
+
+		MoniteurATD MATD = new MoniteurATD();
+		MATD.setAnneeExp(0);
+		MATD.setAccrediList(listAccreditation);
+		MATD.setPseudo(userName);
+		MATD.setMdp(mdp);
+		MATD.setTypeUtilisateur(2);
+		MATD.setNom(nom);
+		MATD.setPre(pre);
+		MATD.setDateNaissance(sd);
+		MATD.setAdresse(adresse);
+		MATD.setSexe(sexe);
+
+		int numUtilisateur = MATD.inscriptionMoniteur();
+		if (numUtilisateur != -1){
+			DisponibiliteMoniteurATD DATD = new DisponibiliteMoniteurATD();
+			DATD.creerTouteDisponibilitesSelonMoniteur(numUtilisateur);
+			return numUtilisateur;
+		}
+		else { JOptionPane.showMessageDialog(null, "Verifiez vos donnees"); }
+		return -1;
+	}
+
 	// PROPRIETES
 	public String getPseudo			() { return pseudo; }
 	public String getMdp			() { return mdp; }

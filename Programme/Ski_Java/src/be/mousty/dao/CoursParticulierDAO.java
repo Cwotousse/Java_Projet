@@ -122,9 +122,10 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 			
 			+ "AND   Cours.numCours IN "
             + "(SELECT CoursMoniteur.numCours FROM CoursMoniteur "
-           	+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = CoursMoniteur.numCours "         
-           	+ "WHERE  CoursSemaine.numCours IN "
-            + "(SELECT CoursSemaine.numCours FROM Cours WHERE CoursSemaine.numSemaine = ? AND periodeCours " + verifPeriode + " AND numMoniteur = ?));";
+           	+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = CoursMoniteur.numCours " 
+           	+ "INNER JOIN Moniteur ON Moniteur.numMoniteur = CoursMoniteur.numMoniteur "         
+           	+ "WHERE CoursSemaine.numCours IN "
+            + "(SELECT CoursSemaine.numCours FROM Cours WHERE CoursSemaine.numSemaine = ? AND periodeCours " + verifPeriode + " AND Moniteur.numMoniteur = ?));";
 			pst_lst_cou1 = this.connect.prepareStatement(sql1);
 			pst_lst_cou1.setInt(1, idMoniteur);
 			pst_lst_cou1.setLong(2, numSemaine);

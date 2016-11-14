@@ -12,6 +12,7 @@ import be.mousty.pojo.Moniteur;
 public class MoniteurATD extends UtilisateurATD{
 	// VARIABLES 
 	private int anneeDexp;
+	private boolean disponiblecoursParticulier;
 	private ArrayList<AccreditationATD> listAccreditation = new ArrayList<AccreditationATD>();
 
 
@@ -19,17 +20,19 @@ public class MoniteurATD extends UtilisateurATD{
 	// CONSTRUCTEURS
 	public MoniteurATD(){}
 	public MoniteurATD(String nom, String pre, String adresse, String sexe, Date dateNaissance, 
-			String pseudo, String mdp, int typeMoniteur, ArrayList<AccreditationATD> listAccreditation){
+			String pseudo, String mdp, int typeMoniteur, ArrayList<AccreditationATD> listAccreditation, boolean disponiblecoursParticulier){
 		super(nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeMoniteur);
 		Random r = new Random();
 		this.anneeDexp 	= r.nextInt(10 - 0 + 1) + 0; // entre 10 et 0
 		this.listAccreditation = listAccreditation;
+		this.disponiblecoursParticulier = disponiblecoursParticulier;
 	}
 	
 	public MoniteurATD(Moniteur M){
 		super(M.getNom(), M.getPre(), M.getAdresse(), M.getSexe(), M.getDateNaissance(), M.getPseudo(), M.getMdp(), M.getTypeUtilisateur());
 		this.anneeDexp 	= M.getAnneeExp(); // entre 10 et 0
 		this.listAccreditation = changeTypeAccredilist(M.getAccrediList());
+		this.disponiblecoursParticulier = M.getDisponiblecoursParticulier();
 	}
 	
 
@@ -44,7 +47,7 @@ public class MoniteurATD extends UtilisateurATD{
 	public Moniteur 			find				(int id) 		{ return MoniteurDAO.find(id); 					} 
 	public ArrayList<Moniteur> 	getListMon			() 				{ return MoniteurDAO.getList(); 				} 
 	public ArrayList<Moniteur> 	getListSelonCriteres(Moniteur m) 	{ return MoniteurDAO.getListSelonCriteres(m); 	}
-	public ArrayList<Moniteur> 	getListDispo		(long numSemaine, String periode) { return MoniteurDAO.getMyListSelonID(-1, numSemaine, -1,  periode); }
+	public ArrayList<Moniteur> 	getListDispo		(int typeCours, long numSemaine, String periode) { return MoniteurDAO.getMyListSelonID(typeCours, numSemaine, -1,  periode); }
 
 	// METHODES 
 
@@ -58,6 +61,7 @@ public class MoniteurATD extends UtilisateurATD{
 		MoniteurATD MATD = new MoniteurATD();
 		Moniteur M = find(id);
 		MATD.setAdresse(M.getAdresse());
+		MATD.setDisponiblecoursParticulier(M.getDisponiblecoursParticulier());
 		MATD.setAnneeExp(M.getAnneeExp());
 		MATD.setAccrediList(changeTypeAccredilist(M.getAccrediList()));
 		MATD.setDateNaissance(M.getDateNaissance());
@@ -71,6 +75,7 @@ public class MoniteurATD extends UtilisateurATD{
 		Moniteur M = new Moniteur();
 		M.setAnneeExp(0);
 		M.setAccrediList(this.changeTypeAccredilistEnATD(getAccrediList()));
+		M.setDisponiblecoursParticulier(getDisponiblecoursParticulier());
 		M.setPseudo(getPseudo());
 		M.setMdp(getMdp());
 		M.setTypeUtilisateur(1);
@@ -117,13 +122,14 @@ public class MoniteurATD extends UtilisateurATD{
 		return LA;
 	}
 	
-	public ArrayList<MoniteurATD> getListDispoATD(int numSemaine, String periode){
-		ArrayList<Moniteur> listM = getListDispo(numSemaine, periode);
+	public ArrayList<MoniteurATD> getListDispoATD(int typeCours, int numSemaine, String periode){
+		ArrayList<Moniteur> listM = getListDispo(typeCours, numSemaine, periode);
 		ArrayList<MoniteurATD> listMATD = new ArrayList<MoniteurATD>();
 		for (int i = 0; i < listM.size(); i++) {
 			MoniteurATD MATD = new MoniteurATD();
 			MATD.setAdresse(listM.get(i).getAdresse());
 			MATD.setAnneeExp(listM.get(i).getAnneeExp());
+			MATD.setDisponiblecoursParticulier(listM.get(i).getDisponiblecoursParticulier());
 			MATD.setAccrediList(changeTypeAccredilist(listM.get(i).getAccrediList()));
 			MATD.setDateNaissance(listM.get(i).getDateNaissance());
 			MATD.setNom(listM.get(i).getNom());
@@ -134,19 +140,26 @@ public class MoniteurATD extends UtilisateurATD{
 		return listMATD;
 	}
 	
-	public int getIdATD(MoniteurATD EATD){
+	public int getIdATD(MoniteurATD MATD){
 		Moniteur M = new Moniteur();
-		M.setAdresse(EATD.getAdresse());
-		M.setAnneeExp(EATD.getAnneeExp());
-		M.setAccrediList(changeTypeAccredilistEnATD(EATD.getAccrediList()));
-		M.setDateNaissance(EATD.getDateNaissance());
-		M.setNom(EATD.getNom());
-		M.setPre(EATD.getPre());
-		M.setSexe(EATD.getSexe());
+		M.setAdresse(MATD.getAdresse());
+		M.setAnneeExp(MATD.getAnneeExp());
+		M.setDisponiblecoursParticulier(MATD.getDisponiblecoursParticulier());
+		M.setAccrediList(changeTypeAccredilistEnATD(MATD.getAccrediList()));
+		M.setDateNaissance(MATD.getDateNaissance());
+		M.setNom(MATD.getNom());
+		M.setPre(MATD.getPre());
+		M.setSexe(MATD.getSexe());
 		M.setNumMoniteur(-1);
 		M.setNumPersonne(-1);
 		M.setNumUtilisateur(-1);
 		return  getId(M).getNumPersonne();
+	}
+	
+	// Mise à jour de la disponibilite pour les cours particulier du moniteur
+	public boolean updateDispo	(int numMoniteur) {
+		MoniteurATD ATD = new MoniteurATD();
+		return MoniteurDAO.update(ATD.find(numMoniteur));
 	}
 
 	// METHODE SURCHARGEE
@@ -158,9 +171,13 @@ public class MoniteurATD extends UtilisateurATD{
 	}
 
 	// PROPRIETES
-	public int 	getAnneeExp	()			{ return anneeDexp; 	}
-	public void setAnneeExp (int el) 	{ this.anneeDexp = el; 	}
-	public 		ArrayList<AccreditationATD> getAccrediList	() 				{ return listAccreditation; }
-	public void setAccrediList	(ArrayList<AccreditationATD> accrediList) 	{ this.listAccreditation = accrediList; 	}
+	public int 		getAnneeExp								()										{ return anneeDexp; 	}
+	public boolean 	getDisponiblecoursParticulier			()	 									{ return disponiblecoursParticulier; }
+	public void 	setAnneeExp 							(int el) 								{ this.anneeDexp = el; 	}
+	public void 	setDisponiblecoursParticulier			(boolean disponiblecoursParticulier) 	{ this.disponiblecoursParticulier = disponiblecoursParticulier; }
+	public ArrayList<AccreditationATD> getAccrediList		() 										{ return listAccreditation; }
+	public void setAccrediList	(ArrayList<AccreditationATD> accrediList) 							{ this.listAccreditation = accrediList; 	}
+	
+	
 }
 

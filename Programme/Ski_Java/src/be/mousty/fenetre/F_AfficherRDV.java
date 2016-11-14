@@ -48,9 +48,8 @@ public class F_AfficherRDV extends JFrame {
 				try {
 					F_AfficherRDV frame = new F_AfficherRDV(118, 1);
 					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				catch (Exception e) { e.printStackTrace(); }
 			}
 		});
 	}
@@ -69,14 +68,9 @@ public class F_AfficherRDV extends JFrame {
 			setContentPane(contentPane);
 			contentPane.setLayout(null);
 
-			// ADF
-			//AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-			//DAO<Reservation> ReservationDAO = adf.getReservationDAO();
-
 			// New
 			JLabel lblVosCours = new JLabel("Vos cours");
 			JSeparator separator = new JSeparator();
-			JLabel lbl_error = new JLabel("Error label");
 			JButton btn_fr = new JButton("Retour");
 			JLabel lbl_somme = new JLabel("");
 
@@ -87,7 +81,6 @@ public class F_AfficherRDV extends JFrame {
 			// SetBound
 			lblVosCours.setBounds(10, 11, 76, 20);
 			separator.setBounds(10, 37, 76, 20);
-			lbl_error.setBounds(166, 16, 203, 16);
 			btn_fr.setBounds(10, 308, 125, 25);
 			lbl_somme.setBounds(166, 313, 505, 14);
 
@@ -95,7 +88,6 @@ public class F_AfficherRDV extends JFrame {
 			// Add
 			contentPane.add(lblVosCours);
 			contentPane.add(separator);
-			contentPane.add(lbl_error);
 			contentPane.add(btn_fr);
 			contentPane.add(lbl_somme);
 
@@ -119,11 +111,7 @@ public class F_AfficherRDV extends JFrame {
 				}
 			});
 
-
-
-
 			// Liste RDV
-			
 			ArrayList<ReservationATD> listReserv = RATD.getMyListATD(idPersonne);
 			int somme = 0;
 			int sommeAssurance = 0;
@@ -160,8 +148,6 @@ public class F_AfficherRDV extends JFrame {
 				String[] parts = strPlaceCours.split("-");
 				String[] partPeriode = listReserv.get(i).getCours().getPeriodeCours().split("-");
 				
-				
-				
 				RATD = listReserv.get(i);
 				data[i][0] = RATD.getIdReserv();
 				data[i][1] = listReserv.get(i).getSemaine().getDateDebut() ;
@@ -183,10 +169,9 @@ public class F_AfficherRDV extends JFrame {
 				if(listReserv.get(i).getAUneAssurance()){ sommeAssurance += 15; }
 				hs_numSem.add(listReserv.get(i).getSemaine().getNumSemaine());
 			}
-			for(Object hs : hs_numSem) {
-				// Réduction par semaine
-				sommeReduction = RATD.valeurReduction((int)hs, -1, -1);
-			}
+			
+			// Réduction par semaine
+			for(Object hs : hs_numSem) { sommeReduction = RATD.valeurReduction((int)hs, -1, -1); }
 			lbl_somme.setText("La somme totale est de : " + (somme + sommeAssurance - sommeReduction) + " € (" + sommeAssurance + "€ d'assurance, " + sommeReduction + " de réduction).");
 
 			DefaultTableModel model = new DefaultTableModel(data, columns);
@@ -267,13 +252,6 @@ public class F_AfficherRDV extends JFrame {
 								numCours,
 								(long)SATD.getId(listReserv.get(row).getSemaine()).getNumSemaine(),
 								MATD.getId(listReserv.get(row).getMoniteur()).getNumMoniteur());}
-
-					//String string =  CATD.calculerPlaceCours(CATD.getId(listReserv.get(row).getCours()), dateJour.getTime() , MATD.getId(listReserv.get(row).getMoniteur()));
-
-					
-					//System.out.println(strPlaceCours +" ~ " + row );
-					
-					//System.out.println(RATD.find(numReservation).getSemaine().getDateFin().getTime());
 					
 					String[] parts = strPlaceCours.split("-");
 					 // S'il y a assez de places mini, on colorie en vert.
@@ -284,10 +262,8 @@ public class F_AfficherRDV extends JFrame {
 					return this;
 				}
 			});
-
 			pane.setBounds(10, 42, 1168, 255);
 			contentPane.add(pane);
-
 		}
 		catch(Exception E){ E.getStackTrace(); }
 	}

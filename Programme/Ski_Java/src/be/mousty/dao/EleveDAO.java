@@ -36,7 +36,7 @@ public class EleveDAO extends DAO<Eleve> {
 			Eleve e = find(numPersonne);
 			// La personne n'existe pas
 			if (e == null || numPersonne == -1) {
-				
+				System.out.println("La personne n'existe pas encore dans la DB.");
 				// Personne P = new Personne();
 				P.setNumPersonne(numPersonne);
 				P.setNom(obj.getNom());

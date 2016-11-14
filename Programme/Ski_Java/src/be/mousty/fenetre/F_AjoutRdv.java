@@ -17,6 +17,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
@@ -196,11 +197,11 @@ public class F_AjoutRdv extends JFrame {
 
 		// EVENEMENT CLICK SUR RADIOBUTTON
 		// Valider la réservation
-		System.out.println("Num client : " + idClient);
+		//System.out.println("Num client : " + idClient);
 		btn_inscrip.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(cb_nomEleve.getSelectedItem() != "" && cb_nomMoniteur.getSelectedItem() != "" && cb_semaine.getSelectedItem() != "" && cb_cours.getSelectedItem() != ""){
+				if(cb_nomEleve.getModel().getSize() > 0 && cb_nomMoniteur.getModel().getSize() > 0 && cb_semaine.getModel().getSize() > 0 && cb_cours.getModel().getSize() > 0){
 					// Affiche F_ajoutEleve
 					setVisible(false);
 					// coursCollectif, boolean assurance, int numMoniteur, int idClient, int numEleve, int numSemaine, Date dateJour, int numCours, String periode
@@ -209,6 +210,7 @@ public class F_AjoutRdv extends JFrame {
 					frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 					frame.setVisible(true);
 				}
+				else { JOptionPane.showMessageDialog(contentPane, "Certaines informations sont manquantes."); }
 			}
 		});
 
@@ -240,7 +242,7 @@ public class F_AjoutRdv extends JFrame {
 				rdbtnCoursAprem.setText("Cours apres-midi");
 				//radbtn_touteLaJournee.setText("Matin et apres-midi");
 				radbtn_touteLaJournee.setVisible(false);
-				if (pageChargee) { loadCbSemaine(); loadCbEleve(); loadCbCours();  }
+				if (pageChargee) { loadCbMoniteur(); loadCbSemaine(); loadCbEleve(); loadCbCours();  }
 			}
 		});
 
@@ -260,7 +262,7 @@ public class F_AjoutRdv extends JFrame {
 				rdbtnCoursAprem.setText("Cours de 13 à 14");
 				radbtn_touteLaJournee.setText("Cours de 12 à 14");
 				radbtn_touteLaJournee.setVisible(true);
-				if (pageChargee) { loadCbSemaine(); loadCbEleve(); loadCbCours();  }
+				if (pageChargee) { loadCbMoniteur(); loadCbSemaine(); loadCbEleve(); loadCbCours();  }
 			}
 		});
 
@@ -336,7 +338,7 @@ public class F_AjoutRdv extends JFrame {
 					Object item = cb_semaine.getSelectedItem();
 					int value = ((ComboItem)item).getValue();
 					numSemaine = value;
-					System.out.println("Num semaine : " + value);
+					//System.out.println("Num semaine : " + value);
 					if (pageChargee) {
 						loadCbMoniteur();
 						loadCbEleve();
@@ -353,7 +355,7 @@ public class F_AjoutRdv extends JFrame {
 					Object item = cb_jour.getSelectedItem();
 					Date value = ((ComboItem)item).getValueDate();
 					dateJour = value;
-					System.out.println("Num jour : " + value);
+					//System.out.println("Num jour : " + value);
 					if (pageChargee) loadCbEleve();
 				}
 			}
@@ -365,7 +367,7 @@ public class F_AjoutRdv extends JFrame {
 					Object item = cb_nomEleve.getSelectedItem();
 					int value = ((ComboItem)item).getValue();
 					numEleve = value;
-					System.out.println("Num élève : " + value);
+					//System.out.println("Num élève : " + value);
 					if (pageChargee) loadCbCours();
 				}
 			}
@@ -377,7 +379,7 @@ public class F_AjoutRdv extends JFrame {
 					Object item = cb_nomMoniteur.getSelectedItem();
 					int value = ((ComboItem)item).getValue();
 					numMoniteur = value;
-					System.out.println("Num moniteur : " + value);
+					//System.out.println("Num moniteur : " + value);
 					if (pageChargee) {  loadCbEleve(); loadCbCours();}
 				}
 			}
@@ -389,8 +391,7 @@ public class F_AjoutRdv extends JFrame {
 					Object item = cb_cours.getSelectedItem();
 					int value = ((ComboItem)item).getValue();
 					numCours = value;
-					System.out.println("Num cours : " + value);
-
+					//System.out.println("Num cours : " + value);
 					if (pageChargee) { loadInfoCoursText(); /*loadCbEleve();*/ }
 				}
 			}
@@ -430,7 +431,7 @@ public class F_AjoutRdv extends JFrame {
 		}
 		cb_nomEleve.removeAllItems();
 		lbl_error.setText("");
-		if (listEleve == null || listEleve.size() == 0){ lbl_error.setText("Pas d'élèves disponible"); }
+		if (listEleve == null || listEleve.size() == 0){ JOptionPane.showMessageDialog(contentPane, "Ajoutez des élèves pour continuer.\n Si vous en avez inscrit, changez de moniteur."); }
 		else { 
 			for(EleveATD e : listEleve) {
 				cb_nomEleve.addItem (new ComboItem(e.getNom().toUpperCase() + " " + e.getPre(), EATD.getIdATD(e)));
@@ -440,14 +441,18 @@ public class F_AjoutRdv extends JFrame {
 	}
 
 	public void loadCbMoniteur(){
+		System.out.println("Moniteur mis à jour");
 		// MONITEUR
-		ArrayList<MoniteurATD> listMoniteur = MATD.getListDispoATD(numSemaine, periode);//MoniteurDAO.getListDispo(numSemaine, periode);
+		int typecours = 2;
+		if (rdbtnCoursCollectif.isSelected())
+			typecours = 1;
+		ArrayList<MoniteurATD> listMoniteur = MATD.getListDispoATD(typecours, numSemaine, periode);//MoniteurDAO.getListDispo(numSemaine, periode);
 		if (listMoniteur != null){
 			cb_nomMoniteur.removeAllItems();
 			for(MoniteurATD m : listMoniteur)
 				cb_nomMoniteur.addItem (new ComboItem(m.getNom().toUpperCase() + " " + m.getPre(), MATD.getIdATD(m)));
 		}
-		else lbl_error.setText("Erreur ajout moniteur");
+		else JOptionPane.showMessageDialog(contentPane, "Erreur ajout moniteur.");
 	}
 
 	public void loadCbSemaine(){
@@ -458,7 +463,7 @@ public class F_AjoutRdv extends JFrame {
 				cb_semaine.removeAllItems();
 				for(SemaineATD s : listSemaine) 
 					if (!s.getCongeScolaire()) cb_semaine.addItem (new ComboItem(s.getDateDebut().toString(), SATD.getIdATD(s)));
-					else lbl_error.setText("Erreur semaine");
+					else JOptionPane.showMessageDialog(contentPane, "Erreur semaine.");
 			}
 		}
 		else {
@@ -470,6 +475,7 @@ public class F_AjoutRdv extends JFrame {
 				for(SemaineATD s : listSemaine) 
 					cb_semaine.addItem (new ComboItem(s.getDateDebut().toString(), SATD.getIdATD(s)));
 			}
+			else JOptionPane.showMessageDialog(contentPane, "Erreur semaine.");
 		}
 	}
 
@@ -493,7 +499,7 @@ public class F_AjoutRdv extends JFrame {
 					cb_jour.addItem (new ComboItem(listJours[i-1] + ", " + dtJour.toString(), dtJour));
 				} 
 			}
-			else lbl_error.setText("Erreur jour");
+			else JOptionPane.showMessageDialog(contentPane, "Erreur jours.");
 		}
 		catch (Exception E){ E.getStackTrace(); }
 	}
@@ -515,7 +521,7 @@ public class F_AjoutRdv extends JFrame {
 				cb_cours.addItem (new ComboItem(cp.getNombreHeures() + " heure(s) de " + cp.getNomSport() + " (" + cp.getPeriodeCours() + ")", CPATD.getIdATD(cp)));
 			}
 		}
-		else lbl_error.setText("Erreur disponibilités");
+		else JOptionPane.showMessageDialog(contentPane, "Erreur disponibilités.");
 		loadInfoCoursText();
 	}
 

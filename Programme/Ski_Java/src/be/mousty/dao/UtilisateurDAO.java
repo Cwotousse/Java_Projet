@@ -15,7 +15,9 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		try
 		{
 			// Vérifier si la personne existe déjà (username/mdp)
-			if(find(obj.getNumUtilisateur()) != null){ return -1; }
+			Utilisateur U = getId(obj);
+			System.out.println(U.getNumPersonne());
+			if(U.getNumPersonne() != -1 || U.getNumPersonne() != 0) { return -1; }
 			else {
 				//on l'utilise pour ajouter les données dans la table Utilisateur
 				System.out.println("UtilisateurDao -> " + obj.getNumUtilisateur());

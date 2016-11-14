@@ -41,32 +41,35 @@ public class ClientATD extends UtilisateurATD{
 		Client C = find(idClient);
 		if(C != null){
 			System.out.println("F_Client -> ajout eleve");
-			 //= new Eleve(, , , , ,);
+			//= new Eleve(, , , , ,);
 			Eleve E = new Eleve();
 			E.setNumEleve(C.getNumPersonne());
+			this.setDateNaissance(C.getDateNaissance());
 			E.setCategorie(this.attributerCategorie());
+			E.setNumClient(idClient);
 			E.setNumPersonne(C.getNumPersonne());
 			E.setNom(C.getNom());
 			E.setPre(C.getPre());
 			E.setDateNaissance( C.getDateNaissance());
 			E.setAdresse(C.getAdresse());
 			E.setSexe(C.getSexe());
-			if(create(E) != -1) return true;
+			EleveATD EATD = new EleveATD(E);
+			if(EATD.create(E) != -1) return true;
 		}
 		return false;
 	}
 	
 	public int inscriptionClient(){
 		Client C = new Client();
-		C.setAdresseFacturation(getAdresseFacturation());
-		C.setPseudo(getPseudo());
-		C.setMdp(getMdp());
+		C.setAdresseFacturation(this.getAdresseFacturation());
+		C.setPseudo(this.getPseudo());
+		C.setMdp(this.getMdp());
 		C.setTypeUtilisateur(2);
-		C.setNom(getNom());
-		C.setPre(getPre());
-		C.setDateNaissance(getDateNaissance());
-		C.setAdresse(getAdresse());
-		C.setSexe(getSexe());
+		C.setNom(this.getNom());
+		C.setPre(this.getPre());
+		C.setDateNaissance(this.getDateNaissance());
+		C.setAdresse(this.getAdresse());
+		C.setSexe(this.getSexe());
 		return create(C);
 	}
 	

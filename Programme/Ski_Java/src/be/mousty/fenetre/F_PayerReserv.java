@@ -55,9 +55,8 @@ public class F_PayerReserv extends JFrame {
 				try {
 					F_PayerReserv frame = new F_PayerReserv(false, false, -1,-1,-1,-1, null, -1, "");
 					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				catch (Exception e) { e.printStackTrace(); }
 			}
 		});
 	}
@@ -73,36 +72,40 @@ public class F_PayerReserv extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new MigLayout("", "[][][][][][grow][][][][]", "[][][][][][][][][][][][][][]"));
 
-		JLabel lbl_reserv = new JLabel("R\u00E9servation");
-		lbl_reserv.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
-		JLabel lbl_nom = new JLabel("Nom : ");
-		JLabel lbl_affNom = new JLabel("");
-		JLabel lbl_factur = new JLabel("Adresse facturation : ");
-		JLabel lbl_nomElev = new JLabel("El\u00E8ve : ");
-		JLabel lbl_affEleve = new JLabel("");
-		JLabel lbl_affAdressFactur = new JLabel("");
-		JLabel lbl_cours = new JLabel("Cours : ");
-		JLabel lbl_affCours = new JLabel("");
-		JLabel lbl_compte = new JLabel("N\u00B0 compte");
-		JLabel lbl_periode = new JLabel("P\u00E9riode : ");
-		JLabel lbl_affPeriode = new JLabel("");
-		txtF_numCompte = new JTextField();
-		JLabel lbl_prix = new JLabel("Prix : ");
-		JLabel lbl_affPrix = new JLabel("");
-		JLabel lbl_codeCompte = new JLabel("Code : ");
-		JLabel lbl_assurance = new JLabel("Assurance : ");
-		JLabel lbl_affAssurance = new JLabel("");
-		pwdF_code = new JPasswordField();
-		JLabel lbl_reduc = new JLabel("R\u00E9duction :");
-		JLabel lbl_affReduction = new JLabel("");
-		JLabel lbl_tot = new JLabel("Prix total :");
-		JLabel lbl_affPrixTotal = new JLabel("");
-		JButton btn_ret = new JButton("Annuler payement");
-		JButton btn_payer = new JButton("Payer");
+		// New
+		JLabel lbl_reserv 			= new JLabel("R\u00E9servation");
+		JLabel lbl_nom 				= new JLabel("Nom : ");
+		JLabel lbl_affNom 			= new JLabel("");
+		JLabel lbl_factur 			= new JLabel("Adresse facturation : ");
+		JLabel lbl_nomElev 			= new JLabel("El\u00E8ve : ");
+		JLabel lbl_affEleve 		= new JLabel("");
+		JLabel lbl_affAdressFactur 	= new JLabel("");
+		JLabel lbl_cours 			= new JLabel("Cours : ");
+		JLabel lbl_affCours 		= new JLabel("");
+		JLabel lbl_compte 			= new JLabel("N\u00B0 compte");
+		JLabel lbl_periode	 		= new JLabel("P\u00E9riode : ");
+		JLabel lbl_affPeriode 		= new JLabel("");
+		JLabel lbl_prix 			= new JLabel("Prix : ");
+		JLabel lbl_affPrix 			= new JLabel("");
+		JLabel lbl_codeCompte 		= new JLabel("Code : ");
+		JLabel lbl_assurance 		= new JLabel("Assurance : ");
+		JLabel lbl_affAssurance 	= new JLabel("");
+		JLabel lbl_reduc 			= new JLabel("R\u00E9duction :");
+		JLabel lbl_affReduction 	= new JLabel("");
+		JLabel lbl_tot 				= new JLabel("Prix total :");
+		JLabel lbl_affPrixTotal 	= new JLabel("");
+		JButton btn_ret 			= new JButton("Annuler payement");
+		JButton btn_payer 			= new JButton("Payer");
+		txtF_numCompte 				= new JTextField();
+		pwdF_code 					= new JPasswordField();
 
-
+		// Columns
 		txtF_numCompte.setColumns(10);
 
+		// Font
+		lbl_reserv.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
+		
+		// Add
 		contentPane.add(lbl_affEleve, "cell 2 2");
 		contentPane.add(lbl_reserv, "cell 2 0");
 		contentPane.add(lbl_nom, "cell 1 1");
@@ -136,7 +139,6 @@ public class F_PayerReserv extends JFrame {
 		lbl_affCours.setText(CATD.find(numCours).getNomSport());
 		lbl_affPeriode.setText(periode);
 		lbl_affPrix.setText(CATD.find(numCours).getPrix() + "€");
-		//System.out.println("F_payerReserv : " + RATD.updateAssurance(numEleve, numSemaine, periode));
 		int prixAssurance = assurance ? (RATD.besoinDupdateOuNonAssurance(numEleve, numSemaine, periode) ? 0 : 15) : 0; // Operateur ternaire imbriqué
 		lbl_affAssurance.setText(prixAssurance + "€");
 		lbl_affReduction.setText(RATD.valeurReduction(numSemaine, numEleve, CATD.find(numCours).getPrix()) + "€");
@@ -150,60 +152,6 @@ public class F_PayerReserv extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if(!pwdF_code.getText().equals("") && !txtF_numCompte.getText().equals("")){
-					/*String string;
-				if(!coursCollectif)
-					string = CATD.calculerPlaceCours(numCours, dateJour.getTime(), numMoniteur);
-				else 
-					string = CATD.calculerPlaceCours(numCours, numSemaine, numMoniteur);
-				//String string = CoursDAO.calculerPlaceCours(numCours, numSemaine, numMoniteur);
-				String[] parts = string.split("-");
-				String part1 = parts[0];
-				if(Integer.parseInt(part1) > 0){
-					//System.out.println("Réservation effectué");
-					String[] partsPer = periode.split("-");
-					String heureDebut = partsPer[0];
-					String heureFin = partsPer[1];
-					//boolean assurance = chkb_assur.isSelected();
-					RATD = new ReservationATD();
-					RATD.setHeureDebut(Integer.parseInt(heureDebut));
-					RATD.setHeureFin(Integer.parseInt(heureFin));
-					RATD.setNumReservation(-1);
-					RATD.setAUneAssurance(assurance);
-					// utilisé pour réservation coursParticulier.
-					if(!coursCollectif){
-						SATD = SATD.findATD(numSemaine);
-						SATD.setDateDebut(dateJour);
-						SATD.setDateFin(dateJour);
-						RATD.setSemaine(SATD.transformATDintoPojo(numSemaine));
-						System.out.println("F_AjoutRrdv -> cours particulier");
-					}
-					else { RATD.setSemaine(SATD.find(numSemaine)); System.out.println("F_AjoutRrdv -> cours collectif");}
-
-
-					RATD.setCours(CATD.find(numCours));
-					RATD.setEleve(EATD.find(numEleve));
-					RATD.setClient(CLIATD.find(idClient));
-					RATD.setMoniteur(MATD.find(numMoniteur));
-					int numReservation = RATD.createReservation();
-
-
-					if(numReservation != -1){
-						// Update -> décoche toutes les assurances précédemment sélectionnées, pour faciliter le calcul d'assurance final.
-						//ReservationDAO.updateAssurance(numEleve, numSemaine, periode);
-						RATD.updateAssurance(numEleve, numSemaine, periode);
-						System.out.println("Num reserv : " + numReservation);
-
-						// Retour à l'ancien écran
-						setVisible(false);
-						F_Client frame = new F_Client(idClient);
-						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-						frame.setVisible(true);
-					}
-					//else { lbl_infoCours.setText("Reservation annulée. (6 ans mini pour faire du snow)"); }
-					else JOptionPane.showMessageDialog(null, "Reservation annulée. (6 ans mini pour faire du snow)");
-				}
-				//else { lbl_infoCours.setText("Vous ne pouvez plus réserver pour ce cours."); }
-				else JOptionPane.showMessageDialog(null, "Vous ne pouvez plus réserver pour ce cours.");*/
 					if(RATD.effectuerReservation(coursCollectif, assurance, numMoniteur, idClient, numEleve, numSemaine, dateJour, numCours, periode) != -1){
 						// Retour à l'écran client
 						setVisible(false);
@@ -211,8 +159,9 @@ public class F_PayerReserv extends JFrame {
 						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						frame.setVisible(true);
 					}
+					else { JOptionPane.showMessageDialog(contentPane, "Une erreur est intervenue.");}
 				}
-				else{ JOptionPane.showMessageDialog(null, "Entre un n° de compte et/ou votre mot de passe.");}
+				else{ JOptionPane.showMessageDialog(contentPane, "Entre un n° de compte et/ou votre mot de passe.");}
 			}
 
 		});

@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
@@ -107,9 +108,9 @@ public class F_Client extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				try {
 					if (CATD.changeClientToEleve(idClient))
-						labStatut.setText("Vous avez étés ajoutés en tant qu'élève.");
+						JOptionPane.showMessageDialog(null, "Vous avez étés ajoutés en tant qu'élève.");
 					else
-						labStatut.setText("Verifiez vos donnees");
+						JOptionPane.showMessageDialog(null, "Verifiez vos donnees");
 				}
 				// else{ labStatut.setText("ID relié à aucune personne."); }
 				// }

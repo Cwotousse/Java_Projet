@@ -1,6 +1,5 @@
 package be.mousty.fenetre;
 
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -15,6 +14,7 @@ import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -34,11 +34,7 @@ public class F_AjoutEleve extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	//private JTextField txtF_nom;
-	//private JTextField txtF_pre;
-	//private JTextField txtF_adresse;
 	private String sexe = "H"; 
-	//private JTable table;
 
 
 	/**
@@ -50,9 +46,8 @@ public class F_AjoutEleve extends JFrame {
 				try {
 					F_AjoutEleve frame = new F_AjoutEleve(-1);
 					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				catch (Exception e) { e.printStackTrace(); }
 			}
 		});
 	}
@@ -74,7 +69,6 @@ public class F_AjoutEleve extends JFrame {
 		JLabel lblPre 				= new JLabel("Prenom");
 		JLabel lblDateNaiss 		= new JLabel("Date de naissance");
 		JLabel lblAdresse 			= new JLabel("Adresse");
-		JLabel lbl_errLab 			= new JLabel("");
 		JRadioButton rdbtnH 		= new JRadioButton("Homme");
 		JRadioButton rdbtnF 		= new JRadioButton("Femme");
 
@@ -82,14 +76,13 @@ public class F_AjoutEleve extends JFrame {
 		JTextField txtF_nom 		= new JTextField();
 		JTextField txtF_pre 		= new JTextField();
 		JTextField txtF_adresse 	= new JTextField();
+		JButton btn_inscrip 		= new JButton("Enregistrement");
+		JButton btn_ret 			= new JButton("Retour");
 
 		// Set tooltip
 		txtF_nom.setToolTipText		("Nom");
 		txtF_pre.setToolTipText		("Prenom");
 		txtF_adresse.setToolTipText	("Adresse");
-
-		// Set color
-		lbl_errLab.setForeground(Color.RED);
 
 		// Fonts
 		lblInscription.setFont	(new Font("Yu Gothic UI", Font.PLAIN, 13));
@@ -106,11 +99,11 @@ public class F_AjoutEleve extends JFrame {
 		lblAdresse.setBounds		(10, 172, 130, 14);
 		rdbtnH.setBounds			(98, 234, 67, 23);
 		rdbtnF.setBounds			(10, 234, 67, 23);
-		lbl_errLab.setBounds		(9, 317, 156, 14);
 		txtF_nom.setBounds			(10, 43, 155, 20);
 		txtF_pre.setBounds			(10, 90, 155, 20);
 		txtF_adresse.setBounds		(10, 187, 155, 40);
-
+		btn_inscrip.setBounds		(10, 264, 155, 20);
+		btn_ret.setBounds			(10, 286, 155, 20);
 
 		// Add
 		contentPane.add(lblInscription);
@@ -120,11 +113,11 @@ public class F_AjoutEleve extends JFrame {
 		contentPane.add(lblAdresse);
 		contentPane.add(rdbtnH);
 		contentPane.add(rdbtnF);
-		contentPane.add(lbl_errLab);
 		contentPane.add(txtF_nom);
 		contentPane.add(txtF_pre);
 		contentPane.add(txtF_adresse);
-
+		contentPane.add(btn_ret);
+		contentPane.add(btn_inscrip);
 
 		// Set columns
 		txtF_nom.setColumns(10);
@@ -167,57 +160,37 @@ public class F_AjoutEleve extends JFrame {
 			}
 		});
 
-		JButton btn_inscrip = new JButton("Enregistrement");
+
 
 		btn_inscrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
 				try {
-
-					//Utilisateur u = UtilisateurDao.verifPseudoMdp(txtNomDutilisateur.getText(), pwdPassword.getText());
-					//Date dt = new Date(10, 10, 2016);
-					//java.sql.Date selectedDate = dt;//(java.sql.Date) datePicker.getModel().getValue();
-					String dateNaissance = datePicker.getJFormattedTextField().getText();
-					DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-					java.util.Date ud = df.parse(dateNaissance);
-					java.sql.Date sd = new java.sql.Date(ud.getTime());
-
-
-					//DAO<Eleve> EleveDao = adf.getEleveDAO();
-					EleveATD EATD = new EleveATD();
-					//Eleve E = new Eleve();
-					//E.setNumEleve(res.getInt("numEleve"));
-					//E.setCategorie(res.getString("categorie"));
-					//E.setNumPersonne(res.getInt("numEleve"));
-					EATD.setNom(txtF_nom.getText());
-					EATD.setPre(txtF_pre.getText());
-					EATD.setDateNaissance(sd);
-					EATD.setAdresse(txtF_adresse.getText());
-					EATD.setSexe(sexe);
-					int numEleve = EATD.inscriptionEleve(numClient);
-					if (numEleve != -1){
-						// Afficher la fenetre client
-						setVisible(false); //you can't see me!
-						//dispose(); //Destroy the JFrame object
-						F_Client frame = new F_Client(numClient);
-						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-						frame.setVisible(true);
-					}
-					else { lbl_errLab.setText("Verifiez vos donnees");}
+					if(!txtF_nom.getText().equals("") && !txtF_pre.getText().equals("") && !txtF_adresse.getText().equals("")){
+						String dateNaissance = datePicker.getJFormattedTextField().getText();
+						DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+						java.util.Date ud = df.parse(dateNaissance);
+						java.sql.Date sd = new java.sql.Date(ud.getTime());
+						//String nom, String pre, String adresse, String sexe, Date dateNaissance
+						EleveATD EATD = new EleveATD(txtF_nom.getText(), txtF_pre.getText(), txtF_adresse.getText(), sexe, sd);
+						int numEleve = EATD.inscriptionEleve(numClient);
+						if (numEleve != -1){
+							// Afficher la fenetre client
+							setVisible(false); 
+							F_Client frame = new F_Client(numClient);
+							frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+							frame.setVisible(true);
+						}
+						else { JOptionPane.showMessageDialog(contentPane, "Vérifiez vos données.");}
+					} else { JOptionPane.showMessageDialog(contentPane, "Des champs sont vides."); } 
 
 				} 
 				catch (ParseException e) {
-					// TODO Auto-generated catch block
-					lbl_errLab.setText("Verifiez vos donnees");
+					JOptionPane.showMessageDialog(contentPane, "Vérifiez vos données.");
 					e.printStackTrace();
 				}
 			}
 		});
-		btn_inscrip.setBounds(10, 264, 155, 20);
-		contentPane.add(btn_inscrip);
 
-
-		JButton btn_ret = new JButton("Retour");
 		btn_ret.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -227,11 +200,5 @@ public class F_AjoutEleve extends JFrame {
 				frame.setVisible(true);
 			}
 		});
-		btn_ret.setBounds(10, 286, 155, 20);
-		contentPane.add(btn_ret);
-
-
 	}
-
-	
 }

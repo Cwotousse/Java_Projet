@@ -1,0 +1,180 @@
+package be.mousty.accessToDao;
+
+import java.sql.Date;
+import java.util.ArrayList;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import be.mousty.dao.AbstractDAOFactory;
+import be.mousty.dao.DAO;
+import be.mousty.fenetre.F_Client;
+import be.mousty.fenetre.F_Moniteur;
+import be.mousty.pojo.Utilisateur;
+
+public class UtilisateurATD extends PersonneATD{
+
+	// VARIABLES
+	private String pseudo;
+	private String mdp;
+	private int typeUtilisateur;
+
+	// CONSTRUCTEURS
+	public UtilisateurATD(){}
+	public UtilisateurATD(String mdp, String pseudo){
+		this.pseudo 			= pseudo;
+		this.mdp 				= mdp;
+		this.typeUtilisateur 	= -1; // On ne connait pas encore le type lors de la connexion
+	}
+
+	public UtilisateurATD(String nom, String pre, String adresse, String sexe, Date dateNaissance,
+			String pseudo, String mdp, int typeUtilisateur){
+		super(nom, pre, adresse, sexe, dateNaissance);
+		this.pseudo 			= pseudo;
+		this.mdp 				= mdp;
+		this.typeUtilisateur 	= typeUtilisateur;
+	}
+	
+	public UtilisateurATD(Utilisateur U){
+		super(U.getNom(), U.getPre(), U.getAdresse(), U.getSexe(), U.getDateNaissance());
+		this.pseudo 			= U.getPseudo();
+		this.mdp 				= U.getMdp();
+		this.typeUtilisateur 	= U.getTypeUtilisateur();
+	}
+	
+
+	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Utilisateur> UtilisateurDAO = adf.getUtilisateurDAO();
+	public int					 	create				(Utilisateur u) 	{ return UtilisateurDAO.create(u); 					}
+	public boolean 					delete				(Utilisateur u)	 	{ return UtilisateurDAO.delete(u); 					}
+	public Utilisateur 				getId				(Utilisateur u) 	{ return UtilisateurDAO.getId(u); 					}
+	public boolean 					update				(Utilisateur u) 	{ return UtilisateurDAO.update(u); 					}
+	public Utilisateur 				find				(int id) 			{ return UtilisateurDAO.find(id); 					} 
+	public ArrayList<Utilisateur> 	getListUtil			() 					{ return UtilisateurDAO.getList(); 					} 
+	public ArrayList<Utilisateur> 	getListSelonCriteres(Utilisateur u) 	{ return UtilisateurDAO.getListSelonCriteres(u); 	}
+
+	// METHODES SURCHARGEES
+	@Override
+	public String toString() { 
+		return 
+				"Utilisateur." + System.getProperty("line.separator")
+				+ "User name    : " + pseudo +  System.getProperty("line.separator")
+				+ "Mot de passe : " + mdp + System.getProperty("line.separator");
+	}
+	
+	// METHODES
+	public UtilisateurATD connexion(){
+		Utilisateur usr= new Utilisateur();
+		usr.setPseudo(this.getPseudo());
+		usr.setMdp(this.getMdp());
+		Utilisateur U =  this.getId(usr);
+		ReservationATD RATD = new ReservationATD();
+		RATD.getReservationAnnulee(U.getNumUtilisateur(), U.getTypeUtilisateur());
+		return  new UtilisateurATD(U);
+	}
+	
+	public int getNumId(){
+		Utilisateur usr= new Utilisateur();
+		usr.setPseudo(this.getPseudo());
+		usr.setMdp(this.getMdp());
+		Utilisateur U =  this.getId(usr);
+		return U.getNumPersonne();
+	}
+	
+	public int inscriptionClient(){
+		// Client
+
+			ClientATD CATD = new ClientATD();
+			CATD.setAdresseFacturation(txtF_adresseFact.getText());
+			CATD.setPseudo(txtF_userName.getText());
+			CATD.setMdp(txtF_mdp.getText());
+			CATD.setTypeUtilisateur(2);
+			CATD.setNom(txtF_nom.getText());
+			CATD.setPre(txtF_pre.getText());
+			CATD.setDateNaissance(sd);
+			CATD.setAdresse(txtF_adresse.getText());
+			CATD.setSexe(sexe);
+			return CATD.inscriptionClient();
+			
+			 }
+		}
+	}
+		
+	public int inscriptionMoniteur(){
+		
+			MoniteurATD MATD = new MoniteurATD();
+			if(chkb_snow.isSelected()){
+				AccreditationATD A = new AccreditationATD();
+				A.setNom("Snowboard");
+				//A.setNumAccreditation(1);
+				listAccreditation.add(A);
+			}
+			if(chkb_skiAlpin.isSelected()){	
+				AccreditationATD A = new AccreditationATD();
+				A.setNom("Ski");
+				//A.setNumAccreditation(2);
+				listAccreditation.add(A);
+			}
+			if(chkb_skiFond.isSelected()){
+				AccreditationATD A = new AccreditationATD();
+				A.setNom("Ski de fond");
+				//A.setNumAccreditation(3);
+				listAccreditation.add(A);
+			}
+			if(chkb_telemark.isSelected()){
+				AccreditationATD A = new AccreditationATD();
+				A.setNom("Telemark");
+				//A.setNumAccreditation(4);
+				listAccreditation.add(A);
+			}
+			if(chkb_jeune.isSelected()){
+				AccreditationATD A = new AccreditationATD();
+				A.setNom("Enfant");
+				//A.setNumAccreditation(5);
+				listAccreditation.add(A);
+			}
+			if(chkb_adulte.isSelected()){
+				AccreditationATD A = new AccreditationATD();
+				A.setNom("Adulte");
+				//A.setNumAccreditation(6);
+				listAccreditation.add(A);
+			}
+			
+			
+			MATD.setAnneeExp(0);
+			MATD.setAccrediList(listAccreditation);
+			MATD.setPseudo(txtF_userName.getText());
+			MATD.setMdp(txtF_mdp.getText());
+			MATD.setTypeUtilisateur(1);
+			MATD.setNom(txtF_nom.getText());
+			MATD.setPre(txtF_pre.getText());
+			MATD.setDateNaissance(sd);
+			MATD.setAdresse(txtF_adresse.getText());
+			MATD.setSexe(sexe);
+			
+			numUtilisateur = MATD.inscriptionMoniteur();
+			if (numUtilisateur != -1){
+				// Ajout de ses disponibilités
+				//DisponibiliteMoniteurDAO.creerTouteDisponibilitesSelonMoniteur(numUtilisateur);
+				DisponibiliteMoniteurATD DATD = new DisponibiliteMoniteurATD();
+				DATD.creerTouteDisponibilitesSelonMoniteur(numUtilisateur);
+
+				setVisible(false); //you can't see me!
+				//dispose(); //Destroy the JFrame object
+				F_Moniteur frame = new F_Moniteur(numUtilisateur);
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+			else { JOptionPane.showMessageDialog(null, "Verifiez vos donnees");}
+	}
+	
+	// PROPRIETES
+	public String getPseudo			() { return pseudo; }
+	public String getMdp			() { return mdp; }
+	public int getTypeUtilisateur	() { return typeUtilisateur; }
+	public void setPseudo			(String pseudo) 		{ this.pseudo = pseudo; }
+	public void setMdp				(String mdp)			{ this.mdp = mdp; }
+	public void setTypeUtilisateur	(int typeUtilisateur) 	{ this.typeUtilisateur = typeUtilisateur; }
+}
+

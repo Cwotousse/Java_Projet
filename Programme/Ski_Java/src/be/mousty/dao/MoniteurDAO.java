@@ -103,7 +103,28 @@ public class MoniteurDAO extends DAO<Moniteur>{
 
 	public boolean delete(Moniteur obj) { return false; }
 
-	public boolean update(Moniteur obj) { return false; }
+	public boolean update(Moniteur obj) { 
+		PreparedStatement upd_dispo = null;
+		boolean estUpdate = false;
+		try {
+			String str_upd_dispo = "UPDATE Moniteur SET disponibleCoursParticulier = ? WHERE numMoniteur = ?;";
+
+			upd_dispo = this.connect.prepareStatement(str_upd_dispo);
+			System.out.println(obj.getNumMoniteur());
+			upd_dispo.setBoolean(1, !obj.getDisponiblecoursParticulier());
+			upd_dispo.setInt(2, obj.getNumMoniteur());
+			upd_dispo.executeUpdate();
+			estUpdate = true;
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (upd_dispo != null) {
+				try { upd_dispo.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return estUpdate;
+	}
 
 	// On cherche une Moniteur grâce à son id
 	public Moniteur find(int id) {
@@ -135,6 +156,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				M = new Moniteur();
 				M.setNumMoniteur(res_mon.getInt("numMoniteur"));
 				M.setAnneeExp(0);
+				M.setDisponiblecoursParticulier(res_mon.getBoolean("disponiblecoursParticulier"));
 				M.setAccrediList(listeAccred);
 				M.setNumUtilisateur(res_mon.getInt("numUtilisateur"));
 				M.setPseudo(res_mon.getString("pseudo"));
@@ -157,8 +179,6 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		}
 		return M;
 	}
-
-
 
 	public ArrayList<Moniteur> getList() {
 		ArrayList<Moniteur> liste = new ArrayList<Moniteur>();
@@ -187,6 +207,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				Moniteur M = new Moniteur();
 				M.setNumMoniteur(res_mon.getInt("numMoniteur"));
 				M.setAnneeExp(0);
+				M.setDisponiblecoursParticulier(res_mon.getBoolean("disponiblecoursParticulier"));
 				M.setAccrediList(listeAccred);
 				M.setNumUtilisateur(res_mon.getInt("numUtilisateur"));
 				M.setPseudo(res_mon.getString("pseudo"));
@@ -214,12 +235,15 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		return liste;
 	}
 
-	public ArrayList<Moniteur> getMyListSelonID(int nonUsed,  long numSemaine, int nonUsed2, String periode) {
+	public ArrayList<Moniteur> getMyListSelonID(int typeCours,  long numSemaine, int nonUsed2, String periode) {
 		ArrayList<Moniteur> liste = new ArrayList<Moniteur>();
 		PreparedStatement pst_mon = null;
 		PreparedStatement pstAccred = null;
 		try {
 			String verifPeriode;
+			String verifTypeCours = ""; // 1 -> collectif, 2 = particulier.
+			if (typeCours == 2)
+				verifTypeCours = " AND disponibleCoursParticulier = 1 ";
 			switch(periode){
 			case "09-12" : verifPeriode = " = '09-12'";
 			break;
@@ -231,15 +255,17 @@ public class MoniteurDAO extends DAO<Moniteur>{
 			break;
 			case "12-14": verifPeriode = " IN('12-13', '13-14', '12-14') ";
 			break;
-			default : verifPeriode = " = ? ";
+			default : verifPeriode = " = '09-12' ";
 			break;
 			}
+			System.out.println(verifTypeCours);
 			String sql_mon =
-					"SELECT distinct * FROM Moniteur "
+					"SELECT * FROM Moniteur "
 							+ "INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Moniteur.numMoniteur "
 							+ "INNER JOIN DisponibiliteMoniteur ON DisponibiliteMoniteur.numMoniteur = Utilisateur.numUtilisateur "
 							+ "INNER JOIN Personne ON Personne.numPersonne = Moniteur.numMoniteur "
 							+ "WHERE disponible = 1 "
+							+ verifTypeCours
 							+ "AND numSemaine = ? "
 							+ "AND Moniteur.numMoniteur NOT IN "
 							+ "( SELECT numMoniteur FROM CoursMoniteur WHERE numCours IN "
@@ -248,7 +274,8 @@ public class MoniteurDAO extends DAO<Moniteur>{
 							+ "WHERE periodeCours " + verifPeriode + "))"
 							+ "OR  DisponibiliteMoniteur.numMoniteur IN "
 							+ "(SELECT CoursMoniteur.numMoniteur FROM CoursMoniteur WHERE  numCours IN "
-							+ "(SELECT numCours FROM Cours WHERE numSemaine = ? AND disponible = 1 AND periodeCours "+ verifPeriode +" ));";
+							+ "(SELECT numCours FROM Cours WHERE numSemaine = ? AND disponible = 1 AND periodeCours "+ verifPeriode + verifTypeCours + " )) "
+							+ "GROUP BY Moniteur.numMoniteur;";
 			pst_mon = this.connect.prepareStatement(sql_mon);
 			pst_mon.setLong(1, numSemaine);
 			//pst_mon.setString(2, periode);
@@ -271,6 +298,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				Moniteur M = new Moniteur();
 				M.setNumMoniteur(res_mon.getInt("numMoniteur"));
 				M.setAnneeExp(0);
+				M.setDisponiblecoursParticulier(res_mon.getBoolean("disponiblecoursParticulier"));
 				M.setAccrediList(listeAccred);
 				M.setNumUtilisateur(res_mon.getInt("numUtilisateur"));
 				M.setPseudo(res_mon.getString("pseudo"));
@@ -316,6 +344,7 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				M.setNumMoniteur(res_Rec_Mon.getInt("numMoniteur"));
 				M.setNumPersonne(res_Rec_Mon.getInt("numPersonne"));
 				M.setAnneeExp(res_Rec_Mon.getInt("anneeDexp"));
+				M.setDisponiblecoursParticulier(res_Rec_Mon.getBoolean("disponiblecoursParticulier"));
 				M.setAccrediList(null); // no need
 				M.setNumUtilisateur(res_Rec_Mon.getInt("numUtilisateur"));
 				M.setPseudo(res_Rec_Mon.getString("pseudo"));

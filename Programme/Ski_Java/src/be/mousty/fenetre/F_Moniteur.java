@@ -28,6 +28,8 @@ import be.mousty.accessToDao.DisponibiliteMoniteurATD;
 import be.mousty.accessToDao.MoniteurATD;
 import be.mousty.accessToDao.SemaineATD;
 import be.mousty.utilitaire.ButtonColumn;
+import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
 
 public class F_Moniteur extends JFrame {
 	/**
@@ -39,7 +41,14 @@ public class F_Moniteur extends JFrame {
 	SemaineATD SATD = new SemaineATD();
 
 	private JPanel contentPane;
-	private final JLabel lblMoniteur = new JLabel("Moniteur");
+	// New
+	JSeparator separator 				= new JSeparator();
+	JButton btnDeco 					= new JButton("Se d\u00E9connecter");
+	JButton btn_cours 					= new JButton("Mes cours");
+	private final JLabel lblMoniteur 	= new JLabel("Moniteur");
+	JCheckBox chckB_coursPart 			= new JCheckBox("Disponible");
+	JLabel lblNewLabel		 			= new JLabel("Cours particulier");
+
 
 	/**
 	 * Launch the application.
@@ -50,9 +59,8 @@ public class F_Moniteur extends JFrame {
 				try {
 					F_Moniteur frame = new F_Moniteur(120);
 					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				catch (Exception e) { e.printStackTrace(); }
 			}
 		});
 	}
@@ -69,20 +77,36 @@ public class F_Moniteur extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		chckB_coursPart.setVerticalAlignment(SwingConstants.TOP);
+
+		// Font
 		lblMoniteur.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
+
+		// Bounds
 		lblMoniteur.setBounds(10, 11, 117, 36);
-		contentPane.add(lblMoniteur);
-
-		JLabel errMsg = new JLabel("");
-		errMsg.setForeground(Color.RED);
-		errMsg.setBounds(10, 11, 46, 14);
-		contentPane.add(errMsg);
-
-		JSeparator separator = new JSeparator();
 		separator.setBounds(10, 45, 73, 2);
-		contentPane.add(separator);
+		btnDeco.setBounds(10, 92, 117, 23);
+		btn_cours.setBounds(10, 58, 117, 23);
+		chckB_coursPart.setBounds(14, 134, 113, 25);
+		lblNewLabel.setBounds(24, 156, 103, 16);
 
-		JButton btnDeco = new JButton("Se d\u00E9connecter");
+		// Add		
+		contentPane.add(lblMoniteur);
+		contentPane.add(separator);
+		contentPane.add(btnDeco);
+		contentPane.add(btn_cours);
+		contentPane.add(lblNewLabel);
+		contentPane.add(chckB_coursPart);
+
+
+
+		// Affiche le nom du moniteur
+		MoniteurATD MATD = new MoniteurATD();
+		MATD = MATD.findM(numMoniteur);
+		lblMoniteur.setText(MATD.getNom().toUpperCase() + " " + MATD.getPre());
+
+		// Action sur les boutons
+		// Se déconnecter
 		btnDeco.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -92,10 +116,19 @@ public class F_Moniteur extends JFrame {
 				frame.setVisible(true);
 			}
 		});
-		btnDeco.setBounds(10, 92, 117, 23);
-		contentPane.add(btnDeco);
 
-		JButton btn_cours = new JButton("Mes cours");
+		//Modifier sa disponibilité
+		chckB_coursPart.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// update les disponibilités
+				MoniteurATD MATD = new MoniteurATD();
+				if(MATD.updateDispo(numMoniteur)) JOptionPane.showMessageDialog(null, "Disponibilité mise à jour.");
+				else JOptionPane.showMessageDialog(null, "Une erreur est intervenue lors de la modification.");
+			}
+		});
+
+		// Affichier les cours du moniteur
 		btn_cours.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -106,31 +139,20 @@ public class F_Moniteur extends JFrame {
 				frame.setVisible(true);
 			}
 		});
-		btn_cours.setBounds(10, 58, 117, 23);
-		contentPane.add(btn_cours);
-		
-		// Affiche le nom du moniteur
-		MoniteurATD MATD = new MoniteurATD();
-		MATD = MATD.findM(numMoniteur);
-		lblMoniteur.setText(MATD.getNom().toUpperCase() + " " + MATD.getPre());
-		
-		if (premierPassage)
+
+		if (premierPassage){
 			afficherTable();
+			chargerCheckoxCoursParticulier(idMoniteur);
+		}
 		premierPassage = false;
 	}
 
 	public void afficherTable() {
-
-		// ArrayList<DisponibiliteMoniteur> listDispo =
-		// DisponibiliteMoniteurDAO.getMyList(numMoniteur);
 		ArrayList<DisponibiliteMoniteurATD> listDispo = DMATD.getListDispo(numMoniteur);
-		// ArrayList<Semaine> listSemaine = SemaineDAO.getList();
 		ArrayList<SemaineATD> listSemaine = SATD.getListSem();
-		// headers for the table
-		String[] columns = new String[] { "Dispo", "Debut", "Fin", "Modifier" };
 
-		// actual data for the table in a 2d array
-		Object[][] data = new Object[listSemaine.size()][4];
+		String[] columns = new String[] { "Dispo", "Debut", "Fin", "Modifier" }; // headers for the table
+		Object[][] data = new Object[listSemaine.size()][4]; // actual data for the table in a 2d array
 
 		for (int i = 0; i < listSemaine.size(); i++) {
 			data[i][0] = listDispo.get(i).getDisponible();
@@ -159,12 +181,8 @@ public class F_Moniteur extends JFrame {
 			}
 		};
 
-		// ButtonColumn buttonColumn = new ButtonColumn(table, changerValeur,
-		// 2);
 		new ButtonColumn(table, changerValeur, 3);
-
 		JScrollPane pane = new JScrollPane(table);
-
 		// Changer la couleur selon la dispo
 		table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 			/**
@@ -188,6 +206,11 @@ public class F_Moniteur extends JFrame {
 		table.getColumnModel().getColumn(2).setPreferredWidth(20);
 
 		pane.setBounds(156, 18, 388, 232);
-		contentPane.add(pane);// getContentPane().add(pane);
+		contentPane.add(pane);
+	}
+
+	public void chargerCheckoxCoursParticulier(int idMoniteur){
+		MoniteurATD MATD = new MoniteurATD();
+		chckB_coursPart.setSelected(MATD.find(idMoniteur).getDisponiblecoursParticulier());
 	}
 }
