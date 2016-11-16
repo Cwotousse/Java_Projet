@@ -1,11 +1,15 @@
 package be.mousty.dao;
-
+/**
+	Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category DAO
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import be.mousty.pojo.Accreditation;
 
 public class AccreditationDAO extends DAO<Accreditation> {
@@ -15,7 +19,13 @@ public class AccreditationDAO extends DAO<Accreditation> {
 	public boolean update(Accreditation obj) { return false; }
 
 	// On cherche une Accreditation grâce à son id
-	public Accreditation find(int id) {
+	/**
+		Objectif : Retourner un enregistrement de la DB par rapport à sa clé primaire.
+		@version Finale 1.3.3
+		@param la valeur de la clé primaire.
+		@return Une instance de l'objet initialisée avec les valeurs issue de la DB.
+	 */
+	@Override public Accreditation find(int id) {
 		Accreditation A = new Accreditation();
 		PreparedStatement pst = null;
 		try {
@@ -42,9 +52,12 @@ public class AccreditationDAO extends DAO<Accreditation> {
 		return null;
 	}
 
-
-
-	public ArrayList<Accreditation> getList() {
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
+	@Override public ArrayList<Accreditation> getList() {
 		ArrayList<Accreditation> liste = new ArrayList<Accreditation>();
 		PreparedStatement pst = null;
 		try {
@@ -69,8 +82,13 @@ public class AccreditationDAO extends DAO<Accreditation> {
 		return liste;
 	}
 	
-	@Override
-	public Accreditation getId(Accreditation obj){
+	/**
+		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@return instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+	 */
+	@Override public Accreditation getId(Accreditation obj){
 		PreparedStatement pst = null;
 		Accreditation A = new Accreditation();
 		try {

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="javax.swing.JCheckBox"/>
-<fullyQualifiedTypeName name="POJO.CoursParticulier"/>
-<fullyQualifiedTypeName name="POJO.CoursCollectif"/>
 <fullyQualifiedTypeName name="java.util.Arrays"/>
 <fullyQualifiedTypeName name="POJO.Client"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
@@ -60,4 +57,7 @@
 <fullyQualifiedTypeName name="be.mousty.accessToDao.MoniteurATD"/>
 <fullyQualifiedTypeName name="javax.sound.midi.Synthesizer"/>
 <fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
+<fullyQualifiedTypeName name="org.sqlite.SQLiteConfig"/>
+<fullyQualifiedTypeName name="java.util.Properties"/>
+<fullyQualifiedTypeName name="javax.swing.ListSelectionModel"/>
 </qualifiedTypeNameHistroy>

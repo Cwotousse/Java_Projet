@@ -1,5 +1,10 @@
 package be.mousty.dao;
-
+/**
+	Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category DAO
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +19,12 @@ import be.mousty.pojo.Semaine;
 public class SemaineDAO extends DAO<Semaine> {
 	public SemaineDAO(Connection conn) { super(conn); }
 
+	/**
+		Objectif : Méthode permettant de créer un élément dans la DB.
+		@version Finale 1.3.3
+		@param Une instance de l'objet nécéssaire à la création.
+		@return L'ID de l'enregistrement créé dans la DB.
+	 */
 	public int create(Semaine obj) { 
 		PreparedStatement pst2 = null;
 		try
@@ -21,16 +32,13 @@ public class SemaineDAO extends DAO<Semaine> {
 			System.out.println("SemaineDao -> " + obj.getNumSemaineDansAnnee());
 			String requete2 = "INSERT INTO Semaine (congeScolaireOuNon,dateDebut,dateFin,numSemaineDansAnnee) VALUES (?,?,?,?)";
 			pst2 = connect.prepareStatement(requete2);
-
-			//pst2.setInt(1, numSemaine);     //L'id qui lie la table moniteur a la table personne
 			pst2.setBoolean(1, obj.getCongeScolaire());
 			pst2.setDate(2, obj.getDateDebut());
 			pst2.setDate(3, obj.getDateFin());
 			pst2.setInt(4, obj.getNumSemaineDansAnnee());
 
 			pst2.executeUpdate();
-			pst2.close();
-
+			//pst2.close();
 
 			PreparedStatement pst_numReserv;
 			String selectNumReserv = "SELECT MAX(numSemaine) FROM Semaine";
@@ -52,11 +60,15 @@ public class SemaineDAO extends DAO<Semaine> {
 		return -1;
 	}
 	public boolean delete(Semaine obj) { return false; }
-
 	public boolean update(Semaine obj) { return false; }
 
-	// On cherche un élève grâce à son id
-	public Semaine find(int id) {
+	/**
+		Objectif : Retourner un enregistrement de la DB par rapport à sa clé primaire.
+		@version Finale 1.3.3
+		@param la valeur de la clé primaire.
+		@return Une instance de l'objet initialisée avec les valeurs issue de la DB.
+	 */
+	@Override public Semaine find(int id) {
 		PreparedStatement pst = null;
 		Semaine S = new Semaine();
 		try {
@@ -84,6 +96,11 @@ public class SemaineDAO extends DAO<Semaine> {
 		return S;
 	}
 
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
 	public  ArrayList<Semaine> getList() {
 		ArrayList<Semaine> liste = new ArrayList<Semaine>();
 		PreparedStatement pst = null;
@@ -112,6 +129,13 @@ public class SemaineDAO extends DAO<Semaine> {
 		return liste;
 	}
 
+	/**
+		Objectif :  Non utilisé
+		@version Finale 1.3.3
+		@param  Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@param La date jusqu'à où on ajoute des semaines dans la DB
+		@return Retourner la liste des semaine correspond aux critères (si nous sommes dans une période de congés ou non, etc)
+	 */
 	public ArrayList<Semaine> getListSelonCriteres(Semaine S){
 		//AjouterSemainesDansDB();
 		// ATTENTION SEMAINE NUMANNEE 44 A 47 SONT A SUPPRIMER
@@ -135,9 +159,13 @@ public class SemaineDAO extends DAO<Semaine> {
 		return listeRetour;
 	}
 
-	// Juste faire tourner une fois pour ajouter les semaines dans la DB 
-	@Override
-	public void AjouterSemainesDansDB(String startD, String endD){
+	/**
+		Objectif :  Juste faire tourner une fois pour ajouter les semaines dans la DB 
+		@version Finale 1.3.3
+		@param La date de début, là ou on commence à insérer des semaines dans la DB
+		@param La date jusqu'à où on ajoute des semaines dans la DB
+	 */
+	@Override public void AjouterSemainesDansDB(String startD, String endD){
 		// Date de début d'ajout
 		//int jour = 03;
 		//int mois = 12;
@@ -146,7 +174,6 @@ public class SemaineDAO extends DAO<Semaine> {
 			// date du jour
 			//java.sql.Date now = new java.sql.Date(Calendar.getInstance().getTime().getTime());
 
-			// test internet 
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			java.util.Date startDate = formatter.parse(startD); //"2016-10-30"
 			java.util.Date endDate = formatter.parse(endD); //"2016-11-25"
@@ -192,8 +219,13 @@ public class SemaineDAO extends DAO<Semaine> {
 		catch (Exception e) { e.printStackTrace(); }
 	}
 	
-	@Override
-	public Semaine getId (Semaine obj) {
+	/**
+		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@return instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+	 */
+	@Override public Semaine getId (Semaine obj) {
 		PreparedStatement pst = null;
 		Semaine S = new Semaine ();
 		//int id = -1;

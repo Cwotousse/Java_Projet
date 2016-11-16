@@ -1,5 +1,10 @@
 package be.mousty.fenetre;
-
+/**
+	Classe JFrame permettant d'afficher les fenêtres qui permettent d'utiliser le programme.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Fenêtre
+*/
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;

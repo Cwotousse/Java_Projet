@@ -1,9 +1,13 @@
 package be.mousty.accessToDao;
-
+/**
+	Classe métier relatif liée à la classe Moniteur et MoniteurDAO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Métier
+*/
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Random;
-
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.Accreditation;

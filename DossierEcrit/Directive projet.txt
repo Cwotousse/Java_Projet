@@ -1,0 +1,10 @@
+DIRECTIVES
+~~~~~~~~~~
+
+1. DAO
+-> https://fr.wikipedia.org/wiki/Objet_d%27acc%C3%A8s_aux_donn%C3%A9es
+
+2. ANALYSE UML
+2.1 Use Case
+2.2 Diagramme de classe
+2.3 Diagramme de séquence

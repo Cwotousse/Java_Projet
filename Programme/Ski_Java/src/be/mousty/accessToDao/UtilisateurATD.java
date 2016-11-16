@@ -1,10 +1,13 @@
 package be.mousty.accessToDao;
-
+/**
+	Classe métier relatif liée à la classe Utilisateur et UtilisateurDAO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Métier
+*/
 import java.sql.Date;
 import java.util.ArrayList;
-
 import javax.swing.JOptionPane;
-
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.Utilisateur;
@@ -12,9 +15,9 @@ import be.mousty.pojo.Utilisateur;
 public class UtilisateurATD extends PersonneATD{
 
 	// VARIABLES
-	private String pseudo;
-	private String mdp;
-	private int typeUtilisateur;
+	private String 	pseudo;
+	private String	mdp;
+	private int 	typeUtilisateur;
 
 	// CONSTRUCTEURS
 	public UtilisateurATD(){}
@@ -118,9 +121,9 @@ public class UtilisateurATD extends PersonneATD{
 	}
 
 	// PROPRIETES
-	public String getPseudo			() { return pseudo; }
-	public String getMdp			() { return mdp; }
-	public int getTypeUtilisateur	() { return typeUtilisateur; }
+	public String getPseudo			() 						{ return pseudo; }
+	public String getMdp			() 						{ return mdp; }
+	public int getTypeUtilisateur	() 						{ return typeUtilisateur; }
 	public void setPseudo			(String pseudo) 		{ this.pseudo = pseudo; }
 	public void setMdp				(String mdp)			{ this.mdp = mdp; }
 	public void setTypeUtilisateur	(int typeUtilisateur) 	{ this.typeUtilisateur = typeUtilisateur; }

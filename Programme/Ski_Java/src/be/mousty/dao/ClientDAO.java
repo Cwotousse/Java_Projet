@@ -1,11 +1,15 @@
 package be.mousty.dao;
-
+/**
+	Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category DAO
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import be.mousty.pojo.Client;
 import be.mousty.pojo.Personne;
 import be.mousty.pojo.Utilisateur;
@@ -16,8 +20,13 @@ public class ClientDAO extends DAO<Client> {
 	DAO<Personne> PersonneDao = adf.getPersonneDAO();
 	public ClientDAO(Connection conn) { super(conn); }
 
-	@Override
-	public int create(Client obj) {
+	/**
+		Objectif : Méthode permettant de créer un élément dans la DB.
+		@version Finale 1.3.3
+		@param Une instance de l'objet nécéssaire à la création.
+		@return L'ID de l'enregistrement créé dans la DB.
+	 */
+	@Override public int create(Client obj) {
 		PreparedStatement pst_cre_cli = null;
 		try {
 			Personne P = new Personne();
@@ -73,7 +82,13 @@ public class ClientDAO extends DAO<Client> {
 	public boolean update(Client obj) { return false; }
 
 	// On cherche une Client grâce à son id
-	public Client find(int id) {
+	/**
+		Objectif : Retourner un enregistrement de la DB par rapport à sa clé primaire.
+		@version Finale 1.3.3
+		@param la valeur de la clé primaire.
+		@return Une instance de l'objet initialisée avec les valeurs issue de la DB.
+	 */
+	@Override public Client find(int id) {
 		Client C = new Client();
 		PreparedStatement pst = null;
 		try {
@@ -106,8 +121,12 @@ public class ClientDAO extends DAO<Client> {
 		return C;
 	}
 
-	public ArrayList<Client> getList() {
-		
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
+	@Override public ArrayList<Client> getList() {
 		ArrayList<Client> liste = new ArrayList<Client>();
 		PreparedStatement pst = null;
 		try {
@@ -140,8 +159,13 @@ public class ClientDAO extends DAO<Client> {
 		return liste;
 	}
 
-	@Override
-	public Client getId(Client obj) {
+	/**
+		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@return instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+	 */
+	@Override public Client getId(Client obj) {
 		PreparedStatement pst = null;
 		Client C = new Client();
 		try {

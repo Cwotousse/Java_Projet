@@ -1,5 +1,10 @@
 package be.mousty.dao;
-
+/**
+Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+@author Adrien MOUSTY
+@version Finale 1.3.3
+@category DAO
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +16,13 @@ import be.mousty.pojo.Personne;
 public class PersonneDAO  extends DAO<Personne> {
 	public PersonneDAO(Connection conn) { super(conn); }
 
-	public int create(Personne obj) {
+	/**
+		Objectif : Méthode permettant de créer un élément dans la DB.
+		@version Finale 1.3.3
+		@param Une instance de l'objet nécéssaire à la création.
+		@return L'ID de l'enregistrement créé dans la DB.
+	 */
+	@Override public int create(Personne obj) {
 		PreparedStatement pst = null;
 		try {
 			String requete = "INSERT INTO Personne (nom, prenom, adresse, dateNaissance, sexe) VALUES (?,?,?,?,?)";
@@ -45,7 +56,13 @@ public class PersonneDAO  extends DAO<Personne> {
 		return -1;
 	}
 
-	public boolean delete(Personne obj) {
+	/**
+		Objectif : Supprimer une personne.
+		@version Finale 1.3.3
+		@param Une instance de l'objet nécéssaire à la suppression.
+		@return Un booléen pour savoir si la suppression s'est effectuée correctemment
+	 */
+	@Override public boolean delete(Personne obj) {
 		PreparedStatement pst = null;
 		try {
 			String requete = "DELETE FROM Personne WHERE numPersonne = (SELECT MAX(numPersonne) FROM Personne);";
@@ -65,8 +82,13 @@ public class PersonneDAO  extends DAO<Personne> {
 		return false;
 	}
 	
-	
-	public Personne getId (Personne obj) {
+	/**
+		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@return instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+	 */
+	@Override public Personne getId (Personne obj) {
 		PreparedStatement pst = null;
 		Personne P = new Personne ();
 		P.setNumPersonne(-1);

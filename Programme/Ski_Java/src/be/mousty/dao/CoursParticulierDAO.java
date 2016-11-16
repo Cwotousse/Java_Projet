@@ -1,5 +1,10 @@
 package be.mousty.dao;
-
+/**
+	Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category DAO
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +26,13 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 	public boolean update	(CoursParticulier obj) { return false; }
 
 	// On cherche une CoursParticulier grâce à son id
-	public CoursParticulier find(int id) {
+	/**
+		Objectif : Retourner un enregistrement de la DB par rapport à sa clé primaire.
+		@version Finale 1.3.3
+		@param la valeur de la clé primaire.
+		@return Une instance de l'objet initialisée avec les valeurs issue de la DB.
+	 */
+	@Override public CoursParticulier find(int id) {
 		CoursParticulier CP = new CoursParticulier();
 		PreparedStatement pst = null;
 		try {
@@ -50,7 +61,12 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 		return CP;
 	}
 
-	public ArrayList<CoursParticulier> getList() {
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
+	@Override public ArrayList<CoursParticulier> getList() {
 		ArrayList<CoursParticulier> liste = new ArrayList<CoursParticulier>();
 		PreparedStatement pst = null;
 		try {
@@ -79,26 +95,15 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 		return liste;
 	}
 	
-	
-
-	/*public ArrayList<CoursParticulier> getListCoursParticulierSelonId(int idMoniteur, String periode){
-		//System.out.println("Entree fonc");
-		ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur);
-		ArrayList<CoursParticulier> listFull = getList();
-		ArrayList<CoursParticulier> listSelonId = new ArrayList<CoursParticulier>();
-		for (CoursParticulier CP : listFull){
-			for (Cours C : listCours){
-				if (CP.getNumCours() == C.getNumCours()){
-					if(CP.getPeriodeCours().equals(periode)){
-						listSelonId.add(CP);
-					}
-				}
-			}
-		}
-		return listSelonId;
-	}*/
-	@Override
-	public ArrayList<CoursParticulier> getMyListSelonID (int idMoniteur, long numSemaine, int nonUsed, String periode){
+	/**
+		Objectif : Retourner une liste filtrée de cours particuliers.
+		@version Finale 1.3.3
+		@param Le numéro du moniteur pour afficher les cours selon les accréditations.
+		@param Le numéro de la semaine pour vérifier les disponibilités 
+		@param La période pour les disponibilités
+		@return La liste filtrée des cours particuliers.
+	 */
+	@Override public ArrayList<CoursParticulier> getMyListSelonID (int idMoniteur, long numSemaine, int nonUsed, String periode){
 		PreparedStatement pst_lst_cou1 = null;
 		PreparedStatement pst_lst_cou2 = null;
 		ArrayList<CoursParticulier> listSelonId = new ArrayList<CoursParticulier>();
@@ -129,10 +134,10 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 			pst_lst_cou1 = this.connect.prepareStatement(sql1);
 			pst_lst_cou1.setInt(1, idMoniteur);
 			pst_lst_cou1.setLong(2, numSemaine);
-			//pst_lst_cou1.setString(4, periode);
 			pst_lst_cou1.setInt(3, idMoniteur);
 			ResultSet res_lst_cou1 = pst_lst_cou1.executeQuery();
 			while (res_lst_cou1.next()) {
+				// On affiche les cours qui sont repris dans une réservation, car le moniteur ne peut pas donner plusieurs cour sne même temps, il n'a pas le don d'ubiquit&.
 				CoursParticulier CP = new CoursParticulier();
 				CP.setNombreHeures(res_lst_cou1.getInt("nombreHeures"));
 				CP.setNumCours(res_lst_cou1.getInt("numCours"));
@@ -145,6 +150,7 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 				listSelonId.add(CP);
 			}
 			if (listSelonId.isEmpty()){
+				// Si la liste est vide alors on affiche tout ses cours disponibles par rapport à ses accreditations
 				String sql2 = "SELECT * from Cours "
 						+ "INNER JOIN CoursParticulier ON CoursParticulier.numCoursParticulier = Cours.numCours "
 						+ "WHERE PeriodeCours  " + verifPeriode + "  AND nomSport in "
@@ -180,8 +186,13 @@ public class CoursParticulierDAO extends DAO<CoursParticulier> {
 	}
 		
 		
-	@Override
-	public CoursParticulier getId(CoursParticulier obj) {
+	/**
+		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@return instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+	 */
+	@Override public CoursParticulier getId(CoursParticulier obj) {
 			PreparedStatement pst = null;
 			CoursParticulier CP = new CoursParticulier();
 			try {

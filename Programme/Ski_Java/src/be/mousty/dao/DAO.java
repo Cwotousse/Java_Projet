@@ -1,4 +1,10 @@
 package be.mousty.dao;
+/**
+Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+@author Adrien MOUSTY
+@version Finale 1.3.3
+@category DAO
+*/
 import java.sql.Connection;
 import java.util.ArrayList;
 

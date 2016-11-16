@@ -1,5 +1,10 @@
 package be.mousty.dao;
-
+/**
+Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+@author Adrien MOUSTY
+@version Finale 1.3.3
+@category DAO
+ */
 import java.sql.Connection;
 import java.util.Date;
 import java.util.Random;
@@ -20,7 +25,13 @@ public class MoniteurDAO extends DAO<Moniteur>{
 	DAO<Personne> PersonneDao = adf.getPersonneDAO();
 	public MoniteurDAO(Connection conn) { super(conn); }
 
-	public int create(Moniteur obj) {
+	/**
+		Objectif : Méthode permettant de créer un élément dans la DB.
+		@version Finale 1.3.3
+		@param Une instance de l'objet nécéssaire à la création.
+		@return L'ID de l'enregistrement créé dans la DB.
+	 */
+	@Override public int create(Moniteur obj) {
 		PreparedStatement pst = null;
 		PreparedStatement pst_accred = null;
 		try {
@@ -39,12 +50,6 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				U.setPseudo(obj.getPseudo());
 				U.setMdp(obj.getMdp());
 				U.setTypeUtilisateur( obj.getTypeUtilisateur());
-				/*U.setNumPersonne(numPersonne);
-				U.setNom(res_Rec_Util.getString("nom"));
-				U.setPre(res_Rec_Util.getString("prenom"));
-				U.setDateNaissance(res_Rec_Util.getDate("dateNaissance"));
-				U.setAdresse(res_Rec_Util.getString("adresse"));
-				U.setSexe(res_Rec_Util.getString("sexe"));*/
 				if(UtilisateurDAO.create(U) != -1){
 					//on l'utilise pour ajouter les données dans la table Moniteur
 					String requete3 = "INSERT INTO Moniteur (anneeDexp, numMoniteur) VALUES (?, ?)";
@@ -59,11 +64,6 @@ public class MoniteurDAO extends DAO<Moniteur>{
 					java.sql.Date now = new java.sql.Date(ud.getTime());
 
 					for(int i = 0; i < obj.getAccrediList().size(); i++){
-						/*System.out.println("Moniteur DAO : taille liste accred -> " + obj.getAccrediList().size());
-						String sqlAccred = "SELECT numAccreditation from Accreditation WHERE nomAccreditation = ? ";
-						pst = this.connect.prepareStatement(sqlAccred);
-						pst.setString(1, obj.getAccrediList().get(i).toString()); // Nom de l'accréditation
-						ResultSet rsAccred = pst.executeQuery();*/
 						int numAccred = obj.getAccrediList().get(i).getNumAccreditation();
 						//while (rsAccred.next()) numAccred = rsAccred.getInt(1); // On a l'id de l'accreditation
 						if (numAccred != -1){
@@ -103,6 +103,12 @@ public class MoniteurDAO extends DAO<Moniteur>{
 
 	public boolean delete(Moniteur obj) { return false; }
 
+	/**
+		Objectif : Mettre à jour la disponibilité pour LES COURS PARTICULIERS d'un moniteur
+		@version Finale 1.3.3
+		@param Un objet de type Moniteur afin de savoir quelle dispo il faut update.
+		@return Un booléen pour savoir si ça a fonctionné.
+	 */
 	public boolean update(Moniteur obj) { 
 		PreparedStatement upd_dispo = null;
 		boolean estUpdate = false;
@@ -127,7 +133,13 @@ public class MoniteurDAO extends DAO<Moniteur>{
 	}
 
 	// On cherche une Moniteur grâce à son id
-	public Moniteur find(int id) {
+	/**
+		Objectif : Retourner un enregistrement de la DB par rapport à sa clé primaire.
+		@version Finale 1.3.3
+		@param la valeur de la clé primaire.
+		@return Une instance de l'objet initialisée avec les valeurs issue de la DB.
+	 */
+	@Override public Moniteur find(int id) {
 		Moniteur M = new Moniteur();
 		PreparedStatement pst = null;
 		PreparedStatement pstAccred = null;
@@ -180,7 +192,12 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		return M;
 	}
 
-	public ArrayList<Moniteur> getList() {
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
+	@Override public ArrayList<Moniteur> getList() {
 		ArrayList<Moniteur> liste = new ArrayList<Moniteur>();
 		PreparedStatement pst_mon = null;
 		PreparedStatement pstAccred = null;
@@ -235,7 +252,14 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		return liste;
 	}
 
-	public ArrayList<Moniteur> getMyListSelonID(int typeCours,  long numSemaine, int nonUsed2, String periode) {
+	/**
+		@version Finale 1.3.3
+		@param Le type de cours, si c'est un cours particulier, il faut ajouter une ligne dans la query.
+		@param Le numéro de semaine pour savoir si le moniteur est dispo à ce moment là
+		@param La période pour savoir si le moniteur est dispo à ce moment.
+		@return Une liste filtrée de moniteurs.
+	 */
+	@Override public ArrayList<Moniteur> getMyListSelonID(int typeCours,  long numSemaine, int nonUsed2, String periode) {
 		ArrayList<Moniteur> liste = new ArrayList<Moniteur>();
 		PreparedStatement pst_mon = null;
 		PreparedStatement pstAccred = null;
@@ -326,8 +350,13 @@ public class MoniteurDAO extends DAO<Moniteur>{
 		return liste;
 	}
 
-	@Override
-	public Moniteur getId(Moniteur obj) {
+	/**
+		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@return instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+	 */
+	@Override public Moniteur getId(Moniteur obj) {
 		PreparedStatement pst = null;
 		Moniteur M = new Moniteur();
 		try {

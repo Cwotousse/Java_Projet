@@ -1,11 +1,15 @@
 package be.mousty.dao;
-
+/**
+	Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category DAO
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import be.mousty.pojo.Cours;
 
 public class CoursDAO extends DAO<Cours> {
@@ -17,7 +21,13 @@ public class CoursDAO extends DAO<Cours> {
 	public boolean update	(Cours obj) { return false; }
 
 	// On cherche une Cours grâce à son id
-	public Cours find(int id) {
+	/**
+		Objectif : Retourner un enregistrement de la DB par rapport à sa clé primaire.
+		@version Finale 1.3.3
+		@param la valeur de la clé primaire.
+		@return Une instance de l'objet initialisée avec les valeurs issue de la DB.
+	 */
+	@Override public Cours find(int id) {
 		Cours C = new Cours();
 		PreparedStatement pst = null;
 		try {
@@ -44,7 +54,12 @@ public class CoursDAO extends DAO<Cours> {
 		return C;
 	}
 
-	public ArrayList<Cours> getList() {
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
+	@Override public ArrayList<Cours> getList() {
 		ArrayList<Cours> liste = new ArrayList<Cours>();
 		PreparedStatement pst = null;
 		
@@ -73,7 +88,13 @@ public class CoursDAO extends DAO<Cours> {
 		return liste;
 	}
 	
-	public ArrayList<Cours> getMyListSelonID(int idMoniteur, long nonUsed, int nonUsed2, String nonUsed3){
+	/**
+		Objectif : Retourner une liste filtrée de cours.
+		@version Finale 1.3.3
+		@param Le numéro du moniteur pour afficher les cours correspondant à ses accréditations.
+		@return La liste filtrée de cours.
+	 */
+	@Override public ArrayList<Cours> getMyListSelonID(int idMoniteur, long nonUsed, int nonUsed2, String nonUsed3){
 		PreparedStatement pst_rec_cou = null;
 		ArrayList<Cours> listSelonId = new ArrayList<Cours>();
 		try {
@@ -109,6 +130,14 @@ public class CoursDAO extends DAO<Cours> {
 		return listSelonId;
 	}
 	
+	/**
+		@version Finale 1.3.3
+		Objectif : Calculer la place maximale et minimale accepte pour qu ele cours soit validé.
+		@param Le numéro de cours.
+		@param Le numéro de semaine, car un cours donné le lundi et un autre le mardi n'ont pas le même nombre de réservations.
+		@param La période pour savoir si le moniteur est dispo à ce moment.
+		@return Une liste filtrée de moniteurs.
+	 */
 	public String calculerPlaceCours(int idCours, long idSemaine, int idMoniteur){
 		PreparedStatement pst_rec_cou = null;
 		PreparedStatement pst_cpt_cou = null;
@@ -126,18 +155,11 @@ public class CoursDAO extends DAO<Cours> {
 				max = res_rec_cou.getInt("maxEleve");
 			}
 			
-			
 			String semaineOuJournee = " WHERE numSemaine = ? "; // semaine
 			if (idSemaine > 1000 || idSemaine < 0) // journée
 				semaineOuJournee = " WHERE dateDebutReserv = ? ";
 			int placeActuelle = 0;
 			
-			/*String sql_cpt_res = "SELECT Count(*) AS total FROM ReservationCours "
-					+ "INNER JOIN Cours ON Cours.numCours = ReservationCours.numCours "
-					+ "INNER JOIN CoursSemaine ON CoursSemaine.numCours = Cours.numCours "
-					+ "INNER JOIN CoursMoniteur ON CoursMoniteur.numCours = Cours.numCours "
-					+ "WHERE ReservationCours.numCours = ? " + semaineOuJournee + " AND CoursMoniteur.numMoniteur = ? "
-					+ "GROUP BY ReservationCours.numCours;";*/
 			String sql_cpt_res = "SELECT count(*) as total FROM ReservationCours WHERE numCours IN "
 					+ "(SELECT numCours FROM Cours WHERE numCours IN "
 					+ "(SELECT numCours FROM ReservationCours WHERE numCours = ? AND numCours IN "

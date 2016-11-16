@@ -1,5 +1,10 @@
 package be.mousty.pojo;
-
+/**
+	Classe POJO relatif à la table Semaine dans la DB.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category POJO
+*/
 import java.sql.Date;
 
 public class Semaine {

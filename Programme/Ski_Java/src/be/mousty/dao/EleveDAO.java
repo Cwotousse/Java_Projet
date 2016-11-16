@@ -1,5 +1,10 @@
 package be.mousty.dao;
-
+/**
+	Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category DAO
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,11 +19,15 @@ public class EleveDAO extends DAO<Eleve> {
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Personne> PersonneDao = adf.getPersonneDAO();
 
-	public EleveDAO(Connection conn) {
-		super(conn);
-	}
+	public EleveDAO(Connection conn) { super(conn); }
 
-	public int create(Eleve obj) {
+	/**
+		Objectif : Méthode permettant de créer un élément dans la DB.
+		@version Finale 1.3.3
+		@param Une instance de l'objet nécéssaire à la création.
+		@return L'ID de l'enregistrement créé dans la DB.
+	 */
+	@Override public int create(Eleve obj) {
 		PreparedStatement pst = null;
 		try {
 			Personne P = new Personne();
@@ -76,16 +85,17 @@ public class EleveDAO extends DAO<Eleve> {
 		return -1;
 	}
 
-	public boolean delete(Eleve obj) {
-		return false;
-	}
-
-	public boolean update(Eleve obj) {
-		return false;
-	}
+	public boolean delete(Eleve obj) { return false; }
+	public boolean update(Eleve obj) { return false; }
 
 	// On cherche une Eleve grâce à son id
-	public Eleve find(int id) {
+	/**
+		Objectif : Retourner un enregistrement de la DB par rapport à sa clé primaire.
+		@version Finale 1.3.3
+		@param la valeur de la clé primaire.
+		@return Une instance de l'objet initialisée avec les valeurs issue de la DB.
+	 */
+	@Override public Eleve find(int id) {
 		Eleve E = new Eleve();
 		PreparedStatement pst = null;
 		try {
@@ -111,17 +121,19 @@ public class EleveDAO extends DAO<Eleve> {
 			e.printStackTrace();
 		} finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return null;
 	}
 
-	public ArrayList<Eleve> getList() {
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
+	@Override public ArrayList<Eleve> getList() {
 
 		ArrayList<Eleve> liste = new ArrayList<Eleve>();
 		PreparedStatement pst = null;
@@ -148,11 +160,8 @@ public class EleveDAO extends DAO<Eleve> {
 			e.printStackTrace();
 		} finally {
 			if (pst != null) {
-				try {
-					pst.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
 		return liste;
@@ -185,8 +194,16 @@ public class EleveDAO extends DAO<Eleve> {
 	 * listeFiltree; }
 	 */
 	// getListEleveSelonAccredProfEtCours
-	@Override
-	public ArrayList<Eleve> getMyListSelonID(int numMoniteur, long numSemaine, int numClient, String periode) {
+	
+	/**
+		Objectif : Retourner une liste filtrée d'élèves.
+		@version Finale 1.3.3
+		@param Le numéro du moniteur pour afficher les élèves selon les accréditations.
+		@param Le numéro de la semaine pour vérifier les disponibilités
+		@param Le numéro de client pour n'afficher sue sles élèves correspondants au client choisi
+		@return La liste filtrée d'élèves.
+	 */
+	@Override public ArrayList<Eleve> getMyListSelonID(int numMoniteur, long numSemaine, int numClient, String periode) {
 		ArrayList<Eleve> liste = new ArrayList<Eleve>();
 		ReservationATD RATD = new ReservationATD();
 		String categorie = RATD.getAccredSelonCoursEtPeriode(numMoniteur, (int)numSemaine, periode);
@@ -269,8 +286,13 @@ public class EleveDAO extends DAO<Eleve> {
 		return null;
 	}
 
-	@Override
-	public Eleve getId(Eleve obj) {
+	/**
+		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@return instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+	 */
+	@Override public Eleve getId(Eleve obj) {
 		PreparedStatement pst = null;
 		Eleve E = new Eleve();
 		try {

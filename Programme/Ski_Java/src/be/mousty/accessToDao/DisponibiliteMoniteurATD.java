@@ -1,8 +1,12 @@
 package be.mousty.accessToDao;
-
+/**
+	Classe métier relatif liée à la classe DisponibiliteMoniteur et DisponibiliteMoniteurDAO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Métier
+*/
 import java.sql.Date;
 import java.util.ArrayList;
-
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.DisponibiliteMoniteur;
@@ -46,7 +50,6 @@ public class DisponibiliteMoniteurATD {
 		ArrayList<DisponibiliteMoniteurATD> listDispoATD = new ArrayList<DisponibiliteMoniteurATD>();
 		for(int i = 0; i < listDispo.size(); i++){
 			DisponibiliteMoniteurATD DMATD = new DisponibiliteMoniteurATD();
-			//DMATD.setNom(A.get(i).getNomAccreditation());
 			DMATD.setDisponible(listDispo.get(i).getDisponible());
 			listDispoATD.add(DMATD);
 		}

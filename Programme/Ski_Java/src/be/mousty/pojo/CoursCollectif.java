@@ -1,5 +1,10 @@
 package be.mousty.pojo;
-
+/**
+	Classe POJO relatif à la table CoursCollectif dans la DB.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category POJO
+*/
 
 public class CoursCollectif extends Cours{
 	// VARIABLES

@@ -1,8 +1,12 @@
 package be.mousty.accessToDao;
-
+/**
+	Classe métier relatif liée à la classe Eleve et EleveDAO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Métier
+*/
 import java.sql.Date;
 import java.util.ArrayList;
-
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.Eleve;
@@ -84,6 +88,18 @@ public class EleveATD extends PersonneATD{
 		E.setNumEleve(-1);
 		E.setNumPersonne(-1);
 		return getId(E).getNumEleve();
+	}
+	
+	public ArrayList<EleveATD> getListEleveSelonidClient(int idClient){
+		ArrayList<Eleve> listeFull = getListEl();
+		ArrayList<EleveATD> listeTriee = new ArrayList<EleveATD>();
+		for(Eleve E: listeFull){
+			if (E.getNumClient() == idClient){
+				EleveATD e = new EleveATD(E);
+				listeTriee.add(e);
+			}
+		}
+		return listeTriee;
 	}
 	
 	

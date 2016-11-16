@@ -1,5 +1,10 @@
 package be.mousty.dao;
-
+/**
+Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+@author Adrien MOUSTY
+@version Finale 1.3.3
+@category DAO
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,8 +22,13 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 
 	public DisponibiliteMoniteurDAO(Connection conn) { super(conn); }
 
-	@Override
-	public int create (DisponibiliteMoniteur obj) { 
+	/**
+		Objectif : Méthode permettant de créer un élément dans la DB.
+		@version Finale 1.3.3
+		@param Une instance de l'objet nécéssaire à la création.
+		@return L'ID de l'enregistrement créé dans la DB.
+	 */
+	@Override public int create (DisponibiliteMoniteur obj) { 
 		PreparedStatement rechNumDispo = null;
 		try {
 			String ins_DMO = "INSERT INTO DisponibiliteMoniteur (numMoniteur, numSemaine, disponible) VALUES (?,?,?)";
@@ -82,8 +92,13 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 			}
 		}*/
 	}
-
-	public ArrayList<DisponibiliteMoniteur> getList() { 
+	
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
+	@Override public ArrayList<DisponibiliteMoniteur> getList() { 
 		ArrayList<DisponibiliteMoniteur> liste = new ArrayList<DisponibiliteMoniteur>();
 
 		PreparedStatement pst = null;
@@ -110,8 +125,13 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 		return liste;
 	}
 
-	@Override
-	public ArrayList<DisponibiliteMoniteur> getMyListSelonID(int idMoniteur, long nonUsed, int nonUsed2, String nonUsed3) { 
+	/**
+		Objectif : Retourner une liste de disponibilités selon le moniteur.
+		@version Finale 1.3.3
+		@param Le numéro du moniteur pour afficher ses disponibilités.
+		@return La liste complète des disponibilités d'un seul moniteur.
+	 */
+	@Override public ArrayList<DisponibiliteMoniteur> getMyListSelonID(int idMoniteur, long nonUsed, int nonUsed2, String nonUsed3) { 
 		ArrayList<DisponibiliteMoniteur> liste = new ArrayList<DisponibiliteMoniteur>();
 
 		PreparedStatement pst = null;
@@ -139,10 +159,18 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 		return liste;
 	}
 
-	public void creerTouteDisponibilites(){
-		for (Moniteur M : MoniteurDAO.getList()){ creerTouteDisponibilitesSelonMoniteur(M.getNumPersonne()); }
-	}
+	/**
+		Objectif : Créer toutes les disponibilités pour tous le smoniteurs isncrits dans la DB.
+		-> Non utilisé pour le programme, juste utilisé une seule fois.
+		@version Finale 1.3.3
+	 */
+	public void creerTouteDisponibilites(){ for (Moniteur M : MoniteurDAO.getList()){ creerTouteDisponibilitesSelonMoniteur(M.getNumPersonne()); } }
 
+	/**
+		Objectif : Créer toutes les disponibilités pour un seul moniteur nouvelle créé.
+		@version Finale 1.3.3
+		@param Le numéro du moniteur pour crééer ses dispos.
+	 */
 	public void creerTouteDisponibilitesSelonMoniteur(int numMoniteur){
 		ArrayList<Semaine> S = SemaineDAO.getList();
 		for (int i = S.get(0).getNumSemaine(); i < (S.get(0).getNumSemaine() + S.size()); i++){
@@ -156,8 +184,13 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 	}
 
 	// Change la disponibilite du moniteur, retroune null si n'a pas fonctionné
-	@Override
-	public ArrayList<DisponibiliteMoniteur> getListSelonCriteres(DisponibiliteMoniteur obj) {
+	/**
+		Objectif : Mettre à jour la disponibilité du moniteur
+		-> Fonctionne comme un booléen, s'il retourne null ça n'a pas fonctionné.
+		@version Finale 1.3.3
+		@param Un objet de type DisponibiliteMoniteur afin de savoir quelle dispo il faut update.
+	 */
+	@Override public ArrayList<DisponibiliteMoniteur> getListSelonCriteres(DisponibiliteMoniteur obj) {
 		PreparedStatement pst_get_val = null;
 		ArrayList<DisponibiliteMoniteur> listBoolean = new ArrayList<DisponibiliteMoniteur>();
 		try {

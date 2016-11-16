@@ -1,5 +1,10 @@
 package be.mousty.pojo;
-
+/**
+	Classe POJO relatif à la table Moniteur dans la DB.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category POJO
+*/
 import java.util.ArrayList;
 
 public class Moniteur extends Utilisateur{

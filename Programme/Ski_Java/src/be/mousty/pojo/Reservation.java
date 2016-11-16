@@ -1,32 +1,30 @@
 package be.mousty.pojo;
 
+import java.util.ArrayList;
+
+/**
+	Classe POJO relatif à la table Reservation dans la DB.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category POJO
+*/
 public class Reservation {
 	// VARIABLES
 	private int numReservation;
 	private int heureDebut;
 	private int heureFin;
 	private boolean aPrisAssurance;
-	Semaine S;
-	Cours 	C;
-	Eleve	E;
-	Client	Cli;
-	Moniteur M;
+	private Semaine S;
+	private Cours 	C;
+	private Eleve	E;
+	private Client	Cli;
+	private Moniteur M;
+	private ArrayList<Cours> listCours = new ArrayList<Cours>();
 	
 	
 	
 	// CONSTRUCTEURS
 	public Reservation(){}
-	/*public Reservation(int heureDebut, int heureFin, int numReservation, boolean aPrisAssurance, Semaine S, Cours C, Eleve E, Client Cli, Moniteur M){
-		this.heureDebut 		= heureDebut;
-		this.heureFin 			= heureFin;
-		this.numReservation 	= numReservation;
-		this.aPrisAssurance 	= aPrisAssurance;
-		this.C 					= C;
-		this.S 					= S;
-		this.E 					= E;
-		this.Cli 				= Cli;
-		this.M 					= M;
-	}*/
 	
 	// PROPRIETE
 	public int 		getHeureDebut		() { return heureDebut; }
@@ -47,4 +45,7 @@ public class Reservation {
 	public void setEleve 				(Eleve E)  				{ this.E = E;}
 	public void setClient 				(Client Cli)  			{ this.Cli = Cli;}
 	public void setMoniteur 			(Moniteur M)  			{ this.M = M;}
+
+	public ArrayList<Cours> 	getListCours() 							{ return listCours; 			}
+	public void 				setListCours(ArrayList<Cours> listReserv) 	{ this.listCours = listReserv; }
 }

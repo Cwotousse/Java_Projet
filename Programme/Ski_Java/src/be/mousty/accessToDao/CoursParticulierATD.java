@@ -1,7 +1,11 @@
 package be.mousty.accessToDao;
-
+/**
+	Classe métier relatif liée à la classe CoursParticulier et CoursParticulierDAO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Métier
+ */
 import java.util.ArrayList;
-
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.CoursParticulier;
@@ -10,23 +14,23 @@ import be.mousty.pojo.CoursParticulier;
 public class CoursParticulierATD extends CoursATD{
 	// VARIABLES
 	private int 	nombreHeures;
-	
+
 	// CONSTRUCTEURS
 	public CoursParticulierATD (){}
 	public CoursParticulierATD(int nombreHeures){
 		this.nombreHeures = nombreHeures;
 	}
-	
+
 	public CoursParticulierATD(String nomSport, double prix, int minEleve, int maxEleve, String periodeCoursParticulier, int nombreHeures){
 		super(nomSport, prix, minEleve, maxEleve, periodeCoursParticulier);
 		this.nombreHeures = nombreHeures;
 	}
-	
+
 	public CoursParticulierATD(CoursParticulier C){
 		super(C.getNomSport(), C.getPrix(), C.getMinEl(), C.getMaxEl(), C.getPeriodeCours());
 		this.nombreHeures = C.getNombreHeures();
 	}
-	
+
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<CoursParticulier> CoursParticulierDAO = adf.getCoursParticulierDAO();
@@ -38,8 +42,8 @@ public class CoursParticulierATD extends CoursATD{
 	public ArrayList<CoursParticulier> 	getListCP 	() 							{ return CoursParticulierDAO.getList(); 	} 
 	public ArrayList<CoursParticulier> getListCoursParticulierSelonId(int idMoniteur, String periode, long numSemaine)
 	{ return CoursParticulierDAO.getMyListSelonID(idMoniteur, numSemaine, -1, periode); 	}
-	
-	
+
+
 	public ArrayList<CoursParticulierATD> getListCoursParticulierSelonIdATD(int numMoniteur, String periode, long numSemaine){
 		ArrayList<CoursParticulier> listCP  = getListCoursParticulierSelonId(numMoniteur, periode, numSemaine);
 		ArrayList<CoursParticulierATD> listCPATP = new ArrayList<CoursParticulierATD>();
@@ -56,7 +60,7 @@ public class CoursParticulierATD extends CoursATD{
 		}
 		return listCPATP;
 	}
-	
+
 	public int getIdATD(CoursParticulierATD CPATD){
 		CoursParticulier CP = new CoursParticulier();
 		CP.setMaxEl(CPATD.getMaxEl());
@@ -68,14 +72,14 @@ public class CoursParticulierATD extends CoursATD{
 		CP = getId(CP);
 		return CP.getNumCoursParticulier();
 	}
-	
+
 	// FONCTION SURCHARGEE
-		@Override
-		public String toString() { 
-			return super.toString()+ System.getProperty("line.separator") + 
-			"Nombre d'heures ce cours : " + nombreHeures + System.getProperty("line.separator");
-		}
-	
+	@Override
+	public String toString() { 
+		return super.toString()+ System.getProperty("line.separator") + 
+				"Nombre d'heures ce cours : " + nombreHeures + System.getProperty("line.separator");
+	}
+
 	// PROPRIETES
 	public int getNombreHeures	()			{ return nombreHeures; 	}
 	public void setNombreHeures	(int el) 	{ nombreHeures = el; 	}

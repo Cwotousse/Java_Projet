@@ -1,11 +1,15 @@
 package be.mousty.accessToDao;
-
+/**
+	Classe métier relatif liée à la classe Personne et PersonneDAO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Métier
+*/
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
-
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.Personne;
@@ -19,8 +23,8 @@ public class PersonneATD {
 	private String 	sexe;
 	private Date 	dateNaissance;
 
-
 	SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+	
 	// CONSTRUCTEURS
 	public PersonneATD(){}
 	public PersonneATD(String nom, String pre, String adresse, String sexe, Date dateNaissance){
@@ -39,7 +43,7 @@ public class PersonneATD {
 		this.dateNaissance 	= P.getDateNaissance();
 	}
 
-	// METHODES
+	// METHODES NON LIEES AU DAO
 	public double calculerAge(){
 		try {
 			Date now = new Date(Calendar.getInstance().getTime().getTime());
@@ -52,7 +56,6 @@ public class PersonneATD {
 		return -1;
 	}
 
-	// METHODES
 	public String attributerCategorie(){
 		String categorie = "Erreur";
 		if(this.calculerAge() <= 12 && this.calculerAge() > 4){ categorie = "Enfant"; }
@@ -63,7 +66,7 @@ public class PersonneATD {
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Personne> PersonneDAO = adf.getPersonneDAO();
-	public int					 create				(Personne p) 	{ return PersonneDAO.create(p); 				}
+	public int					create				(Personne p) 	{ return PersonneDAO.create(p); 				}
 	public boolean 				delete				()	 			{ return PersonneDAO.delete(null); 				}
 	public Personne 			getId				(Personne p) 	{ return PersonneDAO.getId(p); 					}
 	public boolean 				update				(Personne p) 	{ return PersonneDAO.update(p); 				}
@@ -71,26 +74,17 @@ public class PersonneATD {
 	public ArrayList<Personne> 	getList				() 				{ return PersonneDAO.getList(); 				} 
 	public ArrayList<Personne> 	getListSelonCriteres(Personne p) 	{ return PersonneDAO.getListSelonCriteres(p); 	}
 
-	// METHODE SURCHARGEE
-	@Override
-	public String toString() { 
-		return 
-				nom.toUpperCase() + " " + pre + ", " + sexe + System.getProperty("line.separator") 
-				+ "Date de naissance : " + dateFormat.format(dateNaissance) + " (" + (int)calculerAge() + ")" + System.getProperty("line.separator") 
-				+ "Residence : " + adresse.toUpperCase() + System.getProperty("line.separator");
-	}
-
 	// PROPRIETES
-	public String getNom		() { return nom; }
-	public String getPre		() { return pre; }
-	public String getAdresse	() { return adresse; }
-	public String getSexe		() { return sexe; }
-	public Date getDateNaissance() { return dateNaissance; }
-	public void setNom			(String nom) 			{ this.nom = nom; }
-	public void setPre			(String pre) 			{ this.pre = pre; }
-	public void setAdresse		(String adresse) 		{ this.adresse = adresse;	}
-	public void setSexe			(String sexe) 			{ this.sexe = sexe; }
-	public void setDateNaissance(Date dateNaissance) 	{ this.dateNaissance = dateNaissance; }
+	public String getNom		() 						{ return nom; 							}
+	public String getPre		() 						{ return pre; 							}
+	public String getAdresse	() 						{return adresse; 						}
+	public String getSexe		() 						{ return sexe; 							}
+	public Date getDateNaissance() 						{ return dateNaissance; 				}
+	public void setNom			(String nom) 			{ this.nom = nom; 						}
+	public void setPre			(String pre) 			{ this.pre = pre; 						}
+	public void setAdresse		(String adresse) 		{ this.adresse = adresse;				}
+	public void setSexe			(String sexe) 			{ this.sexe = sexe; 					}
+	public void setDateNaissance(Date dateNaissance) 	{ this.dateNaissance = dateNaissance; 	}
 
 }
 

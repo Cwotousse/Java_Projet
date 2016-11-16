@@ -1,5 +1,10 @@
 package be.mousty.pojo;
-
+/**
+	Classe POJO relatif à la table DisponibiliteMoniteur dans la DB.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category POJO
+*/
 public class DisponibiliteMoniteur {
 	// VARIABLES
 	private int numMoniteur;

@@ -1,10 +1,14 @@
 package be.mousty.fenetre;
-
+/**
+	Classe JFrame permettant d'afficher les fenêtres qui permettent d'utiliser le programme.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Fenêtre
+*/
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -93,7 +97,7 @@ public class F_Client extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				// Affiche F_AfficherRDV
 				setVisible(false);
-				F_AfficherRDV frame = new F_AfficherRDV(idClient, 1);
+				F_AfficherReservationClient frame = new F_AfficherReservationClient(idClient);
 				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 				frame.setVisible(true);
 			}

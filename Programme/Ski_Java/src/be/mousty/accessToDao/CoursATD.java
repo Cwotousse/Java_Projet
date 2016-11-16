@@ -1,7 +1,11 @@
 package be.mousty.accessToDao;
-
+/**
+	Classe métier relatif liée à la classe Cours et CoursDAO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Métier
+*/
 import java.util.ArrayList;
-
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.Cours;
@@ -46,6 +50,46 @@ public class CoursATD {
 	{ return CoursDAO.calculerPlaceCours(idCours, idSemaine, idMoniteur); }
 	public ArrayList<Cours> 	getListCoursSelonId	(int idMoniteur){ return CoursDAO.getMyListSelonID(idMoniteur, -1, -1, ""); 	}
 
+	// Fonction de transformation ATD en POJO
+	public ArrayList<CoursATD> changeTypeCoursListPojoEnATD(ArrayList<Cours> listC){
+		try {
+			ArrayList<CoursATD> ListCoursATD = new ArrayList<CoursATD>();
+			for(int i = 0; i < listC.size(); i++){
+				CoursATD CATD = new CoursATD();
+				CATD.setMaxEl(listC.get(i).getMaxEl());
+				CATD.setMinEl(listC.get(i).getMinEl());
+				CATD.setNomSport(listC.get(i).getNomSport());
+				CATD.setPeriodeCours(listC.get(i).getPeriodeCours());
+				CATD.setPrix(listC.get(i).getPrix());
+				ListCoursATD.add(CATD);
+			}
+			return ListCoursATD;
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return null;
+	}
+
+
+	public ArrayList<Cours> changeTypeCourslistATDEnPojo(ArrayList<CoursATD> listCoursATD){
+		try {
+			ArrayList<Cours> listC = new ArrayList<Cours>();
+			for(int i = 0; i < listCoursATD.size(); i++){
+				Cours C = new Cours();
+				C.setMaxEl(listCoursATD.get(i).getMaxEl());
+				C.setMinEl(listCoursATD.get(i).getMinEl());
+				C.setNomSport(listCoursATD.get(i).getNomSport());
+				C.setPeriodeCours(listCoursATD.get(i).getPeriodeCours());
+				C.setPrix(listCoursATD.get(i).getPrix());
+				listC.add(C);
+			}
+			return listC;
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return null;
+	}
+	
 	// FONCTION SURCHARGEE
 	@Override
 	public String toString() { 

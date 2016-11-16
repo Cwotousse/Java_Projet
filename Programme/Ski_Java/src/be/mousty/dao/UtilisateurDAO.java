@@ -1,5 +1,10 @@
 package be.mousty.dao;
-
+/**
+	Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category DAO
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +15,12 @@ import be.mousty.pojo.Utilisateur;
 public class UtilisateurDAO extends DAO<Utilisateur> {
 	public UtilisateurDAO(Connection conn) { super(conn); }
 
+	/**
+		Objectif : Méthode permettant de créer un élément dans la DB.
+		@version Finale 1.3.3
+		@param Une instance de l'objet nécéssaire à la création.
+		@return L'ID de l'enregistrement créé dans la DB.
+	 */
 	public int create(Utilisateur obj) { 
 		PreparedStatement pst2 = null;
 		try
@@ -20,7 +31,6 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 			if(U.getNumPersonne() != -1 || U.getNumPersonne() != 0) { return -1; }
 			else {
 				//on l'utilise pour ajouter les données dans la table Utilisateur
-				System.out.println("UtilisateurDao -> " + obj.getNumUtilisateur());
 				String requete2 = "INSERT INTO Utilisateur (pseudo, mdp, typeUtilisateur, numUtilisateur) VALUES (?,?,?,?)";
 				pst2 = connect.prepareStatement(requete2);
 
@@ -31,8 +41,6 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 				pst2.setInt(4, obj.getNumUtilisateur());
 
 				pst2.executeUpdate();
-				//pst2.close();
-				//System.out.println("Ajout d'un moniteur effectue");
 				System.out.println("UtilisateurDao -> " + obj.getNumUtilisateur());
 				return obj.getNumUtilisateur();
 			}
@@ -47,11 +55,16 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		return -1;
 	}
 	public boolean delete(Utilisateur obj) { return false; }
-
 	public boolean update(Utilisateur obj) { return false; }
 
-	// On cherche un élève grâce à son id
-	public Utilisateur find(int id) {
+	/**
+		Objectif : Retourner un enregistrement de la DB par rapport à sa clé primaire.
+		@version Finale 1.3.3
+		@param la valeur de la clé primaire.
+		@return Une instance de l'objet initialisée avec les valeurs issue de la DB.
+	 */
+	@Override public Utilisateur find(int id) {
+		// On cherche un élève grâce à son id
 		Utilisateur utilisateur = new Utilisateur();
 		PreparedStatement pst = null;
 		try {
@@ -75,6 +88,11 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		return null;
 	}
 
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
 	public ArrayList<Utilisateur> getList() {
 		ArrayList<Utilisateur> liste = new ArrayList<Utilisateur>();
 		Utilisateur U = new Utilisateur();
@@ -107,8 +125,13 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		return liste;
 	}
 	
-	@Override
-	public Utilisateur getId(Utilisateur obj) {
+	/**
+		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@return instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+	 */
+	@Override public Utilisateur getId(Utilisateur obj) {
 			Utilisateur U = new Utilisateur();
 			PreparedStatement pst = null;
 			try {
@@ -141,7 +164,7 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 			return U;
 	}
 
-	@Override
+	@Override 
 	public ArrayList<Utilisateur> getListSelonCriteres(Utilisateur obj) {
 		// TODO Auto-generated method stub
 		return null;

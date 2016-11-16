@@ -1,11 +1,15 @@
 package be.mousty.dao;
-
+/**
+	Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category DAO
+*/
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import be.mousty.pojo.Cours;
 import be.mousty.pojo.CoursCollectif;
 import be.mousty.pojo.Eleve;
@@ -23,7 +27,13 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 	public boolean update	(CoursCollectif obj) { return false; }
 
 	// On cherche une CoursCollectif grâce à son id
-	public CoursCollectif find(int id) {
+	/**
+		Objectif : Retourner un enregistrement de la DB par rapport à sa clé primaire.
+		@version Finale 1.3.3
+		@param la valeur de la clé primaire.
+		@return Une instance de l'objet initialisée avec les valeurs issue de la DB.
+	 */
+	@Override public CoursCollectif find(int id) {
 		CoursCollectif CC = new CoursCollectif();
 		PreparedStatement pst = null;
 		try {
@@ -54,7 +64,12 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		return CC;
 	}
 
-	public ArrayList<CoursCollectif> getList() {
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
+	@Override public ArrayList<CoursCollectif> getList() {
 		ArrayList<CoursCollectif> liste = new ArrayList<CoursCollectif>();
 		
 		PreparedStatement pst = null;
@@ -86,30 +101,16 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		return liste;
 	}
 	
-	@Override
-	public ArrayList<CoursCollectif> getMyListSelonID(int idMoniteur, long numSemaine, int idEleve, String periode){
-		//System.out.println("Entree fonc");
-		/*ArrayList<Cours> listCours = CoursDAO.getListCoursSelonId(idMoniteur);
-		ArrayList<CoursCollectif> listFull = getList();
-		ArrayList<CoursCollectif> listSelonId = new ArrayList<CoursCollectif>();
-		Eleve E = EleveDAO.find(idEleve);
-		for (CoursCollectif CC : listFull){
-			for (Cours C : listCours){
-				if (CC.getNumCours() == C.getNumCours() && E.getCategorie().equals(CC.getCategorieAge())){
-					//System.out.println("For String de taille " + periode.size());
-					//for(String S : periode){
-						//System.out.println(S + " / " + CC.getPeriodeCours());
-						if(CC.getPeriodeCours().equals(periode)){
-							//System.out.println("Ajout Cours Collectif");
-							listSelonId.add(CC);
-						}
-					//}
-				}
-			}
-		}
-		return listSelonId;*/
-		/* Sélection des cours par rapport à la catégorie de l'élève et de la période */
-		/*Sélection des étudiants par rapport aux accreds du moniteur */
+	/**
+	Objectif : Retourner une liste filtrée de cours collectifs.
+	@version Finale 1.3.3
+	@param Le numéro du moniteur pour afficher les cours selon les accréditations.
+	@param Le numéro de la semaine pour vérifier les disponibilités 
+	@xparam Le numéro de l'élèves pour coller à sa catégorie
+	@param La période pour les disponibilités
+	@return La liste filtrée des cours collectifs.
+ */
+	@Override public ArrayList<CoursCollectif> getMyListSelonID(int idMoniteur, long numSemaine, int idEleve, String periode){
 		PreparedStatement pst_lst_cou1 = null;
 		PreparedStatement pst_lst_cou2 = null;
 		ArrayList<CoursCollectif> listSelonId = new ArrayList<CoursCollectif>();
@@ -136,6 +137,7 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 			pst_lst_cou1.setInt(6, idMoniteur);
 			ResultSet res_cou_col = pst_lst_cou1.executeQuery();
 			while (res_cou_col.next()) {
+				// S'il y a déjà une réservation, on réduit la liste des cours dproposés à un seul.
 				CoursCollectif CC = new CoursCollectif();
 				CC.setNumCoursCollectif(res_cou_col.getInt("numCoursCollectif"));
 				CC.setCategorieAge(res_cou_col.getString("categorieAge"));
@@ -149,6 +151,7 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 				listSelonId.add(CC);
 			}
 			if (listSelonId.isEmpty()){
+				// On affiche tous les cours correspondants aux variables, car il n'y a pas de réservations
 				String sql2 = "SELECT * from Cours "
 						+ "INNER JOIN CoursCollectif ON CoursCollectif.numCoursCollectif = Cours.numCours "
 						+ "WHERE PeriodeCours = ? AND CoursCollectif.categorieAge in "
@@ -187,8 +190,13 @@ public class CoursCollectifDAO extends DAO<CoursCollectif> {
 		return listSelonId;
 	}
 	
-	@Override
-	public CoursCollectif getId(CoursCollectif obj) {
+	/**
+		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@return instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+	 */
+	@Override public CoursCollectif getId(CoursCollectif obj) {
 		PreparedStatement pst = null;
 		CoursCollectif CC = new CoursCollectif();
 		try {

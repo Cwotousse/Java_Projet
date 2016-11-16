@@ -1,9 +1,19 @@
 package be.mousty.pojo;
 
+import java.util.ArrayList;
+
+/**
+	Classe POJO relatif à la table Client dans la DB.
+	@author Adrien MOUSTY
+	@version Finale 1.3.4
+	@category POJO
+*/
 public class Client extends Utilisateur{
 	// VARIABLES
 	private int 	numClient;
 	private String 	adresseFacturation;
+	private ArrayList<Reservation> listReservCli = new ArrayList<Reservation>();
+	private ArrayList<Eleve> listEleveCli = new ArrayList<Eleve>();
 	
 	// CONSTRUCTEUR SANS ARGUMENTS
 	public Client(){}
@@ -13,4 +23,10 @@ public class Client extends Utilisateur{
 	public int getNumClient				() 				{ return numClient; }
 	public void setAdresseFacturation 	(String el) 	{ this.adresseFacturation  = el; }
 	public void setNumClient 			(int numClient) { this.numClient = numClient; }
+
+	public ArrayList<Reservation> getListReservCli() { return listReservCli; }
+	public void setListReservCli(ArrayList<Reservation> listReservCli) { this.listReservCli = listReservCli; }
+
+	public ArrayList<Eleve> getListEleveCli() { return listEleveCli; }
+	public void setListEleveCli(ArrayList<Eleve> listEleveCli) { this.listEleveCli = listEleveCli; }
 }

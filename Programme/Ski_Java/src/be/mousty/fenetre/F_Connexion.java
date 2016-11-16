@@ -1,10 +1,14 @@
 package be.mousty.fenetre;
-
+/**
+	Classe JFrame permettant d'afficher les fenêtres qui permettent d'utiliser le programme.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Fenêtre
+*/
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -53,7 +57,8 @@ public class F_Connexion extends JFrame {
 		JButton btnJeNePossde 	= new JButton("S'inscrire");
 		JButton btnSeConnecter 	= new JButton("Se connecter");
 		txtNomDutilisateur 		= new JTextField();
-		pwdPassword 			= new JPasswordField();
+		txtNomDutilisateur.setText("adri");
+		pwdPassword 			= new JPasswordField("test");
 
 		// Font
 		label.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));

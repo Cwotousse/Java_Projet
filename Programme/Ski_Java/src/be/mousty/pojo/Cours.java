@@ -1,4 +1,10 @@
 package be.mousty.pojo;
+/**
+	Classe POJO relatif à la table Cours dans la DB.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category POJO
+*/
 
 public class Cours {
 	// VARIABLES
@@ -25,6 +31,4 @@ public class Cours {
 	public void setMaxEl			(int el) 		{ maxEleve = el; }
 	public void setPeriodeCours		(String el) 	{ periodeCours = el; }
 	public void setNomSport			(String el) 	{ nomSport = el; }
-	
-	
 }

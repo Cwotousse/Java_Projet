@@ -1,5 +1,10 @@
 package be.mousty.dao;
-
+/**
+Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+@author Adrien MOUSTY
+@version Finale 1.3.3
+@category DAO
+*/
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -15,6 +20,7 @@ public class SingletonConnection {
 			// Chargement de la classe du driver par la JVM
 			//Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 			Class.forName("org.sqlite.JDBC");
+			// Car utile pour la suppression des clés primaire
 			connect = DriverManager.getConnection("jdbc:sqlite:./DB_Java_Ski.db");
 		}
 		catch (SQLException ex) { System.out.println("Erreur JDBC: " + ex.getMessage()); }

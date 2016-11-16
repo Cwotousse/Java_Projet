@@ -1,5 +1,10 @@
 package be.mousty.fenetre;
-
+/**
+	Classe JFrame permettant d'afficher les fenêtres qui permettent d'utiliser le programme.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Fenêtre
+*/
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -134,7 +139,7 @@ public class F_Moniteur extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				// Affiche F_AfficherRDV
 				setVisible(false);
-				F_AfficherRDV frame = new F_AfficherRDV(idMoniteur, 2);
+				F_AfficherCoursaPresterMoniteur frame = new F_AfficherCoursaPresterMoniteur(idMoniteur);
 				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 				frame.setVisible(true);
 			}
