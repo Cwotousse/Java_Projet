@@ -101,6 +101,7 @@ public class F_PayerReserv extends JFrame {
 		JLabel lbl_affPrixTotal 	= new JLabel("");
 		JButton btn_ret 			= new JButton("Annuler payement");
 		JButton btn_payer 			= new JButton("Payer");
+		JButton btn_panier 			= new JButton("Ajouter au panier");
 		txtF_numCompte 				= new JTextField();
 		pwdF_code 					= new JPasswordField();
 
@@ -134,6 +135,7 @@ public class F_PayerReserv extends JFrame {
 		contentPane.add(lbl_affReduction, "cell 2 7");
 		contentPane.add(lbl_tot, "cell 1 8");
 		contentPane.add(lbl_affPrixTotal, "cell 2 8");
+		contentPane.add(btn_panier, "cell 5 8");
 		contentPane.add(btn_ret, "cell 1 10");
 		contentPane.add(btn_payer, "cell 5 10,growx");
 
@@ -153,22 +155,19 @@ public class F_PayerReserv extends JFrame {
 
 		// Effectuer la réservation
 		btn_payer.addMouseListener(new MouseAdapter() {
-			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(!pwdF_code.getText().equals("") && !txtF_numCompte.getText().equals("")){
-					if(RATD.effectuerReservation(coursCollectif, assurance, numMoniteur, idClient, numEleve, numSemaine, dateJour, numCours, periode) != -1){
-						// Retour à l'écran client
-						setVisible(false);
-						F_Client frame = new F_Client(idClient);
-						frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-						frame.setVisible(true);
-					}
-					else { JOptionPane.showMessageDialog(contentPane, "Une erreur est intervenue.");}
-				}
-				else{ JOptionPane.showMessageDialog(contentPane, "Entre un n° de compte et/ou votre mot de passe.");}
+				effectuerReservation(coursCollectif, assurance, numMoniteur, idClient, numEleve, numSemaine, dateJour, numCours, periode, true);
 			}
 
+		});
+		
+		// Ajouter au panier et payer plus tard
+		btn_panier.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				effectuerReservation(coursCollectif, assurance, numMoniteur, idClient, numEleve, numSemaine, dateJour, numCours, periode, false);
+			}
 		});
 
 		// annule le payement
@@ -181,5 +180,20 @@ public class F_PayerReserv extends JFrame {
 				frame.setVisible(true);
 			}
 		});
+	}
+	
+	public void effectuerReservation(boolean coursCollectif, boolean assurance, int numMoniteur, int idClient, int numEleve, int numSemaine, Date dateJour, int numCours, String periode, 
+			boolean payeOuNon){
+		if(!pwdF_code.getPassword ().equals("") && !txtF_numCompte.getText().equals("")){
+			if(RATD.effectuerReservation(coursCollectif, assurance, numMoniteur, idClient, numEleve, numSemaine, dateJour, numCours, periode, payeOuNon) != -1){
+				// Retour à l'écran client
+				setVisible(false);
+				F_Client frame = new F_Client(idClient);
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+			else { JOptionPane.showMessageDialog(contentPane, "Une erreur est intervenue.");}
+		}
+		else{ JOptionPane.showMessageDialog(contentPane, "Entre un n° de compte et/ou votre mot de passe.");}
 	}
 }

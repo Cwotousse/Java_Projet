@@ -24,11 +24,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-import be.mousty.accessToDao.CoursCollectifATD;
-import be.mousty.accessToDao.CoursParticulierATD;
-import be.mousty.accessToDao.MoniteurATD;
 import be.mousty.accessToDao.ReservationATD;
-import be.mousty.accessToDao.SemaineATD;
 import be.mousty.utilitaire.ButtonColumn;
 
 public class F_AfficherCoursaPresterMoniteur extends JFrame {
@@ -48,9 +44,8 @@ public class F_AfficherCoursaPresterMoniteur extends JFrame {
 				try {
 					F_AfficherCoursaPresterMoniteur frame = new F_AfficherCoursaPresterMoniteur(120);
 					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				catch (Exception e) { e.printStackTrace(); }
 			}
 		});
 	}
@@ -110,31 +105,11 @@ public class F_AfficherCoursaPresterMoniteur extends JFrame {
 			Object[][] data  = new Object[listReserv.size()][columns.length];
 			
 			for (int i = 0; i < listReserv.size(); i++) {
-				MoniteurATD MATD = new MoniteurATD(listReserv.get(i).getMoniteur());
-				SemaineATD SATD = new SemaineATD(listReserv.get(i).getSemaine());
-				String strPlaceCours;
 				RATD = listReserv.get(i);
-				int numReservation = RATD.getIdReserv();
-				int numCours = RATD.find(numReservation).getCours().getNumCours();
-				// Connaître le type de cours
-				if (listReserv.get(i).getCours().getPrix() < 90) { 
-					CoursParticulierATD CPATD = new CoursParticulierATD(); 
-					strPlaceCours = CPATD.calculerPlaceCours(
-							numCours,
-							RATD.getDateDebutReserv(numReservation),
-							MATD.getId(listReserv.get(i).getMoniteur()).getNumMoniteur());
-				}
-				else { 
-					CoursCollectifATD CCATD = new CoursCollectifATD(); 
-					strPlaceCours = CCATD.calculerPlaceCours(
-							numCours,
-							(long)SATD.getId(listReserv.get(i).getSemaine()).getNumSemaine(),
-							MATD.getId(listReserv.get(i).getMoniteur()).getNumMoniteur());
-				}
-				String[] parts = strPlaceCours.split("-");
+				int numEleveActuel = RATD.calculerNombrePlaceRestantePourUnCours();
+				
 				String[] partPeriode = listReserv.get(i).getCours().getPeriodeCours().split("-");
 
-				RATD = listReserv.get(i);
 				data[i][0] = RATD.getIdReserv();
 				data[i][1] = listReserv.get(i).getSemaine().getDateDebut() ;
 				data[i][2] = listReserv.get(i).getCours().getPrix() > 90 ? listReserv.get(i).getSemaine().getDateFin()  : listReserv.get(i).getSemaine().getDateDebut() ;
@@ -142,7 +117,7 @@ public class F_AfficherCoursaPresterMoniteur extends JFrame {
 				data[i][4] = partPeriode[1] + "h";
 				data[i][5] = listReserv.get(i).getCours().getNomSport();
 				data[i][6] = listReserv.get(i).getCours().getMinEl();
-				data[i][7] = listReserv.get(i).getCours().getMaxEl() - Integer.parseInt(parts[0]);
+				data[i][7] = listReserv.get(i).getCours().getMaxEl() - numEleveActuel;
 				data[i][8] = listReserv.get(i).getEleve().getNom().toUpperCase() + " " + listReserv.get(i).getEleve().getPre();
 				data[i][9] = listReserv.get(i).getClient().getNom().toUpperCase() + " " + listReserv.get(i).getClient().getPre();
 				data[i][10] = listReserv.get(i).getCours().getPrix() > 90 ? "Collectif" : "Particulier";
@@ -177,12 +152,12 @@ public class F_AfficherCoursaPresterMoniteur extends JFrame {
 					Object numRes = mytableClicked.getModel().getValueAt(mytableClicked.getSelectedRow(), 0);
 					//if(ReservationDAO.delete(ReservationDAO.find(Integer.parseInt(numRes.toString()))))
 					if(RATD.delete(RATD.find(Integer.parseInt(numRes.toString()))))
-						JOptionPane.showMessageDialog(null, "Cours supprimé.");
+						JOptionPane.showMessageDialog(contentPane, "Cours supprimé.");
 					else
-						JOptionPane.showMessageDialog(null, "Une erreur est intervenue, le cours n'est pas supprimé.");
+						JOptionPane.showMessageDialog(contentPane, "Une erreur est intervenue, le cours n'est pas supprimé.");
 
 					setVisible(false);
-					F_Moniteur frameM = new F_Moniteur(idPersonne);
+					F_AfficherCoursaPresterMoniteur frameM = new F_AfficherCoursaPresterMoniteur(idPersonne);
 					frameM.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 					frameM.setVisible(true);
 				}
@@ -207,31 +182,8 @@ public class F_AfficherCoursaPresterMoniteur extends JFrame {
 					boolean estValide = false;
 					// On va calculer la place des cours, ensuite on va voir si la palce correspond au maximum possible.
 					// Si oui, on colorie en vert, si non on colorie en rouge.
-					MoniteurATD MATD = new MoniteurATD(listReserv.get(row).getMoniteur());
-					SemaineATD SATD = new SemaineATD(listReserv.get(row).getSemaine());
-					ReservationATD RATD = listReserv.get(row);
-					int numReservation = RATD.getIdReserv();
-					int numCours = RATD.find(numReservation).getCours().getNumCours();
-					String strPlaceCours;
-					// ATTENTION il faut savoir si c'est un cours particulier ou collectif, cela se choisi via le prix.
-					if (listReserv.get(row).getCours().getPrix() < 90) { 
-						CoursParticulierATD CPATD = new CoursParticulierATD(); 
-						strPlaceCours = CPATD.calculerPlaceCours(
-								numCours,
-								// modifier ici
-								RATD.getDateDebutReserv(numReservation),
-								MATD.getId(listReserv.get(row).getMoniteur()).getNumMoniteur());
-					}
-					else { 
-						CoursCollectifATD CCATD = new CoursCollectifATD(); 
-						strPlaceCours = CCATD.calculerPlaceCours(
-								numCours,
-								(long)SATD.getId(listReserv.get(row).getSemaine()).getNumSemaine(),
-								MATD.getId(listReserv.get(row).getMoniteur()).getNumMoniteur());}
-
-					String[] parts = strPlaceCours.split("-");
-					// S'il y a assez de places mini, on colorie en vert.
-					if(Integer.parseInt(parts[1]) == 0)
+					RATD = listReserv.get(row);
+					if (RATD.calculerNombrePlaceRestanteMinPourValiderUnCours() == 0)
 						estValide = true;
 					if (estValide) { setBackground(new Color(102, 255, 51)); } 
 					else { setBackground(new Color(255,255,153)); }

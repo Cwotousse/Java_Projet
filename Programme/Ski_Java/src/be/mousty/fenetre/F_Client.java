@@ -112,9 +112,9 @@ public class F_Client extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				try {
 					if (CATD.changeClientToEleve(idClient))
-						JOptionPane.showMessageDialog(null, "Vous avez étés ajoutés en tant qu'élève.");
+						JOptionPane.showMessageDialog(contentPane, "Vous avez étés ajoutés en tant qu'élève.");
 					else
-						JOptionPane.showMessageDialog(null, "Verifiez vos donnees");
+						JOptionPane.showMessageDialog(contentPane, "Verifiez vos donnees");
 				}
 				// else{ labStatut.setText("ID relié à aucune personne."); }
 				// }

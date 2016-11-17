@@ -4,11 +4,12 @@ package be.mousty.accessToDao;
 	@author Adrien MOUSTY
 	@version Finale 1.3.3
 	@category Métier
-*/
+ */
 import java.sql.Date;
 import java.util.ArrayList;
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
+import be.mousty.pojo.Client;
 import be.mousty.pojo.Eleve;
 
 public class EleveATD extends PersonneATD{
@@ -27,7 +28,7 @@ public class EleveATD extends PersonneATD{
 		super(nom, pre, adresse, sexe, dateNaissance);
 		this.categorie = attributerCategorie();
 	}
-	
+
 	public EleveATD(Eleve E){
 		super(E.getNom(), E.getPre(), E.getAdresse(), E.getSexe(), E.getDateNaissance());
 		this.categorie = attributerCategorie();
@@ -45,7 +46,7 @@ public class EleveATD extends PersonneATD{
 	public ArrayList<Eleve> 	getListSelonCriteres(Eleve e) 	{ return EleveDAO.getListSelonCriteres(e); 	}
 	public ArrayList<Eleve> getListEleveSelonAccredProfEtCours(int numMoniteur, long numSemaine, int numClient, String periode)
 	{ return EleveDAO.getMyListSelonID(numMoniteur, numSemaine, numClient,  periode); }
-	
+
 
 	// METHODES
 	public int inscriptionEleve(int numClient){
@@ -76,7 +77,7 @@ public class EleveATD extends PersonneATD{
 		}
 		return listEATD;
 	}
-	
+
 	public int getIdATD(EleveATD EATD){
 		Eleve E = new Eleve();
 		E.setAdresse(EATD.getAdresse());
@@ -89,7 +90,7 @@ public class EleveATD extends PersonneATD{
 		E.setNumPersonne(-1);
 		return getId(E).getNumEleve();
 	}
-	
+
 	public ArrayList<EleveATD> getListEleveSelonidClient(int idClient){
 		ArrayList<Eleve> listeFull = getListEl();
 		ArrayList<EleveATD> listeTriee = new ArrayList<EleveATD>();
@@ -101,8 +102,46 @@ public class EleveATD extends PersonneATD{
 		}
 		return listeTriee;
 	}
-	
-	
+
+	// Transformation pour les listes Eleve
+	public ArrayList<EleveATD> EATD(ArrayList<Eleve> listE){
+		try {
+			ArrayList<EleveATD> LE = new ArrayList<EleveATD>();
+			for(int i = 0; i < listE.size(); i++){
+				EleveATD EATD = new EleveATD(listE.get(i));
+				LE.add(EATD);
+			}
+			return LE;
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return null;
+	}
+
+
+	public ArrayList<Eleve> changeTypeElevelistEnATD(ArrayList<EleveATD> listEleveATD, int idClient){
+		try {
+			ClientATD CATD = new ClientATD();
+			Client C = CATD.find(idClient);
+			ArrayList<Eleve> LE = new ArrayList<Eleve>();
+			for(int i = 0; i < listEleveATD.size(); i++){
+				Eleve E = new Eleve();
+				E.setNumClient(C.getNumClient());
+				E.setDateNaissance(listEleveATD.get(i).getDateNaissance());
+				E.setCategorie(listEleveATD.get(i).getCategorie());
+				E.setNom(listEleveATD.get(i).getNom());
+				E.setPre(listEleveATD.get(i).getPre());
+				E.setAdresse(listEleveATD.get(i).getAdresse());
+				E.setSexe(listEleveATD.get(i).getSexe());
+				LE.add(E);
+			}
+			return LE;
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return null;
+	}
+
 	// METHODEs SURCHARGEEs
 	@Override
 	public String toString() { 

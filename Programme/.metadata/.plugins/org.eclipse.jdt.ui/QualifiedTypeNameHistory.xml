@@ -53,11 +53,11 @@
 <fullyQualifiedTypeName name="java.sql.Date"/>
 <fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="java.awt.Color"/>
-<fullyQualifiedTypeName name="be.mousty.accessToDao.ReservationATD"/>
 <fullyQualifiedTypeName name="be.mousty.accessToDao.MoniteurATD"/>
 <fullyQualifiedTypeName name="javax.sound.midi.Synthesizer"/>
 <fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
 <fullyQualifiedTypeName name="org.sqlite.SQLiteConfig"/>
 <fullyQualifiedTypeName name="java.util.Properties"/>
 <fullyQualifiedTypeName name="javax.swing.ListSelectionModel"/>
+<fullyQualifiedTypeName name="be.mousty.accessToDao.ReservationATD"/>
 </qualifiedTypeNameHistroy>

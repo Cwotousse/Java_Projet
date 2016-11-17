@@ -2,30 +2,30 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="listC" key="selection"/>
-		<item value="true" key="casesensitive"/>
+		<item value="listReservPayee.get(j)" key="selection"/>
+		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="listR"/>
-			<item value="Reservation"/>
-			<item value="changeTypeReservationList"/>
-			<item value="now"/>
-			<item value="CLIATD"/>
-			<item value="ClientATD"/>
-			<item value="getDateDebutReserv"/>
-			<item value="JList"/>
+			<item value="listReservPayee.get(i)"/>
+			<item value="listReservSelonPayement.get(j"/>
+			<item value="System.out."/>
+			<item value="valeurReduction"/>
+			<item value="showMessageDialog"/>
+			<item value="update"/>
+			<item value="sommeAssurance"/>
+			<item value="listReserv"/>
 		</list>
 		<list key="replacehistory">
-			<item value="listC"/>
-			<item value="Cours"/>
-			<item value="MATD"/>
-			<item value="CoursSemaine"/>
-			<item value="CCATD"/>
-			<item value="CC"/>
-			<item value="CoursCollectif"/>
-			<item value="SATD"/>
+			<item value="listReservPayee.get(j)"/>
+			<item value="listReservSelonPayement.get(i"/>
+			<item value="listNonPaye"/>
+			<item value="modelNonPaye"/>
+			<item value="donneNonPaye"/>
+			<item value="headerInfoCours"/>
+			<item value="headerNonPa"/>
+			<item value="CATDNonPaye"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

@@ -60,11 +60,29 @@ public class DisponibiliteMoniteurATD {
 		SemaineATD SATD = new SemaineATD();
 		Semaine S = new Semaine();
 		S.setDateDebut(dateDebut);
+		boolean EtatDispo = true;
 		S = SATD.getId(S); // numéro de semaine
 		DisponibiliteMoniteur DM = new DisponibiliteMoniteur();
 		DM.setNumSemaine(S.getNumSemaine());
 		DM.setNumMoniteur(numMoniteur);
-		return getListSelonCriteres(DM);
+		if(getListSelonCriteres(DM)){
+			// Après l'update, on récupère la dispo pour la semaine
+			 ArrayList<DisponibiliteMoniteur> fullDispo  = getMyListSelonID(numMoniteur);
+			 for(DisponibiliteMoniteur dm : fullDispo){
+				 // On recherche le numéro de semaine
+				 if (dm.getNumSemaine() == DM.getNumSemaine()){
+					 EtatDispo = dm.getDisponible();
+				 }
+			 }
+			 
+			 // Si il est sur false on supprime ses réservation à la date indiquée
+			 if (!EtatDispo){
+				 ReservationATD RATD = new ReservationATD();
+				 
+			 }
+		}
+		
+		return EtatDispo;
 	}
 
 	// PROPRIETE

@@ -128,8 +128,8 @@ public class F_Moniteur extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				// update les disponibilités
 				MoniteurATD MATD = new MoniteurATD();
-				if(MATD.updateDispo(numMoniteur)) JOptionPane.showMessageDialog(null, "Disponibilité mise à jour.");
-				else JOptionPane.showMessageDialog(null, "Une erreur est intervenue lors de la modification.");
+				if(MATD.updateDispo(numMoniteur)) JOptionPane.showMessageDialog(contentPane, "Disponibilité mise à jour.");
+				else JOptionPane.showMessageDialog(contentPane, "Une erreur est intervenue lors de la modification.");
 			}
 		});
 
@@ -146,13 +146,13 @@ public class F_Moniteur extends JFrame {
 		});
 
 		if (premierPassage){
-			afficherTable();
+			afficherTable(idMoniteur);
 			chargerCheckoxCoursParticulier(idMoniteur);
 		}
 		premierPassage = false;
 	}
 
-	public void afficherTable() {
+	public void afficherTable(int idMoniteur) {
 		ArrayList<DisponibiliteMoniteurATD> listDispo = DMATD.getListDispo(numMoniteur);
 		ArrayList<SemaineATD> listSemaine = SATD.getListSem();
 
@@ -179,10 +179,13 @@ public class F_Moniteur extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JTable mytableClicked = (JTable) e.getSource();
 				Date dateDebutSem = (Date) mytableClicked.getModel().getValueAt(mytableClicked.getSelectedRow(), 1);
+				// Update de la disponibilité
 				DMATD.updateDispo(dateDebutSem, F_Moniteur.numMoniteur);
-				JOptionPane.showMessageDialog(null, "Disponibilité modifiée!");
-				table.removeAll();
-				afficherTable();
+				JOptionPane.showMessageDialog(contentPane, "Disponibilité modifiée!");
+				setVisible(false);
+				F_AfficherCoursaPresterMoniteur frame = new F_AfficherCoursaPresterMoniteur(idMoniteur);
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
 			}
 		};
 

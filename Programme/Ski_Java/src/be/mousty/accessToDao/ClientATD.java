@@ -12,7 +12,6 @@ import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.Client;
 import be.mousty.pojo.Eleve;
-import be.mousty.pojo.Reservation;
 
 public class ClientATD extends UtilisateurATD{
 	// VARIABLES
@@ -87,97 +86,7 @@ public class ClientATD extends UtilisateurATD{
 		return create(C);
 	}
 
-	// Modification 1.4.0
-	// Transformation pour les listes réservation
-	/*public ArrayList<ReservationATD> changeTypeReservationList(ArrayList<Reservation> listR){
-		try {
-			ArrayList<ReservationATD> LE = new ArrayList<ReservationATD>();
-			for(int i = 0; i < listR.size(); i++){
-				ReservationATD RATD = new ReservationATD();
-				RATD.setHeureDebut(listR.get(i).getHeureDebut());
-				RATD.setHeureFin(listR.get(i).getHeureDebut());
-				RATD.setAUneAssurance(listR.get(i).getAUneAssurance());
-				RATD.setSemaine(listR.get(i).getSemaine());
-				RATD.setCours(listR.get(i).getCours());
-				RATD.setEleve(listR.get(i).getEleve());
-				RATD.setClient(listR.get(i).getClient());
-				RATD.setMoniteur(listR.get(i).getMoniteur());
-				LE.add(RATD);
-			}
-			return LE;
-		} catch (Exception e) {
-			e.getStackTrace();
-		}
-		return null;
-	}
-
-
-	public ArrayList<Reservation> changeTypeReservationlistEnATD(ArrayList<ReservationATD> listReservationATD){
-		try {
-			ArrayList<Reservation> LE = new ArrayList<Reservation>();
-			for(int i = 0; i < listReservationATD.size(); i++){
-				Reservation R = new Reservation();
-				R.setHeureDebut(listReservationATD.get(i).getHeureDebut());
-				R.setHeureFin(listReservationATD.get(i).getHeureDebut());
-				R.setAUneAssurance(listReservationATD.get(i).getAUneAssurance());
-				R.setSemaine(listReservationATD.get(i).getSemaine());
-				R.setCours(listReservationATD.get(i).getCours());
-				R.setEleve(listReservationATD.get(i).getEleve());
-				R.setClient(listReservationATD.get(i).getClient());
-				R.setMoniteur(listReservationATD.get(i).getMoniteur());
-				LE.add(R);
-			}
-			return LE;
-		} catch (Exception e) {
-			e.getStackTrace();
-		}
-		return null;
-	}*/
-
-	// Transformation pour les listes Eleve
-	public ArrayList<EleveATD> EATD(ArrayList<Eleve> listE){
-		try {
-			ArrayList<EleveATD> LE = new ArrayList<EleveATD>();
-			for(int i = 0; i < listE.size(); i++){
-				EleveATD EATD = new EleveATD(listE.get(i));
-				/*EATD.setAdresse(listE.get(i).getAdresse());
-				EATD.setCategorie(listE.get(i).getCategorie());
-				EATD.setDateNaissance(listE.get(i).getDateNaissance());
-				EATD.setNom(listE.get(i).getNom());
-				EATD.setPre(listE.get(i).getPre());
-				EATD.setSexe(listE.get(i).getSexe());
-				//System.out.println(EATD.getSexe());*/
-				LE.add(EATD);
-			}
-			return LE;
-		} catch (Exception e) {
-			e.getStackTrace();
-		}
-		return null;
-	}
-
-
-	public ArrayList<Eleve> changeTypeElevelistEnATD(ArrayList<EleveATD> listEleveATD, int idClient){
-		try {
-			Client C = find(idClient);
-			ArrayList<Eleve> LE = new ArrayList<Eleve>();
-			for(int i = 0; i < listEleveATD.size(); i++){
-				Eleve E = new Eleve();
-				E.setNumClient(C.getNumClient());
-				E.setDateNaissance(listEleveATD.get(i).getDateNaissance());
-				E.setCategorie(listEleveATD.get(i).getCategorie());
-				E.setNom(listEleveATD.get(i).getNom());
-				E.setPre(listEleveATD.get(i).getPre());
-				E.setAdresse(listEleveATD.get(i).getAdresse());
-				E.setSexe(listEleveATD.get(i).getSexe());
-				LE.add(E);
-			}
-			return LE;
-		} catch (Exception e) {
-			e.getStackTrace();
-		}
-		return null;
-	}
+	
 
 	// PROPRIETES
 	public String getAdresseFacturation	() 				{ return adresseFacturation; }

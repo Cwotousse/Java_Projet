@@ -10,16 +10,17 @@ import java.util.ArrayList;
 */
 public class Reservation {
 	// VARIABLES
-	private int numReservation;
-	private int heureDebut;
-	private int heureFin;
+	private int 	numReservation;
+	private int 	heureDebut;
+	private int 	heureFin;
 	private boolean aPrisAssurance;
+	private boolean aPaye;
 	private Semaine S;
 	private Cours 	C;
 	private Eleve	E;
 	private Client	Cli;
 	private Moniteur M;
-	private ArrayList<Cours> listCours = new ArrayList<Cours>();
+	//private ArrayList<Cours> listCours = new ArrayList<Cours>();
 	
 	
 	
@@ -46,6 +47,9 @@ public class Reservation {
 	public void setClient 				(Client Cli)  			{ this.Cli = Cli;}
 	public void setMoniteur 			(Moniteur M)  			{ this.M = M;}
 
-	public ArrayList<Cours> 	getListCours() 							{ return listCours; 			}
-	public void 				setListCours(ArrayList<Cours> listReserv) 	{ this.listCours = listReserv; }
+	//public ArrayList<Cours> 	getListCours() 							{ return listCours; 			}
+	//public void 				setListCours(ArrayList<Cours> listReserv) 	{ this.listCours = listReserv; }
+
+	public boolean 	getaPaye() 				{ return aPaye; }
+	public void 	setaPaye(boolean aPaye) { this.aPaye = aPaye; }
 }

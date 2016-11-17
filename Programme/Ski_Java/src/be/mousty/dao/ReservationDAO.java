@@ -50,7 +50,7 @@ public class ReservationDAO extends DAO<Reservation> {
 			pst_Res.setInt(1, obj.getHeureDebut());
 			pst_Res.setInt(2, obj.getHeureFin());
 			pst_Res.setBoolean(3, obj.getAUneAssurance());
-			pst_Res.setBoolean(4, true);
+			pst_Res.setBoolean(4, obj.getaPaye());
 			pst_Res.executeUpdate();
 
 			String selectNumReserv = "SELECT MAX(numReservation) FROM Reservation";
@@ -193,7 +193,33 @@ public class ReservationDAO extends DAO<Reservation> {
 		return false;
 	}
 
-	public boolean update(Reservation obj) { return false; }
+	/**
+		Objectif : Mettre à jour le payement de la réservation.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier un seul enregistrement dans la DB.
+		@return boolean pour connaître l'état de la requête.
+	 */
+	public boolean update(Reservation obj) { 
+		PreparedStatement pst_update = null;
+		boolean estUpdate = false;
+		try {
+			// Si un résultat est retourné, une update va être faite, et donc l'assurance ne doit PLUS être payée.
+			String rech_ass = "UPDATE Reservation Set aPaye = ? WHERE numReservation = ?;";
+			pst_update = this.connect.prepareStatement(rech_ass);
+			pst_update.setBoolean(1, !obj.getaPaye());
+			pst_update.setInt(2, obj.getNumReservation());
+			pst_update.executeUpdate();
+			estUpdate = true;
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst_update != null) {
+				try { pst_update.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return estUpdate;
+	}
 
 	/**
 		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
@@ -490,6 +516,7 @@ public class ReservationDAO extends DAO<Reservation> {
 				R.setHeureFin(rs.getInt("heureFin"));
 				R.setNumReservation(rs.getInt("numReservation"));
 				R.setAUneAssurance(rs.getBoolean("aPrisAssurance"));
+				R.setaPaye(rs.getBoolean("aPaye"));
 				R.setSemaine(S);
 				R.setCours(C);
 				R.setEleve(E);
@@ -645,6 +672,7 @@ public class ReservationDAO extends DAO<Reservation> {
 				R.setHeureFin(rs.getInt("heureFin"));
 				R.setNumReservation(rs.getInt("numReservation"));
 				R.setAUneAssurance(rs.getBoolean("aPrisAssurance"));
+				R.setaPaye(rs.getBoolean("aPaye"));
 				R.setSemaine(S);
 				R.setCours(C);
 				R.setEleve(E);
@@ -825,6 +853,7 @@ public class ReservationDAO extends DAO<Reservation> {
 				R.setHeureFin(rs.getInt("heureFin"));
 				R.setNumReservation(rs.getInt("numReservation"));
 				R.setAUneAssurance(rs.getBoolean("aPrisAssurance"));
+				R.setaPaye(rs.getBoolean("aPaye"));
 				R.setSemaine(S);
 				R.setCours(C);
 				R.setEleve(E);
@@ -983,6 +1012,7 @@ public class ReservationDAO extends DAO<Reservation> {
 				R.setHeureFin(rs.getInt("heureFin"));
 				R.setNumReservation(rs.getInt("numReservation"));
 				R.setAUneAssurance(rs.getBoolean("aPrisAssurance"));
+				R.setaPaye(rs.getBoolean("aPaye"));
 				R.setSemaine(S);
 				R.setCours(C);
 				R.setEleve(E);
@@ -1356,6 +1386,7 @@ public class ReservationDAO extends DAO<Reservation> {
 					R.setHeureFin(res_resv_annul.getInt("heureFin"));
 					R.setNumReservation(res_resv_annul.getInt("numReservation"));
 					R.setAUneAssurance(res_resv_annul.getBoolean("aPrisAssurance"));
+					R.setaPaye(res_resv_annul.getBoolean("aPaye"));
 					R.setSemaine(S);
 					R.setCours(C);
 					R.setEleve(E);

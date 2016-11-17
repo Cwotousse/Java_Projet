@@ -5,10 +5,10 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -26,11 +26,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import be.mousty.accessToDao.ClientATD;
-import be.mousty.accessToDao.CoursCollectifATD;
-import be.mousty.accessToDao.CoursParticulierATD;
-import be.mousty.accessToDao.MoniteurATD;
 import be.mousty.accessToDao.ReservationATD;
-import be.mousty.accessToDao.SemaineATD;
 import be.mousty.utilitaire.ButtonColumn;
 
 public class F_AfficherReservationClient extends JFrame {
@@ -48,7 +44,7 @@ public class F_AfficherReservationClient extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					F_AfficherReservationClient frame = new F_AfficherReservationClient(118);
+					F_AfficherReservationClient frame = new F_AfficherReservationClient(155);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -61,9 +57,10 @@ public class F_AfficherReservationClient extends JFrame {
 	 * Create the frame.
 	 */
 	public F_AfficherReservationClient(int idPersonne) {
+		setForeground(Color.LIGHT_GRAY);
 		try{
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			setBounds(100, 100, 1200, 385);
+			setBounds(100, 100, 1211, 675);
 			contentPane = new JPanel();
 			contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 			setContentPane(contentPane);
@@ -73,7 +70,15 @@ public class F_AfficherReservationClient extends JFrame {
 			JLabel lblVosCours = new JLabel("Vos cours");
 			JSeparator separator = new JSeparator();
 			JButton btn_fr = new JButton("Retour");
-			JLabel lbl_somme = new JLabel("");
+			btn_fr.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
+
+			ArrayList<Integer> sommePrixCoursList = new ArrayList<Integer>();
+			ArrayList<Integer> sommeAssuranceList = new ArrayList<Integer>();
+			ArrayList<Double> sommeReductionList = new ArrayList<Double>();
+			ArrayList<Double> sommePrixTotalList = new ArrayList<Double>();
 
 
 			// Font
@@ -81,23 +86,39 @@ public class F_AfficherReservationClient extends JFrame {
 
 			// SetBound
 			lblVosCours.setBounds(10, 11, 304, 20);
-			separator.setBounds(10, 37, 304, 20);
-			btn_fr.setBounds(10, 308, 125, 25);
-			lbl_somme.setBounds(166, 313, 505, 14);
+			separator.setBounds(10, 37, 48, 20);
+			btn_fr.setBounds(978, 594, 200, 31);
 
 
 			// Add
 			contentPane.add(lblVosCours);
 			contentPane.add(separator);
 			contentPane.add(btn_fr);
-			contentPane.add(lbl_somme);
+
+			JLabel lbl_coursPaye = new JLabel("Cours pay\u00E9s");
+			lbl_coursPaye.setFont(new Font("Yu Gothic UI", Font.PLAIN, 14));
+			lbl_coursPaye.setBounds(10, 42, 304, 25);
+			contentPane.add(lbl_coursPaye);
+
+			JLabel lblCoursEnAttente = new JLabel("Cours en attente de payement");
+			lblCoursEnAttente.setFont(new Font("Yu Gothic UI", Font.PLAIN, 14));
+			lblCoursEnAttente.setBounds(10, 279, 304, 25);
+			contentPane.add(lblCoursEnAttente);
+
+			JButton btn_payerPanier = new JButton("Payer mon panier");
+			btn_payerPanier.setBounds(978, 552, 200, 31);
+			contentPane.add(btn_payerPanier);
+
+			JLabel lbl_prix = new JLabel("R\u00E9capitulatif");
+			lbl_prix.setFont(new Font("Yu Gothic UI", Font.PLAIN, 14));
+			lbl_prix.setBounds(10, 525, 96, 25);
+			contentPane.add(lbl_prix);
 
 			// Deconnexion
 			btn_fr.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
 					setVisible(false);
-
 					F_Client frameC = new F_Client(idPersonne);
 					frameC.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 					frameC.setVisible(true);
@@ -105,49 +126,43 @@ public class F_AfficherReservationClient extends JFrame {
 				}
 			});
 
+			// Payer tout le panier
+			btn_payerPanier.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					if(RATD.updatePanierEntier(idPersonne)){
+						JOptionPane.showMessageDialog(contentPane, "Les cours ont tous étés payés !");
+					}
+					else {
+						JOptionPane.showMessageDialog(contentPane, "Certains cours n'ont pas pû être payés.\n Cela est certaainement dû à un nombre trop important de participants.");
+					}
+
+					setVisible(false);
+					F_AfficherReservationClient frameA = new F_AfficherReservationClient(idPersonne);
+					frameA.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+					frameA.setVisible(true);
+				}
+			});
 
 			// Affiche le nom de la personne 
-			ClientATD CATD = new ClientATD();
-			lblVosCours.setText(CATD.find(idPersonne).getNom() + ", " + CATD.find(idPersonne).getAdresse());
+			ClientATD CATDPaye = new ClientATD();
+			lblVosCours.setText(CATDPaye.find(idPersonne).getNom() + ", " + CATDPaye.find(idPersonne).getAdresse());
 
 
-			// Liste RDV
-			int somme = 0;
-			int sommeAssurance = 0;
-			int sommeReduction = 0;
-			// TABLEAU -> https://tips4java.wordpress.com/2010/01/24/table-row-rendering/
-			//headers for the table
-			String[] columns = new String[] { "N°","Jour début", "jour fin", "heure debut", "heure fin", "Libellé", "Elèves min", "Elèves max", "Eleves actuellement" ,"Moniteur", "Eleve", "type", "Prix", "Annuler" };
-			HashSet<Integer> hs_numSem = new HashSet<Integer>();
-			//actual data for the table in a 2d array
-			// Client
+			// TABLE DES RESERVATIONS VALIDEES -> https://tips4java.wordpress.com/2010/01/24/table-row-rendering/
+			int somme = 0, sommeAssurance = 0;
+			double sommeReduction = 0;
+			String[] headerInfoCours = new String[] { "N°","Jour début", "jour fin", "heure debut", "heure fin", "Libellé", "Elèves min", "Elèves max", "Eleves actuellement" ,"Moniteur", "Eleve", "type", "Prix", "Action" };
 
-			CATD = new ClientATD(CATD.find(idPersonne));
+			CATDPaye = new ClientATD(CATDPaye.find(idPersonne));
 			// J'utilise la liste des réservations du client pour afficher ses réservations
-			ArrayList<ReservationATD> listReserv = CATD.getListReservCli();
-			Object[][] data = new Object[CATD.getListReservCli().size()][columns.length];
+			ArrayList<ReservationATD> listReserv = RATD.getListReservationPayeeOuNon(idPersonne, true);
+
+			//if (listReserv.size() > 0){
+			Object[][] data = new Object[listReserv.size()][headerInfoCours.length];
 			for (int i = 0; i < listReserv.size(); i++) {
-				MoniteurATD MATD = new MoniteurATD(listReserv.get(i).getMoniteur());
-				SemaineATD SATD = new SemaineATD(listReserv.get(i).getSemaine());
-				String strPlaceCours;
 				RATD = listReserv.get(i);
-				int numReservation = RATD.getIdReserv();
-				int numCours = RATD.find(numReservation).getCours().getNumCours();
-				if (listReserv.get(i).getCours().getPrix() < 90) { 
-					CoursParticulierATD CPATD = new CoursParticulierATD(); 
-					strPlaceCours = CPATD.calculerPlaceCours(
-							numCours,
-							RATD.getDateDebutReserv(numReservation),
-							MATD.getId(listReserv.get(i).getMoniteur()).getNumMoniteur());
-				}
-				else { 
-					CoursCollectifATD CCATD = new CoursCollectifATD(); 
-					strPlaceCours = CCATD.calculerPlaceCours(
-							numCours,
-							(long)SATD.getId(listReserv.get(i).getSemaine()).getNumSemaine(),
-							MATD.getId(listReserv.get(i).getMoniteur()).getNumMoniteur());
-				}
-				String[] parts = strPlaceCours.split("-");
+				int numEleveActuel = RATD.calculerNombrePlaceRestantePourUnCours();
 				String[] partPeriode = listReserv.get(i).getCours().getPeriodeCours().split("-");
 
 				RATD = listReserv.get(i);
@@ -159,7 +174,7 @@ public class F_AfficherReservationClient extends JFrame {
 				data[i][5] = listReserv.get(i).getCours().getNomSport();
 				data[i][6] = listReserv.get(i).getCours().getMinEl();
 				data[i][7] = listReserv.get(i).getCours().getMaxEl();
-				data[i][8] = listReserv.get(i).getCours().getMaxEl() - Integer.parseInt(parts[0]);
+				data[i][8] = listReserv.get(i).getCours().getMaxEl() - numEleveActuel;
 				data[i][9] = listReserv.get(i).getMoniteur().getNom().toUpperCase() + " " + listReserv.get(i).getMoniteur().getPre();
 				data[i][10] = listReserv.get(i).getEleve().getNom().toUpperCase() + " " + listReserv.get(i).getEleve().getPre();
 				data[i][11] = listReserv.get(i).getCours().getPrix() > 90 ? "Collectif" : "Particulier";
@@ -169,15 +184,21 @@ public class F_AfficherReservationClient extends JFrame {
 				somme += listReserv.get(i).getCours().getPrix();
 
 				if(listReserv.get(i).getAUneAssurance()){ sommeAssurance += 15; }
-				hs_numSem.add(listReserv.get(i).getSemaine().getNumSemaine());
+				//hs_numSem.add(listReserv.get(i).getSemaine().getNumSemaine());
+
 			}
 
-
+			sommeReduction = RATD.calculerMontantReductionCours(idPersonne, true);
 			// Réduction par semaine
-			for(Object hs : hs_numSem) { sommeReduction = RATD.valeurReduction((int)hs, -1, -1); }
-			lbl_somme.setText("La somme totale est de : " + (somme + sommeAssurance - sommeReduction) + " € (" + sommeAssurance + "€ d'assurance, " + sommeReduction + " de réduction).");
 
-			DefaultTableModel model = new DefaultTableModel(data, columns);
+			//for(Object hs : hs_numSem) { sommeReduction = RATD.valeurReduction((int)hs, -1, -1); }
+			sommePrixCoursList.add(somme);
+			sommeAssuranceList.add(sommeAssurance);
+			sommeReductionList.add(sommeReduction);
+			sommePrixTotalList.add(somme + sommeAssurance - sommeReduction);
+
+
+			DefaultTableModel model = new DefaultTableModel(data, headerInfoCours);
 			JTable table = new JTable( model );
 			table.setAutoCreateRowSorter(true); // Trie sur la colonne cliquée
 			table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Ne sélectionne qu'une liste
@@ -185,6 +206,111 @@ public class F_AfficherReservationClient extends JFrame {
 
 			// Action de modification
 			final Action changerValeur = new AbstractAction() 
+			{
+
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void actionPerformed(ActionEvent e) 
+				{
+					JTable mytableClicked = (JTable)e.getSource();
+					Object numRes = mytableClicked.getModel().getValueAt(mytableClicked.getSelectedRow(), 0);
+					//if(ReservationDAO.delete(ReservationDAO.find(Integer.parseInt(numRes.toString()))))
+					if(RATD.delete(RATD.find(Integer.parseInt(numRes.toString()))))
+						JOptionPane.showMessageDialog(contentPane, "Cours supprimé.");
+					else
+						JOptionPane.showMessageDialog(contentPane, "Une erreur est intervenue, le cours n'est pas supprimé.");
+					setVisible(false);
+					F_AfficherReservationClient frameA = new F_AfficherReservationClient(idPersonne);
+					frameA.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+					frameA.setVisible(true);
+
+				}
+			};
+
+			// Toujours le dernier élément la position du bouton
+			new ButtonColumn(table, changerValeur, headerInfoCours.length-1);
+
+
+			JScrollPane pane = new JScrollPane(table);
+
+			//Changer la couleur
+			table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+						boolean hasFocus, int row, int col) {
+					super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+
+					boolean estValide = false;
+					// On va calculer la place des cours, ensuite on va voir si la palce correspond au maximum possible.
+					// Si oui, on colorie en vert, si non on colorie en rouge.
+					RATD = listReserv.get(row);
+					if (RATD.calculerNombrePlaceRestanteMinPourValiderUnCours() == 0)
+						estValide = true;
+					if (estValide) { setBackground(new Color(102, 255, 51)); } 
+					else { setBackground(new Color(255,255,153)); }
+					return this;
+				}
+			});
+			pane.setBounds(10, 68, 1168, 200);
+			contentPane.add(pane);
+			//} // Si on a pas d'éléments on affiche pas le tableau
+
+
+			// TABLE DES RESERVATIONS NON PAYEES
+			//HashSet<Integer> hs_numSem = new HashSet<Integer>();
+			somme = sommeAssurance = 0;
+			sommeReduction = 0.0;
+			ArrayList<ReservationATD> listNonPaye = RATD.getListReservationPayeeOuNon(idPersonne, false);
+			//System.out.println(listNonPaye.size());
+			Object[][] donneNonPaye = new Object[listNonPaye.size()][headerInfoCours.length];
+			for (int i = 0; i < listNonPaye.size(); i++) {
+				RATD = listNonPaye.get(i);
+				int numEleveActuel = RATD.calculerNombrePlaceRestantePourUnCours();
+				String[] partPeriode = listNonPaye.get(i).getCours().getPeriodeCours().split("-");
+
+				RATD = listNonPaye.get(i);
+				donneNonPaye[i][0] = RATD.getIdReserv();
+				donneNonPaye[i][1] = listNonPaye.get(i).getSemaine().getDateDebut() ;
+				donneNonPaye[i][2] = listNonPaye.get(i).getCours().getPrix() > 90 ? listNonPaye.get(i).getSemaine().getDateFin()  : listNonPaye.get(i).getSemaine().getDateDebut() ;
+				donneNonPaye[i][3] = partPeriode[0] + "h";
+				donneNonPaye[i][4] = partPeriode[1] + "h";
+				donneNonPaye[i][5] = listNonPaye.get(i).getCours().getNomSport();
+				donneNonPaye[i][6] = listNonPaye.get(i).getCours().getMinEl();
+				donneNonPaye[i][7] = listNonPaye.get(i).getCours().getMaxEl();
+				donneNonPaye[i][8] = listNonPaye.get(i).getCours().getMaxEl() - numEleveActuel;
+				donneNonPaye[i][9] = listNonPaye.get(i).getMoniteur().getNom().toUpperCase() + " " + listNonPaye.get(i).getMoniteur().getPre();
+				donneNonPaye[i][10] = listNonPaye.get(i).getEleve().getNom().toUpperCase() + " " + listNonPaye.get(i).getEleve().getPre();
+				donneNonPaye[i][11] = listNonPaye.get(i).getCours().getPrix() > 90 ? "Collectif" : "Particulier";
+				donneNonPaye[i][12] = listNonPaye.get(i).getCours().getPrix() + "€";
+				donneNonPaye[i][13] = "Payer";
+
+				somme += listNonPaye.get(i).getCours().getPrix();
+
+				if(listNonPaye.get(i).getAUneAssurance()){ sommeAssurance += 15; }
+				//hs_numSem.add(listNonPaye.get(i).getSemaine().getNumSemaine());
+			}
+
+
+			// Réduction par semaine
+			//for(Object hs : hs_numSem) { sommeReduction = RATD.valeurReduction((int)hs, -1, -1); }
+			sommeReduction = RATD.calculerMontantReductionCours(idPersonne, false);
+			sommePrixCoursList.add(somme);
+			sommeAssuranceList.add(sommeAssurance);
+			sommeReductionList.add(sommeReduction);
+			sommePrixTotalList.add(somme + sommeAssurance - sommeReduction);
+
+			DefaultTableModel modelNonPaye = new DefaultTableModel(donneNonPaye, headerInfoCours);
+			JTable tableNonPaye = new JTable( modelNonPaye );
+			tableNonPaye.setAutoCreateRowSorter(true); // Trie sur la colonne cliquée
+			tableNonPaye.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Ne sélectionne qu'une liste
+			tableNonPaye.getTableHeader().setReorderingAllowed(false); // NE peux pas bouger les colonnes
+
+			// Action de modification
+			final Action payerCours = new AbstractAction() 
 			{
 				/**
 				 * 
@@ -196,28 +322,25 @@ public class F_AfficherReservationClient extends JFrame {
 				{
 					JTable mytableClicked = (JTable)e.getSource();
 					Object numRes = mytableClicked.getModel().getValueAt(mytableClicked.getSelectedRow(), 0);
-					//if(ReservationDAO.delete(ReservationDAO.find(Integer.parseInt(numRes.toString()))))
-					if(RATD.delete(RATD.find(Integer.parseInt(numRes.toString()))))
-						JOptionPane.showMessageDialog(null, "Cours supprimé.");
+					if(RATD.update(RATD.find(Integer.parseInt(numRes.toString())))){
+						JOptionPane.showMessageDialog(contentPane, "Cours payé !.");
+						setVisible(false);
+						F_AfficherReservationClient frameA = new F_AfficherReservationClient(idPersonne);
+						frameA.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frameA.setVisible(true);
+					}
 					else
-						JOptionPane.showMessageDialog(null, "Une erreur est intervenue, le cours n'est pas supprimé.");
-
-					setVisible(false);
-
-					F_Client frameC = new F_Client(idPersonne);
-					frameC.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-					frameC.setVisible(true);
-
+						JOptionPane.showMessageDialog(contentPane, "Une erreur est intervenue, le cours n'est pas payé.");
 				}
 			};
 
 			// Toujours le dernier élément la position du bouton
-			new ButtonColumn(table, changerValeur, columns.length-1);
+			new ButtonColumn(tableNonPaye, payerCours, headerInfoCours.length-1);
 
-			JScrollPane pane = new JScrollPane(table);
+			JScrollPane paneNonPaye = new JScrollPane(tableNonPaye);
 
 			//Changer la couleur
-			table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+			tableNonPaye.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
 				/**
 				 * 
 				 */
@@ -227,43 +350,44 @@ public class F_AfficherReservationClient extends JFrame {
 				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 						boolean hasFocus, int row, int col) {
 					super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-
-					boolean estValide = false;
-					// On va calculer la place des cours, ensuite on va voir si la palce correspond au maximum possible.
-					// Si oui, on colorie en vert, si non on colorie en rouge.
-					MoniteurATD MATD = new MoniteurATD(listReserv.get(row).getMoniteur());
-					SemaineATD SATD = new SemaineATD(listReserv.get(row).getSemaine());
-					ReservationATD RATD = listReserv.get(row);
-					int numReservation = RATD.getIdReserv();
-					int numCours = RATD.find(numReservation).getCours().getNumCours();
-					String strPlaceCours;
-					// ATTENTION il faut savoir si c'est un cours particulier ou collectif, cela se choisi via le prix.
-					if (listReserv.get(row).getCours().getPrix() < 90) { 
-						CoursParticulierATD CPATD = new CoursParticulierATD(); 
-						strPlaceCours = CPATD.calculerPlaceCours(
-								numCours,
-								// modifier ici
-								RATD.getDateDebutReserv(numReservation),
-								MATD.getId(listReserv.get(row).getMoniteur()).getNumMoniteur());
-					}
-					else { 
-						CoursCollectifATD CCATD = new CoursCollectifATD(); 
-						strPlaceCours = CCATD.calculerPlaceCours(
-								numCours,
-								(long)SATD.getId(listReserv.get(row).getSemaine()).getNumSemaine(),
-								MATD.getId(listReserv.get(row).getMoniteur()).getNumMoniteur());}
-
-					String[] parts = strPlaceCours.split("-");
-					// S'il y a assez de places mini, on colorie en vert.
-					if(Integer.parseInt(parts[1]) == 0)
-						estValide = true;
-					if (estValide) { setBackground(new Color(102, 255, 51)); } 
-					else { setBackground(new Color(255,255,153)); }
+					setBackground(new Color(204,0,51)); // rouge
+					setForeground(new Color(255, 255, 255)); // blanc
 					return this;
 				}
 			});
-			pane.setBounds(10, 42, 1168, 255);
-			contentPane.add(pane);
+			paneNonPaye.setBounds(10, 304, 1168, 200);
+			contentPane.add(paneNonPaye);
+
+
+			// RECAPITULATIF DES PRIX
+			String[] headerRecap = new String[] { "Typ)e", "Prix cours","Assurances", "Reduction", "Prix total" };
+			String[] typeCours = new String [] {"Payé", "Non payé", "Total"};
+			Object[][] dateRecap = new Object[typeCours.length][headerRecap.length];
+			sommePrixCoursList.add(sommePrixCoursList.get(1) + sommePrixCoursList.get(0));
+			sommeAssuranceList.add(sommeAssuranceList.get(1) + sommeAssuranceList.get(0));
+			sommeReductionList.add(sommeReductionList.get(1) + sommeReductionList.get(0));
+			sommePrixTotalList.add(sommePrixTotalList.get(1) + sommePrixTotalList.get(0));
+			// Addition des sommes
+
+			for (int i = 0; i < typeCours.length; i++) {
+				dateRecap[i][0] = typeCours[i];
+				dateRecap[i][1] = sommePrixCoursList.get(i).toString();
+				dateRecap[i][2] = sommeAssuranceList.get(i).toString();
+				dateRecap[i][3] = sommeReductionList.get(i).toString();
+				dateRecap[i][4] = sommePrixTotalList.get(i).toString();
+			}
+
+			DefaultTableModel modelRecap = new DefaultTableModel(dateRecap, headerRecap);
+			JTable tableRecap = new JTable( modelRecap );
+			tableRecap.setAutoCreateRowSorter(true); // Trie sur la colonne cliquée
+			tableRecap.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Ne sélectionne qu'une liste
+			tableRecap.getTableHeader().setReorderingAllowed(false); // NE peux pas bouger les colonnes
+
+
+			JScrollPane paneRecap = new JScrollPane(tableRecap);
+
+			paneRecap.setBounds(10, 550, 958, 75);
+			contentPane.add(paneRecap);
 		}
 		catch(Exception E){ E.getStackTrace(); }
 	}

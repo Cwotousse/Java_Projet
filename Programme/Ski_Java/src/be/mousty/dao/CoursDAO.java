@@ -132,7 +132,7 @@ public class CoursDAO extends DAO<Cours> {
 	
 	/**
 		@version Finale 1.3.3
-		Objectif : Calculer la place maximale et minimale accepte pour qu ele cours soit validé.
+		Objectif : Calculer la place maximale et minimale accepte pour qu ele cours soit validé (uniquement ceux qui ont payés).
 		@param Le numéro de cours.
 		@param Le numéro de semaine, car un cours donné le lundi et un autre le mardi n'ont pas le même nombre de réservations.
 		@param La période pour savoir si le moniteur est dispo à ce moment.
@@ -160,11 +160,13 @@ public class CoursDAO extends DAO<Cours> {
 				semaineOuJournee = " WHERE dateDebutReserv = ? ";
 			int placeActuelle = 0;
 			
-			String sql_cpt_res = "SELECT count(*) as total FROM ReservationCours WHERE numCours IN "
+			String sql_cpt_res = "SELECT count(*) as total FROM ReservationCours "
+					+ "INNER JOIN Reservation ON Reservation.numReservation = ReservationCours.numReservation "
+					+ "WHERE aPaye = 1 AND numCours IN "
 					+ "(SELECT numCours FROM Cours WHERE numCours IN "
-					+ "(SELECT numCours FROM ReservationCours WHERE numCours = ? AND numCours IN "
-					+ "(SELECT numCours FROM CoursSemaine  " + semaineOuJournee + " AND numCours IN "
-					+ "(SELECT numCours FROM CoursMoniteur WHERE numMoniteur = ?)))) "
+						+ "(SELECT numCours FROM ReservationCours WHERE numCours = ? AND numCours IN "
+							+ "(SELECT numCours FROM CoursSemaine  " + semaineOuJournee + " AND numCours IN "
+								+ "(SELECT numCours FROM CoursMoniteur WHERE numMoniteur = ?)))) "
 					+ "group by numCours;";
 			
 			pst_cpt_cou = this.connect.prepareStatement(sql_cpt_res);
