@@ -1,7 +1,5 @@
 package be.mousty.pojo;
 
-import java.util.ArrayList;
-
 /**
 	Classe POJO relatif à la table Reservation dans la DB.
 	@author Adrien MOUSTY

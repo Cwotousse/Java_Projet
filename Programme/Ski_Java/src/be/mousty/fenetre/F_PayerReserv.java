@@ -148,7 +148,10 @@ public class F_PayerReserv extends JFrame {
 		lbl_affPrix.setText(CATD.find(numCours).getPrix() + "€");
 		int prixAssurance = assurance ? (RATD.besoinDupdateOuNonAssurance(numEleve, numSemaine, periode) ? 0 : 15) : 0; // Operateur ternaire imbriqué
 		lbl_affAssurance.setText(prixAssurance + "€");
-		lbl_affReduction.setText(RATD.valeurReduction(numSemaine, numEleve, CATD.find(numCours).getPrix()) + "€");
+		if (periode.equals("09-12") || periode.equals("14-17"))
+			lbl_affReduction.setText(RATD.valeurReduction(numSemaine, numEleve, CATD.find(numCours).getPrix()) + "€");
+		else 
+			lbl_affReduction.setText("0€");
 		lbl_affPrixTotal.setText(CATD.find(numCours).getPrix() + prixAssurance - RATD.valeurReduction(numSemaine, numEleve, CATD.find(numCours).getPrix()) + "€");
 
 

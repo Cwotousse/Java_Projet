@@ -4,7 +4,7 @@ package be.mousty.fenetre;
 	@author Adrien MOUSTY
 	@version Finale 1.3.3
 	@category Fenêtre
-*/
+ */
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
@@ -128,8 +128,12 @@ public class F_Moniteur extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				// update les disponibilités
 				MoniteurATD MATD = new MoniteurATD();
-				if(MATD.updateDispo(numMoniteur)) JOptionPane.showMessageDialog(contentPane, "Disponibilité mise à jour.");
-				else JOptionPane.showMessageDialog(contentPane, "Une erreur est intervenue lors de la modification.");
+				DisponibiliteMoniteurATD dm = new DisponibiliteMoniteurATD();
+				if (dm.possedeCoursParticulier(idMoniteur)){
+					if(MATD.updateDispo(numMoniteur)) JOptionPane.showMessageDialog(contentPane, "Disponibilité mise à jour.");
+					else JOptionPane.showMessageDialog(contentPane, "Une erreur est intervenue lors de la modification.");
+				}
+				else { JOptionPane.showMessageDialog(contentPane, "Vous ne pouvez pas mettre à jour votre statut, des cours sont en attente d'être prestés."); chckB_coursPart.setSelected(true); } 
 			}
 		});
 
@@ -180,10 +184,19 @@ public class F_Moniteur extends JFrame {
 				JTable mytableClicked = (JTable) e.getSource();
 				Date dateDebutSem = (Date) mytableClicked.getModel().getValueAt(mytableClicked.getSelectedRow(), 1);
 				// Update de la disponibilité
-				DMATD.updateDispo(dateDebutSem, F_Moniteur.numMoniteur);
-				JOptionPane.showMessageDialog(contentPane, "Disponibilité modifiée!");
+				if(DMATD.updateDispo(dateDebutSem, F_Moniteur.numMoniteur)){
+					JOptionPane.showMessageDialog(contentPane, "Disponibilité modifiée!");
+				}
+				else {
+					JOptionPane.showMessageDialog(contentPane, "Vous ne pouvez pas mettre à jour votre statut, des cours sont en attente d'être prestés.");
+				}
+
+
+				//Allouer un nouveau moniteur si la dispo devient fausse.
+
+
 				setVisible(false);
-				F_AfficherCoursaPresterMoniteur frame = new F_AfficherCoursaPresterMoniteur(idMoniteur);
+				F_Moniteur frame = new F_Moniteur(idMoniteur);
 				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 				frame.setVisible(true);
 			}

@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import be.mousty.accessToDao.ClientATD;
+import be.mousty.accessToDao.CoursCollectifATD;
 import be.mousty.accessToDao.ReservationATD;
 import be.mousty.utilitaire.ButtonColumn;
 
@@ -46,9 +47,8 @@ public class F_AfficherReservationClient extends JFrame {
 				try {
 					F_AfficherReservationClient frame = new F_AfficherReservationClient(155);
 					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				catch (Exception e) { e.printStackTrace(); }
 			}
 		});
 	}
@@ -178,6 +178,9 @@ public class F_AfficherReservationClient extends JFrame {
 				data[i][9] = listReserv.get(i).getMoniteur().getNom().toUpperCase() + " " + listReserv.get(i).getMoniteur().getPre();
 				data[i][10] = listReserv.get(i).getEleve().getNom().toUpperCase() + " " + listReserv.get(i).getEleve().getPre();
 				data[i][11] = listReserv.get(i).getCours().getPrix() > 90 ? "Collectif" : "Particulier";
+				
+				dsfdata[i][11] = (listReserv.get(i).getCours() instanceof CoursCollectifATD) ? "Collectif" : "Particulier";
+				
 				data[i][12] = listReserv.get(i).getCours().getPrix() + "€";
 				data[i][13] = "Annuler"; //listReserv.get(i).getCours().getPrix() + "€";
 

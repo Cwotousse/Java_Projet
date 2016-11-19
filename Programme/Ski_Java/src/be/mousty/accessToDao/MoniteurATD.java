@@ -126,7 +126,7 @@ public class MoniteurATD extends UtilisateurATD{
 		return LA;
 	}
 	
-	public ArrayList<MoniteurATD> getListDispoATD(int typeCours, int numSemaine, String periode){
+	public ArrayList<MoniteurATD> getListDispoATD(int typeCours, long numSemaine, String periode){
 		ArrayList<Moniteur> listM = getListDispo(typeCours, numSemaine, periode);
 		ArrayList<MoniteurATD> listMATD = new ArrayList<MoniteurATD>();
 		for (int i = 0; i < listM.size(); i++) {

@@ -262,7 +262,6 @@ public class MoniteurDAO extends DAO<Moniteur>{
 	@Override public ArrayList<Moniteur> getMyListSelonID(int typeCours,  long numSemaine, int nonUsed2, String periode) {
 		ArrayList<Moniteur> liste = new ArrayList<Moniteur>();
 		PreparedStatement pst_mon = null;
-		PreparedStatement pstAccred = null;
 		try {
 			String verifPeriode;
 			String verifTypeCours = ""; // 1 -> collectif, 2 = particulier.
@@ -282,7 +281,6 @@ public class MoniteurDAO extends DAO<Moniteur>{
 			default : verifPeriode = " = '09-12' ";
 			break;
 			}
-			System.out.println(verifTypeCours);
 			String sql_mon =
 					"SELECT * FROM Moniteur "
 							+ "INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Moniteur.numMoniteur "
@@ -310,15 +308,18 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				String sqlAccred = "Select * from Accreditation "
 						+ "INNER JOIN LigneAccreditation ON Accreditation.numAccreditation = LigneAccreditation.numAccreditation "
 						+ "WHERE numMoniteur = ?;";
-				pstAccred = this.connect.prepareStatement(sqlAccred);
+				PreparedStatement pstAccred = this.connect.prepareStatement(sqlAccred);
 				pstAccred.setInt(1, res_mon.getInt("numMoniteur"));
 				ResultSet rsAccred = pstAccred.executeQuery();
+				
 				while(rsAccred.next()){
 					Accreditation A = new Accreditation();
 					A.setNomAccreditation(rsAccred.getString("nomAccreditation"));
 					A.setNumAccreditation(rsAccred.getInt("numAccreditation"));
 					listeAccred.add(A);
 				}
+				pstAccred.close();
+				
 				Moniteur M = new Moniteur();
 				M.setNumMoniteur(res_mon.getInt("numMoniteur"));
 				M.setAnneeExp(0);
@@ -336,13 +337,13 @@ public class MoniteurDAO extends DAO<Moniteur>{
 				M.setSexe(res_mon.getString("sexe"));
 				liste.add(M);
 			}
+			
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
-			if (pst_mon != null || pstAccred != null) {
+			if (pst_mon != null) {
 				try {
 					pst_mon.close();
-					pstAccred.close();
 				}
 				catch (SQLException e) { e.printStackTrace(); }
 			}

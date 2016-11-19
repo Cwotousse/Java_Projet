@@ -153,7 +153,8 @@ public class SemaineDAO extends DAO<Semaine> {
 		if (listSemaine != null)
 			for(Semaine s : listSemaine){
 				// N'affiche que les semaines ou il n'y a pas de congés et qui ne sont pas passées.
-				if (!s.getCongeScolaire() && s.getDateDebut().after(today) && s.getDateFin().before(maxDateToDisplay)) 
+				//if (!s.getCongeScolaire() && s.getDateDebut().after(today) && s.getDateFin().before(maxDateToDisplay)) 
+				if (s.getDateDebut().after(today) && s.getDateFin().before(maxDateToDisplay)) 
 					listeRetour.add(s);
 			}
 		return listeRetour;
