@@ -19,6 +19,15 @@ public class Personne {
 	// CONSTRUCTEUR SANS ARGUMENTS
 	public Personne(){}
 	
+	public Personne(String nom, String pre, String adresse, String sexe, Date dateNaissance){
+		this.nom 			= nom;
+		this.pre 			= pre;
+		this.adresse 		= adresse;
+		this.sexe 			= sexe;
+		this.dateNaissance 	= dateNaissance;
+		this.numPersonne 	= -1;
+	}
+	
 	
 	// PROPRIETE
 	public String getNom		() { return nom; }

@@ -1,4 +1,7 @@
 package be.mousty.pojo;
+
+import be.mousty.accessToDao.CoursATD;
+
 /**
 	Classe POJO relatif à la table Cours dans la DB.
 	@author Adrien MOUSTY
@@ -17,6 +20,22 @@ public class Cours {
 	
 	// CONSTRUCTEUR SANS ARGUMENTS
 	public Cours (){}
+	
+	public Cours(String nomSport, double prix, int minEleve, int maxEleve, String periodeCours){
+		this.prix 			= prix;
+		this.minEleve 		= minEleve;
+		this.maxEleve 		= maxEleve;
+		this.periodeCours 	= periodeCours;
+		this.nomSport 		= nomSport;
+	}
+	
+	public Cours(CoursATD C){
+		this.prix 			= C.getPrix();
+		this.minEleve 		= C.getMinEl();
+		this.maxEleve 		= C.getMaxEl();
+		this.periodeCours 	= C.getPeriodeCours();
+		this.nomSport 		= C.getNomSport();
+	}
 	
 	// PROPRIETES
 	public int getNumCours			() 				{ return numCours; }

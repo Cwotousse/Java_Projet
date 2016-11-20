@@ -24,18 +24,47 @@ public class AccreditationATD {
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Accreditation> AccreditationDAO = adf.getAccreditationDAO();
-	public int					 	create		(Accreditation a) 	{ return AccreditationDAO.create(a); }
-	public boolean 					delete		(Accreditation a)	{ return AccreditationDAO.delete(a); }
 	public Accreditation 			getId		(Accreditation a) 	{ return AccreditationDAO.getId(a);  }
-	public boolean 					update		(Accreditation a) 	{ return AccreditationDAO.update(a); }
 	public Accreditation 			find		(int id) 			{ return AccreditationDAO.find(id);  } 
 	public ArrayList<Accreditation> getListAccr	() 					{ return AccreditationDAO.getList(); } 
+	
+	// Transformation
+	public static ArrayList<AccreditationATD> changeTypeAccredilist(ArrayList<Accreditation> A){
+		ArrayList<AccreditationATD> LA = new ArrayList<AccreditationATD>();
+		for(int i = 0; i < A.size(); i++){
+			AccreditationATD AATD = new AccreditationATD();
+			AATD.setNom(A.get(i).getNomAccreditation());
+			LA.add(AATD);
+		}
+		return LA;
+	}
+	
+	public static ArrayList<Accreditation> changeTypeAccredilistEnATD(ArrayList<AccreditationATD> A){
+		ArrayList<Accreditation> LA = new ArrayList<Accreditation>();
+		for(int i = 0; i < A.size(); i++){
+			Accreditation AATD = new Accreditation();
+			AATD.setNomAccreditation((A.get(i).getNom()));
+			switch(AATD.getNomAccreditation()){
+			case "Snowboard" : AATD.setNumAccreditation(1);
+				break;
+			case "Ski" : AATD.setNumAccreditation(2);
+				break;
+			case "Ski de fond" : AATD.setNumAccreditation(3);
+				break;
+			case "Telemark" : AATD.setNumAccreditation(4);
+				break;
+			case "Enfant" :AATD.setNumAccreditation(5);
+				break;
+			case "Adulte" :AATD.setNumAccreditation(6);
+				break;
+			}
+			LA.add(AATD);
+		}
+		return LA;
+	}
 
-	// FONCTION SURCHARGEE
-	@Override
-	public String toString() { return nom; }
-
+	public ArrayList<AccreditationATD> getFullAccredATD(){ return changeTypeAccredilist(getListAccr()); }
 	// PROPRIETE
-	public String 	getNom  () { return nom; }
-	public void setNom		(String nom) { this.nom = nom; }
+	public String 	getNom () 			{ return nom; 		}
+	public void 	setNom (String nom) { this.nom = nom; 	}
 }

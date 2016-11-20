@@ -1,4 +1,9 @@
 package be.mousty.pojo;
+
+import java.sql.Date;
+
+import be.mousty.accessToDao.UtilisateurATD;
+
 /**
 	Classe POJO relatif à la table Utilisateur dans la DB.
 	@author Adrien MOUSTY
@@ -14,6 +19,22 @@ public class Utilisateur extends Personne{
 	
 	// CONSTRUCTEUR SANS ARGUMENTS
 	public Utilisateur(){}
+	
+	public Utilisateur(String nom, String pre, String adresse, String sexe, Date dateNaissance,
+			String pseudo, String mdp, int typeUtilisateur){
+		super(nom, pre, adresse, sexe, dateNaissance);
+		this.pseudo 			= pseudo;
+		this.mdp 				= mdp;
+		this.typeUtilisateur 	= typeUtilisateur;
+	}
+	
+	public Utilisateur(UtilisateurATD U){
+		super(U.getNom(), U.getPre(), U.getAdresse(), U.getSexe(), U.getDateNaissance());
+		this.pseudo 			= U.getPseudo();
+		this.mdp 				= U.getMdp();
+		this.typeUtilisateur 	= U.getTypeUtilisateur();
+		this.numUtilisateur 	= -1;
+	}
 
 	// PROPRIETES
 	public String getPseudo			() { return pseudo; }

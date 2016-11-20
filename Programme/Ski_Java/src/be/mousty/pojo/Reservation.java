@@ -1,5 +1,7 @@
 package be.mousty.pojo;
 
+import be.mousty.accessToDao.ReservationATD;
+
 /**
 	Classe POJO relatif à la table Reservation dans la DB.
 	@author Adrien MOUSTY
@@ -20,10 +22,38 @@ public class Reservation {
 	private Moniteur M;
 	//private ArrayList<Cours> listCours = new ArrayList<Cours>();
 	
-	
-	
 	// CONSTRUCTEURS
 	public Reservation(){}
+
+	public Reservation(int heureDebut, int heureFin, int numReservation, boolean aUneAssurance, Semaine S, Cours C,
+			Eleve E, Client Cli, Moniteur M, boolean aPaye) {
+		this.heureDebut 	= heureDebut;
+		this.heureFin 		= heureFin;
+		this.aPrisAssurance 	= aUneAssurance;
+		this.aPaye 			= aPaye;
+		this.C 				= C;
+		this.S 				= S;
+		this.E 				= E;
+		this.Cli 			= Cli;
+		this.M 				= M;
+	}
+
+	public Reservation(ReservationATD R) {
+		this.heureDebut 	= R.getHeureDebut();
+		this.heureFin 		= R.getHeureFin();
+		this.aPrisAssurance = R.getAUneAssurance();
+		this.aPaye 			= R.getaPaye();
+		Cours C 			= R.getCours();
+		Semaine S			= R.getSemaine();
+		Eleve E				= R.getEleve();
+		Client Cli 			= R.getClient();
+		Moniteur M 			= R.getMoniteur();
+		this.C 				= C;
+		this.S 				= S;
+		this.E 				= E;
+		this.Cli 			= Cli;
+		this.M 				= M;
+	}
 	
 	// PROPRIETE
 	public int 		getHeureDebut		() { return heureDebut; }

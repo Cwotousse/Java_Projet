@@ -27,10 +27,11 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		{
 			// Vérifier si la personne existe déjà (username/mdp)
 			Utilisateur U = getId(obj);
-			System.out.println(U.getNumPersonne());
-			if(U.getNumPersonne() != -1 || U.getNumPersonne() != 0) { return -1; }
+			//System.out.println(U.getNumPersonne());
+			if(U.getNumPersonne() != -1 && U.getNumPersonne() != 0) { return -1; }
 			else {
 				//on l'utilise pour ajouter les données dans la table Utilisateur
+				//System.out.println("UtilisateurDAO : insert en cours." );
 				String requete2 = "INSERT INTO Utilisateur (pseudo, mdp, typeUtilisateur, numUtilisateur) VALUES (?,?,?,?)";
 				pst2 = connect.prepareStatement(requete2);
 
@@ -224,11 +225,6 @@ public class UtilisateurDAO extends DAO<Utilisateur> {
 		return null;
 	}
 
-	@Override
-	public boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public String getCategorieReservation(int numMoniteur, int numSemaine, String periode) {

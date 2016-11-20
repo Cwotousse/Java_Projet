@@ -26,7 +26,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import be.mousty.accessToDao.ClientATD;
-import be.mousty.accessToDao.CoursCollectifATD;
 import be.mousty.accessToDao.ReservationATD;
 import be.mousty.utilitaire.ButtonColumn;
 
@@ -160,9 +159,12 @@ public class F_AfficherReservationClient extends JFrame {
 
 			//if (listReserv.size() > 0){
 			Object[][] data = new Object[listReserv.size()][headerInfoCours.length];
+			//System.out.println("Afficher client : " + listReserv.size());
 			for (int i = 0; i < listReserv.size(); i++) {
 				RATD = listReserv.get(i);
+				//System.out.println("Afficher client : " + RATD.getSemaine().getNumSemaineDansAnnee());
 				int numEleveActuel = RATD.calculerNombrePlaceRestantePourUnCours();
+
 				String[] partPeriode = listReserv.get(i).getCours().getPeriodeCours().split("-");
 
 				RATD = listReserv.get(i);
@@ -178,23 +180,17 @@ public class F_AfficherReservationClient extends JFrame {
 				data[i][9] = listReserv.get(i).getMoniteur().getNom().toUpperCase() + " " + listReserv.get(i).getMoniteur().getPre();
 				data[i][10] = listReserv.get(i).getEleve().getNom().toUpperCase() + " " + listReserv.get(i).getEleve().getPre();
 				data[i][11] = listReserv.get(i).getCours().getPrix() > 90 ? "Collectif" : "Particulier";
-				
-				dsfdata[i][11] = (listReserv.get(i).getCours() instanceof CoursCollectifATD) ? "Collectif" : "Particulier";
-				
 				data[i][12] = listReserv.get(i).getCours().getPrix() + "€";
 				data[i][13] = "Annuler"; //listReserv.get(i).getCours().getPrix() + "€";
 
 				somme += listReserv.get(i).getCours().getPrix();
 
 				if(listReserv.get(i).getAUneAssurance()){ sommeAssurance += 15; }
-				//hs_numSem.add(listReserv.get(i).getSemaine().getNumSemaine());
-
 			}
 
 			sommeReduction = RATD.calculerMontantReductionCours(idPersonne, true);
 			// Réduction par semaine
 
-			//for(Object hs : hs_numSem) { sommeReduction = RATD.valeurReduction((int)hs, -1, -1); }
 			sommePrixCoursList.add(somme);
 			sommeAssuranceList.add(sommeAssurance);
 			sommeReductionList.add(sommeReduction);
@@ -251,6 +247,8 @@ public class F_AfficherReservationClient extends JFrame {
 					// On va calculer la place des cours, ensuite on va voir si la palce correspond au maximum possible.
 					// Si oui, on colorie en vert, si non on colorie en rouge.
 					RATD = listReserv.get(row);
+					//CoursATD CATD = RATD.getCours();
+					
 					if (RATD.calculerNombrePlaceRestanteMinPourValiderUnCours() == 0)
 						estValide = true;
 					if (estValide) { setBackground(new Color(102, 255, 51)); } 
@@ -294,12 +292,10 @@ public class F_AfficherReservationClient extends JFrame {
 				somme += listNonPaye.get(i).getCours().getPrix();
 
 				if(listNonPaye.get(i).getAUneAssurance()){ sommeAssurance += 15; }
-				//hs_numSem.add(listNonPaye.get(i).getSemaine().getNumSemaine());
 			}
 
 
 			// Réduction par semaine
-			//for(Object hs : hs_numSem) { sommeReduction = RATD.valeurReduction((int)hs, -1, -1); }
 			sommeReduction = RATD.calculerMontantReductionCours(idPersonne, false);
 			sommePrixCoursList.add(somme);
 			sommeAssuranceList.add(sommeAssurance);

@@ -381,11 +381,6 @@ public class EleveDAO extends DAO<Eleve> {
 		return null;
 	}
 
-	@Override
-	public boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public String getCategorieReservation(int numMoniteur, int numSemaine, String periode) {

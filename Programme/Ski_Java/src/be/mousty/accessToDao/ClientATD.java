@@ -25,10 +25,8 @@ public class ClientATD extends UtilisateurATD{
 		super(C.getNom(), C.getPre(), C.getAdresse(), C.getSexe(), C.getDateNaissance(), C.getPseudo(),
 				C.getMdp(), C.getTypeUtilisateur());
 		this.adresseFacturation = C.getAdresseFacturation();
-		ReservationATD RATD = new ReservationATD();
-		EleveATD EATD = new EleveATD();
-		this.listReservCli = RATD.getMyListATD(C.getNumClient());
-		this.listEleveCli = EATD.getListEleveSelonidClient(C.getNumClient());
+		this.listReservCli = ReservationATD.changeTypeReservationList(C.getListReservCli());
+		this.listEleveCli = EleveATD.EATD(C.getListEleveCli());
 	}
 
 	public ClientATD(String nom, String pre, String adresse, String sexe, Date dateNaissance,

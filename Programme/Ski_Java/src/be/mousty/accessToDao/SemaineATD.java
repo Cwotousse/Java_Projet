@@ -41,9 +41,7 @@ public class SemaineATD {
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Semaine> SemaineDAO = adf.getSemaineDAO();
 	public int					create					(Semaine s) 				{ return SemaineDAO.create(s); 	}
-	public boolean 				delete					(Semaine s)	 				{ return SemaineDAO.delete(s); 	}
 	public Semaine 				getId					(Semaine s) 				{ return SemaineDAO.getId(s); 	}
-	public boolean 				update					(Semaine s) 				{ return SemaineDAO.update(s); 	}
 	public Semaine 				find					(int id) 					{ return SemaineDAO.find(id); 	} 
 	public ArrayList<Semaine> 	getList 				() 							{ return SemaineDAO.getList(); 	} 
 	public void 				AjouterSemainesDansDB	(String start, String end)	{ SemaineDAO.AjouterSemainesDansDB(start, end);	}
@@ -64,11 +62,11 @@ public class SemaineATD {
 		ArrayList<Semaine> listS = getListSelonCriteres(null);
 		ArrayList<SemaineATD> listSATD = new ArrayList<SemaineATD>();
 		for (int i = 0; i < listS.size(); i++) {
-			SemaineATD SATD = new SemaineATD();
-			SATD.setCongeScolaire(listS.get(i).getCongeScolaire());
+			SemaineATD SATD = new SemaineATD((listS.get(i)));
+			/*SATD.setCongeScolaire(listS.get(i).getCongeScolaire());
 			SATD.setDateDebut(listS.get(i).getDateDebut());
 			SATD.setDateFin(listS.get(i).getDateFin());
-			SATD.setNumSemaineDansAnnee(listS.get(i).getNumSemaineDansAnnee());
+			SATD.setNumSemaineDansAnnee(listS.get(i).getNumSemaineDansAnnee());*/
 			listSATD.add(SATD);
 		}
 		return listSATD;
@@ -116,14 +114,6 @@ public class SemaineATD {
 		S.setNumSemaineDansAnnee(this.getNumSemaineDansAnnee());
 		S.setNumSemaine(numSemaine);
 		return S;
-	}
-	
-	// FONCTION SURCHARGEE
-	@Override
-	public String toString() { 
-		return  //descriptif + System.getProperty("line.separator") 
-				"Période de congé scolaire : " + congeScolaire + System.getProperty("line.separator")
-				+ "Période comprise entre le " + dateDebut.toString() + " et le " + dateFin.toString() + System.getProperty("line.separator"); 
 	}
 
 

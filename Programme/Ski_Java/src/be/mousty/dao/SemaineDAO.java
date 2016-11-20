@@ -302,11 +302,6 @@ public class SemaineDAO extends DAO<Semaine> {
 		return null;
 	}
 
-	@Override
-	public boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public String getCategorieReservation(int numMoniteur, int numSemaine, String periode) {

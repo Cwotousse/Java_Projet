@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="java.util.Arrays"/>
-<fullyQualifiedTypeName name="POJO.Client"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="POJO.Reservation"/>
 <fullyQualifiedTypeName name="javax.swing.table.DefaultTableModel"/>
 <fullyQualifiedTypeName name="javax.swing.table.JTableHeader"/>
@@ -34,7 +31,6 @@
 <fullyQualifiedTypeName name="be.mousty.dao.AbstractDAOFactory"/>
 <fullyQualifiedTypeName name="be.mousty.dao.DAO"/>
 <fullyQualifiedTypeName name="be.mousty.accessToDao.PersonneATD"/>
-<fullyQualifiedTypeName name="be.mousty.accessToDao.EleveATD"/>
 <fullyQualifiedTypeName name="be.mousty.pojo.Personne"/>
 <fullyQualifiedTypeName name="java.util.Date"/>
 <fullyQualifiedTypeName name="be.mousty.pojo.Semaine"/>
@@ -60,4 +56,8 @@
 <fullyQualifiedTypeName name="java.util.Properties"/>
 <fullyQualifiedTypeName name="javax.swing.ListSelectionModel"/>
 <fullyQualifiedTypeName name="be.mousty.accessToDao.ReservationATD"/>
+<fullyQualifiedTypeName name="be.mousty.accessToDao.EleveATD"/>
+<fullyQualifiedTypeName name="be.mousty.pojo.Cours"/>
+<fullyQualifiedTypeName name="java.awt.CheckboxGroup"/>
+<fullyQualifiedTypeName name="java.util.stream.Collectors"/>
 </qualifiedTypeNameHistroy>

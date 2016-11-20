@@ -7,9 +7,9 @@ package be.mousty.accessToDao;
 */
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
+
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
 import be.mousty.pojo.Personne;
@@ -66,14 +66,12 @@ public class PersonneATD {
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Personne> PersonneDAO = adf.getPersonneDAO();
-	public int					create				(Personne p) 	{ return PersonneDAO.create(p); 				}
-	public boolean 				delete				()	 			{ return PersonneDAO.delete(null); 				}
-	public Personne 			getId				(Personne p) 	{ return PersonneDAO.getId(p); 					}
-	public boolean 				update				(Personne p) 	{ return PersonneDAO.update(p); 				}
-	public Personne 			find				(int id) 		{ return PersonneDAO.find(id); 					} 
-	public ArrayList<Personne> 	getList				() 				{ return PersonneDAO.getList(); 				} 
-	public ArrayList<Personne> 	getListSelonCriteres(Personne p) 	{ return PersonneDAO.getListSelonCriteres(p); 	}
-
+	public int					create				(Personne p) 	{ return PersonneDAO.create(p); 	}
+	public boolean 				delete				()	 			{ return PersonneDAO.delete(null); 	}
+	public Personne 			getId				(Personne p) 	{ return PersonneDAO.getId(p); 		}
+	public Personne 			find				(int id) 		{ return PersonneDAO.find(id); 		} 
+	
+	
 	// PROPRIETES
 	public String getNom		() 						{ return nom; 							}
 	public String getPre		() 						{ return pre; 							}

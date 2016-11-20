@@ -169,7 +169,10 @@ public class ClientDAO extends DAO<Client> {
 		PreparedStatement pst = null;
 		Client C = new Client();
 		try {
-			String sql = "SELECT numPersonne FROM Personne WHERE nom = ? AND prenom = ? AND adresse = ? ;";
+			String sql = "SELECT * FROM Client "
+					+ "INNER JOIN Utilisateur ON Utilisateur.numUtilisateur = Client.numClient "
+					+ "INNER JOIN Personne ON Personne.numPersonne = Utilisateur.numUTilisateur "
+					+ "WHERE nom = ? AND prenom = ? AND adresse = ? ;";
 			pst = this.connect.prepareStatement(sql);
 			pst.setString(1, obj.getNom());
 			pst.setString(2, obj.getPre());
@@ -259,11 +262,6 @@ public class ClientDAO extends DAO<Client> {
 		return null;
 	}
 
-	@Override
-	public boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public String getCategorieReservation(int numMoniteur, int numSemaine, String periode) {

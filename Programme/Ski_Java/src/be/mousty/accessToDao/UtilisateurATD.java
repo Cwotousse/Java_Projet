@@ -47,21 +47,9 @@ public class UtilisateurATD extends PersonneATD{
 	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 	DAO<Utilisateur> UtilisateurDAO = adf.getUtilisateurDAO();
 	public int					 	create				(Utilisateur u) 	{ return UtilisateurDAO.create(u); 					}
-	public boolean 					delete				(Utilisateur u)	 	{ return UtilisateurDAO.delete(u); 					}
 	public Utilisateur 				getId				(Utilisateur u) 	{ return UtilisateurDAO.getId(u); 					}
-	public boolean 					update				(Utilisateur u) 	{ return UtilisateurDAO.update(u); 					}
 	public Utilisateur 				find				(int id) 			{ return UtilisateurDAO.find(id); 					} 
 	public ArrayList<Utilisateur> 	getListUtil			() 					{ return UtilisateurDAO.getList(); 					} 
-	public ArrayList<Utilisateur> 	getListSelonCriteres(Utilisateur u) 	{ return UtilisateurDAO.getListSelonCriteres(u); 	}
-
-	// METHODES SURCHARGEES
-	@Override
-	public String toString() { 
-		return 
-				"Utilisateur." + System.getProperty("line.separator")
-				+ "User name    : " + pseudo +  System.getProperty("line.separator")
-				+ "Mot de passe : " + mdp + System.getProperty("line.separator");
-	}
 
 	// METHODES
 	public UtilisateurATD connexion(){
@@ -103,7 +91,7 @@ public class UtilisateurATD extends PersonneATD{
 		MATD.setAccrediList(listAccreditation);
 		MATD.setPseudo(userName);
 		MATD.setMdp(mdp);
-		MATD.setTypeUtilisateur(2);
+		MATD.setTypeUtilisateur(1);
 		MATD.setNom(nom);
 		MATD.setPre(pre);
 		MATD.setDateNaissance(sd);

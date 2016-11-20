@@ -7,6 +7,8 @@ package be.mousty.pojo;
 */
 import java.sql.Date;
 
+import be.mousty.accessToDao.SemaineATD;
+
 public class Semaine {
 	// VARIABLES
 	private int numSemaine;
@@ -17,6 +19,21 @@ public class Semaine {
 
 	// CONSTRUCTEUR SANS ARGUMENTS
 	public Semaine(){}
+	
+	public Semaine( boolean congeScolaire, Date dateDebut, Date dateFin, int numSemaineDansAnnee){
+		this.dateDebut 				= dateDebut;
+		this.dateFin 				= dateFin;
+		this.congeScolaire 			= congeScolaire;
+		this.numSemaineDansAnnee 	= numSemaineDansAnnee;
+	}
+
+	public Semaine(SemaineATD S){
+		this.dateDebut 				= S.getDateDebut();
+		this.dateFin 				= S.getDateFin();
+		this.congeScolaire 			= S.getCongeScolaire();
+		this.numSemaineDansAnnee 	= S.getNumSemaineDansAnnee();
+		this.numSemaine				= -1;
+	}
 
 	// PROPRIETE
 	public Date getDateDebut			() { return dateDebut; }

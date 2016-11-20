@@ -4,7 +4,7 @@ package be.mousty.dao;
 	@author Adrien MOUSTY
 	@version Finale 1.3.3
 	@category DAO
-*/
+ */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -61,13 +61,13 @@ public class AccreditationDAO extends DAO<Accreditation> {
 		ArrayList<Accreditation> liste = new ArrayList<Accreditation>();
 		PreparedStatement pst = null;
 		try {
-			String sql = "SELECT * FROM Accreditation INNER JOIN Personne On Personne.numPersonne = Accreditation.numAccreditation";
+			String sql = "SELECT * FROM Accreditation";
 			pst = this.connect.prepareStatement(sql);
 			ResultSet res_Rec_Accr = pst.executeQuery();
 			while (res_Rec_Accr.next()) {
 				//int numPersonne, String nom, String pre, String adresse, String sexe, Date dateNaissance, boolean aUneAssurance
 				Accreditation accred  = new Accreditation();
-				accred.setNomAccreditation(res_Rec_Accr.getString("nom"));
+				accred.setNomAccreditation(res_Rec_Accr.getString("nomAccreditation"));
 				accred.setNumAccreditation(res_Rec_Accr.getInt("numAccreditation"));
 				liste.add(accred);
 			}
@@ -81,7 +81,7 @@ public class AccreditationDAO extends DAO<Accreditation> {
 		}
 		return liste;
 	}
-	
+
 	/**
 		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
 		@version Finale 1.3.3
@@ -99,7 +99,7 @@ public class AccreditationDAO extends DAO<Accreditation> {
 			while (res_Rec_Accr.next()) {
 				A.setNomAccreditation(res_Rec_Accr.getString("nom"));
 				A.setNumAccreditation(res_Rec_Accr.getInt("numAccreditation"));
-				}
+			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
@@ -138,17 +138,17 @@ public class AccreditationDAO extends DAO<Accreditation> {
 	@Override
 	public void creerTouteDisponibilites() {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void creerTouteDisponibilitesSelonMoniteur(int i) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void AjouterSemainesDansDB(String start, String end) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public long getDateDebutReserv(int numReserv) {
@@ -160,11 +160,7 @@ public class AccreditationDAO extends DAO<Accreditation> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
-	public boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 	@Override
 	public String getCategorieReservation(int numMoniteur, int numSemaine, String periode) {
 		// TODO Auto-generated method stub

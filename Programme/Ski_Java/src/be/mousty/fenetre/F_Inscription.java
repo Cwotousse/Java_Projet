@@ -4,7 +4,7 @@ package be.mousty.fenetre;
 	@author Adrien MOUSTY
 	@version Finale 1.3.3
 	@category Fenêtre
-*/
+ */
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -103,6 +104,8 @@ public class F_Inscription extends JFrame {
 		JCheckBox chkb_telemark 	= new JCheckBox("T\u00E9l\u00E9mark");
 		JCheckBox chkb_jeune 		= new JCheckBox("Enfant");
 		JCheckBox chkb_adulte 		= new JCheckBox("Adulte");
+		
+		
 		txtF_userName 				= new JTextField("");
 		txtF_mdp 					= new JTextField("");
 		txtF_nom 					= new JTextField("");
@@ -112,6 +115,18 @@ public class F_Inscription extends JFrame {
 		JButton btn_retour 			= new JButton("Retour");
 		JButton btn_inscrip 		= new JButton("S'enregistrer");
 
+
+		// Group
+		ButtonGroup sx = new ButtonGroup();
+		ButtonGroup typ = new ButtonGroup();
+
+		sx.add(rdbtnH);
+		sx.add(rdbtnF);
+
+		typ.add(rdbtnMoniteur);
+		typ.add(rdbtnClient);
+
+		
 		// Visibility
 		lblAccred.setVisible		(false);
 		chkb_snow.setVisible		(false);

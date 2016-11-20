@@ -4,7 +4,7 @@ Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
 @author Adrien MOUSTY
 @version Finale 1.3.3
 @category DAO
-*/
+ */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -81,7 +81,7 @@ public class PersonneDAO  extends DAO<Personne> {
 		}
 		return false;
 	}
-	
+
 	/**
 		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
 		@version Finale 1.3.3
@@ -107,7 +107,7 @@ public class PersonneDAO  extends DAO<Personne> {
 				P.setDateNaissance(res_Rec_Sem.getDate("dateNaissance"));
 				P.setAdresse(res_Rec_Sem.getString("adresse"));
 				P.setSexe(res_Rec_Sem.getString("sexe"));
-				}
+			}
 		}
 		catch (SQLException e) { e.printStackTrace(); }
 		finally {
@@ -156,19 +156,19 @@ public class PersonneDAO  extends DAO<Personne> {
 	@Override
 	public void creerTouteDisponibilites() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void creerTouteDisponibilitesSelonMoniteur(int i) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void AjouterSemainesDansDB(String start, String end) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -183,11 +183,6 @@ public class PersonneDAO  extends DAO<Personne> {
 		return null;
 	}
 
-	@Override
-	public boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public String getCategorieReservation(int numMoniteur, int numSemaine, String periode) {

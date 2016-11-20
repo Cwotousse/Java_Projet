@@ -1,0 +1,275 @@
+package be.mousty.dao;
+/**
+	Classe DAO permettant à effectuer des requêtes et les transformer en objet POJO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category DAO
+*/
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import be.mousty.pojo.Client;
+import be.mousty.pojo.Personne;
+import be.mousty.pojo.Utilisateur;
+
+public class ClientDAO extends DAO<Client> {
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Utilisateur> UtilisateurDAO = adf.getUtilisateurDAO();
+	DAO<Personne> PersonneDao = adf.getPersonneDAO();
+	public ClientDAO(Connection conn) { super(conn); }
+
+	/**
+		Objectif : Méthode permettant de créer un élément dans la DB.
+		@version Finale 1.3.3
+		@param Une instance de l'objet nécéssaire à la création.
+		@return L'ID de l'enregistrement créé dans la DB.
+	 */
+	@Override public int create(Client obj) {
+		PreparedStatement pst_cre_cli = null;
+		try {
+			Personne P = new Personne();
+			//P.setNumPersonne(res_Rec_Util.getInt("numPersonne"));
+			P.setNom(obj.getNom());
+			P.setPre( obj.getPre());
+			P.setDateNaissance(obj.getDateNaissance());
+			P.setAdresse(obj.getAdresse());
+			P.setSexe(obj.getSexe());
+			int numPersonne = PersonneDao.create(P);
+			if (numPersonne != -1){
+				Utilisateur U = new Utilisateur();
+				U.setNumUtilisateur(numPersonne);
+				U.setPseudo(obj.getPseudo());
+				U.setMdp(obj.getMdp());
+				U.setTypeUtilisateur( obj.getTypeUtilisateur());
+				if(UtilisateurDAO.create(U) != -1){
+					/*String sql0 = "SELECT numPersonne FROM Personne WHERE numPersonne";
+					PreparedStatement pst0 = this.connect.prepareStatement(sql0);
+					ResultSet rs0 = pst0.executeQuery();
+					int numUtilisateur = -1 ;
+					while (rs0.next()) numUtilisateur = rs0.getInt(1); // On a l'id de l'utilisateur*/
+
+					String requete5 = "INSERT INTO Client (adresseFacturation, numClient) VALUES (?,?)";
+					pst_cre_cli = connect.prepareStatement(requete5);
+
+					pst_cre_cli.setString(1, obj.getAdresseFacturation());
+					pst_cre_cli.setInt(2, numPersonne);
+					pst_cre_cli.executeUpdate();
+					//pst_cre_cli.close();
+					System.out.println("Ajout d'un client effectue");
+					return numPersonne;
+				}
+				else { 
+					PersonneDao.delete(P);
+					return -1;
+				} // utilisateur
+			}
+			else { return -1; } // personne
+		} 
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst_cre_cli != null) {
+				try { pst_cre_cli.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return -1;
+
+	}
+
+	public boolean delete(Client obj) { return false; }
+	public boolean update(Client obj) { return false; }
+
+	// On cherche une Client grâce à son id
+	/**
+		Objectif : Retourner un enregistrement de la DB par rapport à sa clé primaire.
+		@version Finale 1.3.3
+		@param la valeur de la clé primaire.
+		@return Une instance de l'objet initialisée avec les valeurs issue de la DB.
+	 */
+	@Override public Client find(int id) {
+		Client C = new Client();
+		PreparedStatement pst = null;
+		try {
+			String sql = "SELECT * FROM Client INNER JOIN Utilisateur ON Client.numClient = Utilisateur.numUtilisateur "
+					+ "INNER JOIN Personne ON Personne.numPersonne = Utilisateur.numUtilisateur WHERE numClient = ?;";
+			pst = this.connect.prepareStatement(sql);
+			pst.setInt(1, id);
+			ResultSet res_cli = pst.executeQuery();
+			while (res_cli.next()) {
+				C.setAdresseFacturation(res_cli.getString("adresseFacturation"));
+				C.setNumClient(res_cli.getInt("numClient"));
+				C.setPseudo(res_cli.getString("pseudo"));
+				C.setMdp(res_cli.getString("mdp"));
+				C.setTypeUtilisateur(res_cli.getInt("typeUtilisateur"));
+				C.setNumPersonne(res_cli.getInt("numPersonne"));
+				C.setNom(res_cli.getString("nom"));
+				C.setPre(res_cli.getString("prenom"));
+				C.setDateNaissance(res_cli.getDate("dateNaissance"));
+				C.setAdresse(res_cli.getString("adresse"));
+				C.setSexe(res_cli.getString("sexe"));
+			}
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst != null) {
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return C;
+	}
+
+	/**
+		Objectif : Retourner la liste complète des enregistrements contenu dans une table
+		@version Finale 1.3.3
+		@return La liste complète des utilisateurs.
+	 */
+	@Override public ArrayList<Client> getList() {
+		ArrayList<Client> liste = new ArrayList<Client>();
+		PreparedStatement pst = null;
+		try {
+			String sql = "SELECT * FROM Client";
+			pst = this.connect.prepareStatement(sql);
+			ResultSet res_Rec_Cli = pst.executeQuery();
+			while (res_Rec_Cli.next()) {
+				Client C = new Client();
+				C.setAdresseFacturation(res_Rec_Cli.getString("adresseFacturation"));
+				C.setNumClient(res_Rec_Cli.getInt("numClient"));
+				C.setPseudo(res_Rec_Cli.getString("pseudo"));
+				C.setMdp(res_Rec_Cli.getString("mdp"));
+				C.setTypeUtilisateur(res_Rec_Cli.getInt("typeUtilisateur"));
+				C.setNumPersonne(res_Rec_Cli.getInt("numPersonne"));
+				C.setNom(res_Rec_Cli.getString("nom"));
+				C.setPre(res_Rec_Cli.getString("prenom"));
+				C.setDateNaissance(res_Rec_Cli.getDate("dateNaissance"));
+				C.setAdresse(res_Rec_Cli.getString("adresse"));
+				C.setSexe(res_Rec_Cli.getString("sexe"));
+				liste.add(C);
+			}
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst != null) {
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return liste;
+	}
+
+	/**
+		Objectif : Récupérer un instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+		@version Finale 1.3.3
+		@param Des valeurs insérées dans un objet permettant d'identifier une seule personne dans la DB.
+		@return instance d'un objet complètement initialisée correspondant aux valeurs entrées en paramètre.
+	 */
+	@Override public Client getId(Client obj) {
+		PreparedStatement pst = null;
+		Client C = new Client();
+		try {
+			String sql = "SELECT numPersonne FROM Personne WHERE nom = ? AND prenom = ? AND adresse = ? ;";
+			pst = this.connect.prepareStatement(sql);
+			pst.setString(1, obj.getNom());
+			pst.setString(2, obj.getPre());
+			pst.setString(3, obj.getAdresse());
+			ResultSet res_Rec_Cli = pst.executeQuery();
+			while (res_Rec_Cli.next()) {
+				C.setAdresseFacturation(res_Rec_Cli.getString("adresseFacturation"));
+				C.setNumClient(res_Rec_Cli.getInt("numClient"));
+				C.setPseudo(res_Rec_Cli.getString("pseudo"));
+				C.setMdp(res_Rec_Cli.getString("mdp"));
+				C.setTypeUtilisateur(res_Rec_Cli.getInt("typeUtilisateur"));
+				C.setNumPersonne(res_Rec_Cli.getInt("numPersonne"));
+				C.setNom(res_Rec_Cli.getString("nom"));
+				C.setPre(res_Rec_Cli.getString("prenom"));
+				C.setDateNaissance(res_Rec_Cli.getDate("dateNaissance"));
+				C.setAdresse(res_Rec_Cli.getString("adresse"));
+				C.setSexe(res_Rec_Cli.getString("sexe"));
+			}
+		}
+		catch (SQLException e) { e.printStackTrace(); }
+		finally {
+			if (pst != null) {
+				try { pst.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return C;
+	}
+
+	@Override
+	public ArrayList<Client> getListSelonCriteres(Client obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<Client> getMyListSelonID(int id1, long id2, int id3, String str1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean updateAssurance(int numEleve, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int valeurReduction(int numSem, int numEleve, double prixCours) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String calculerPlaceCours(int numCours, long numSemaine, int idMoniteur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void creerTouteDisponibilites() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void creerTouteDisponibilitesSelonMoniteur(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void AjouterSemainesDansDB(String start, String end) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public long getDateDebutReserv(int numReserv) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ArrayList<Client> getReservationAnnulee(int numUtilisateur, int typeUtilisateur) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getCategorieReservation(int numMoniteur, int numSemaine, String periode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+}

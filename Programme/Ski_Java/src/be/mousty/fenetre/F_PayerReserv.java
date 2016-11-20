@@ -152,8 +152,11 @@ public class F_PayerReserv extends JFrame {
 			lbl_affReduction.setText(RATD.valeurReduction(numSemaine, numEleve, CATD.find(numCours).getPrix()) + "€");
 		else 
 			lbl_affReduction.setText("0€");
-		lbl_affPrixTotal.setText(CATD.find(numCours).getPrix() + prixAssurance - RATD.valeurReduction(numSemaine, numEleve, CATD.find(numCours).getPrix()) + "€");
-
+		
+		lbl_affPrixTotal.setText(
+				Double.parseDouble(lbl_affPrix.getText().toString().replace("€", "")) 
+				+ prixAssurance
+				- Double.parseDouble(lbl_affReduction.getText().toString().replace("€", "")) + "€");
 
 
 		// Effectuer la réservation

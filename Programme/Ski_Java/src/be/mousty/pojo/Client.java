@@ -1,6 +1,11 @@
 package be.mousty.pojo;
 
+import java.sql.Date;
 import java.util.ArrayList;
+
+import be.mousty.accessToDao.ClientATD;
+import be.mousty.accessToDao.EleveATD;
+import be.mousty.accessToDao.ReservationATD;
 
 /**
 	Classe POJO relatif à la table Client dans la DB.
@@ -17,6 +22,29 @@ public class Client extends Utilisateur{
 	
 	// CONSTRUCTEUR SANS ARGUMENTS
 	public Client(){}
+	
+	public Client(ClientATD C){
+		super(C.getNom(), C.getPre(), C.getAdresse(), C.getSexe(), C.getDateNaissance(), C.getPseudo(),
+				C.getMdp(), C.getTypeUtilisateur());
+		this.adresseFacturation = C.getAdresseFacturation();
+		//ReservationATD RATD = new ReservationATD();
+		//EleveATD EATD = new EleveATD();
+		ClientATD CATD = new ClientATD();
+		int numClient = CATD.getId(this).getNumClient();
+		//System.out.println("Client : " + numClient);
+		this.listReservCli = ReservationATD.changeTypeReservationlistEnATD(C.getListReservCli());
+		this.listEleveCli = EleveATD.changeTypeElevelistEnATD(C.getListEleveCli(), numClient);
+		
+		
+	}
+
+	public Client(String nom, String pre, String adresse, String sexe, Date dateNaissance,
+			String pseudo, String mdp, int typeUtilisateur, String adresseFacturation, ArrayList<Reservation> listReservCli, ArrayList<Eleve> listEleveCli){
+		super(nom, pre, adresse, sexe, dateNaissance, pseudo, mdp, typeUtilisateur);
+		this.adresseFacturation = adresseFacturation;
+		this.listReservCli = listReservCli;
+		this.listEleveCli = listEleveCli;
+	}
 	
 	// PROPRIETES
 	public String getAdresseFacturation	() 				{ return adresseFacturation; }

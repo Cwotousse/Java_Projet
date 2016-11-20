@@ -191,7 +191,8 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 		@param Un objet de type DisponibiliteMoniteur afin de savoir quelle dispo il faut update.
 	 */
 	@Override public ArrayList<DisponibiliteMoniteur> getListSelonCriteres(DisponibiliteMoniteur obj) {
-		PreparedStatement pst_get_val = null;
+		PreparedStatement pst_get_val 	= null;
+		PreparedStatement pst_upt 		= null;
 		ArrayList<DisponibiliteMoniteur> listBoolean = new ArrayList<DisponibiliteMoniteur>();
 		try {
 			boolean resBool = false;
@@ -206,7 +207,7 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 			ResultSet res_get_val = pst_get_val.executeQuery();
 			while (res_get_val.next()) { resBool = res_get_val.getBoolean("disponible"); }
 
-			PreparedStatement pst_upt = connect.prepareStatement(sql_update);
+			pst_upt = connect.prepareStatement(sql_update);
 
 			pst_upt.setBoolean(1, !resBool); // L'inverse qu'actuellement
 			pst_upt.setInt(2, obj.getNumSemaine());
@@ -224,6 +225,10 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 		finally {
 			if (pst_get_val != null) {
 				try { pst_get_val.close(); }
+				catch (SQLException e) { e.printStackTrace(); }
+			}
+			if (pst_upt != null) {
+				try { pst_upt.close(); }
 				catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
@@ -274,11 +279,6 @@ public class DisponibiliteMoniteurDAO extends DAO<DisponibiliteMoniteur> {
 		return null;
 	}
 
-	@Override
-	public boolean besoinDupdateOuNonAssurance(int numEleve, int numSemaine, String periode) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public String getCategorieReservation(int numMoniteur, int numSemaine, String periode) {

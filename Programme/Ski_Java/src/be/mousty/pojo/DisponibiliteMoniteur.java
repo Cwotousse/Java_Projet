@@ -1,4 +1,7 @@
 package be.mousty.pojo;
+
+import be.mousty.accessToDao.DisponibiliteMoniteurATD;
+
 /**
 	Classe POJO relatif à la table DisponibiliteMoniteur dans la DB.
 	@author Adrien MOUSTY
@@ -14,6 +17,8 @@ public class DisponibiliteMoniteur {
 
 	// CONSTRUCTEUR SANS ARGUMENTS
 	public DisponibiliteMoniteur(){}
+	public DisponibiliteMoniteur(boolean disponible){ this.disponible 	= disponible; }
+	public DisponibiliteMoniteur(DisponibiliteMoniteurATD DM){ this.disponible 	= DM.getDisponible(); }
 
 	// PROPRIETE
 	public boolean 	getDisponible	() { return disponible; }

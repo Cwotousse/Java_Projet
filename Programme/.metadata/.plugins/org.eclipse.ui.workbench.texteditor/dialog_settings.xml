@@ -2,20 +2,20 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="getListSelonCriteres" key="selection"/>
+		<item value="System.out.println" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="getListSelonCriteres"/>
+			<item value="System.out.println"/>
+			<item value="besoinDupdateOuNonAssurance"/>
+			<item value="getReservationAnnulee"/>
+			<item value="getListDispoATD"/>
 			<item value="getMyListSelonID"/>
-			<item value="listReservPayee.get(i)"/>
-			<item value="listReservSelonPayement.get(j"/>
-			<item value="System.out."/>
-			<item value="valeurReduction"/>
-			<item value="showMessageDialog"/>
-			<item value="update"/>
+			<item value="getList"/>
+			<item value="getId"/>
+			<item value="getIdReserv"/>
 		</list>
 		<list key="replacehistory">
 			<item value="listReservPayee.get(j)"/>

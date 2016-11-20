@@ -4,13 +4,13 @@ package be.mousty.accessToDao;
 	@author Adrien MOUSTY
 	@version Finale 1.3.3
 	@category Métier
-*/
+ */
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Random;
+
 import be.mousty.dao.AbstractDAOFactory;
 import be.mousty.dao.DAO;
-import be.mousty.pojo.Accreditation;
 import be.mousty.pojo.Moniteur;
 
 public class MoniteurATD extends UtilisateurATD{
@@ -18,8 +18,6 @@ public class MoniteurATD extends UtilisateurATD{
 	private int anneeDexp;
 	private boolean disponiblecoursParticulier;
 	private ArrayList<AccreditationATD> listAccreditation = new ArrayList<AccreditationATD>();
-
-
 
 	// CONSTRUCTEURS
 	public MoniteurATD(){}
@@ -31,14 +29,14 @@ public class MoniteurATD extends UtilisateurATD{
 		this.listAccreditation = listAccreditation;
 		this.disponiblecoursParticulier = disponiblecoursParticulier;
 	}
-	
+
 	public MoniteurATD(Moniteur M){
 		super(M.getNom(), M.getPre(), M.getAdresse(), M.getSexe(), M.getDateNaissance(), M.getPseudo(), M.getMdp(), M.getTypeUtilisateur());
 		this.anneeDexp 	= M.getAnneeExp(); // entre 10 et 0
-		this.listAccreditation = changeTypeAccredilist(M.getAccrediList());
+		this.listAccreditation = AccreditationATD.changeTypeAccredilist(M.getAccrediList());
 		this.disponiblecoursParticulier = M.getDisponiblecoursParticulier();
 	}
-	
+
 
 
 	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
@@ -53,32 +51,18 @@ public class MoniteurATD extends UtilisateurATD{
 	public ArrayList<Moniteur> 	getListSelonCriteres(Moniteur m) 	{ return MoniteurDAO.getListSelonCriteres(m); 	}
 	public ArrayList<Moniteur> 	getListDispo		(int typeCours, long numSemaine, String periode) { return MoniteurDAO.getMyListSelonID(typeCours, numSemaine, -1,  periode); }
 
-	// METHODES 
-
-	// Pour ne pas additionner 2 fois le même moniteur
-	public void addAccreditation(AccreditationATD ac){
-		if(!listAccreditation.contains(ac))
-			listAccreditation.add(ac);
-	}
-	
+	// METHODES 	
 	public MoniteurATD findM (int id){
-		MoniteurATD MATD = new MoniteurATD();
+
 		Moniteur M = find(id);
-		MATD.setAdresse(M.getAdresse());
-		MATD.setDisponiblecoursParticulier(M.getDisponiblecoursParticulier());
-		MATD.setAnneeExp(M.getAnneeExp());
-		MATD.setAccrediList(changeTypeAccredilist(M.getAccrediList()));
-		MATD.setDateNaissance(M.getDateNaissance());
-		MATD.setNom(M.getNom());
-		MATD.setPre(M.getPre());
-		MATD.setSexe(M.getSexe());
+		MoniteurATD MATD = new MoniteurATD(M);
 		return MATD;
 	}
-	
+
 	public int inscriptionMoniteur(){
 		Moniteur M = new Moniteur();
 		M.setAnneeExp(0);
-		M.setAccrediList(this.changeTypeAccredilistEnATD(getAccrediList()));
+		M.setAccrediList(AccreditationATD.changeTypeAccredilistEnATD(getAccrediList()));
 		M.setDisponiblecoursParticulier(getDisponiblecoursParticulier());
 		M.setPseudo(getPseudo());
 		M.setMdp(getMdp());
@@ -91,65 +75,30 @@ public class MoniteurATD extends UtilisateurATD{
 		return create(M);
 	}
 
-	public ArrayList<AccreditationATD> changeTypeAccredilist(ArrayList<Accreditation> A){
-		ArrayList<AccreditationATD> LA = new ArrayList<AccreditationATD>();
-		for(int i = 0; i < A.size(); i++){
-			AccreditationATD AATD = new AccreditationATD();
-			AATD.setNom(A.get(i).getNomAccreditation());
-			LA.add(AATD);
-		}
-		return LA;
-	}
-	
-
-	public ArrayList<Accreditation> changeTypeAccredilistEnATD(ArrayList<AccreditationATD> A){
-		ArrayList<Accreditation> LA = new ArrayList<Accreditation>();
-		for(int i = 0; i < A.size(); i++){
-			Accreditation AATD = new Accreditation();
-			AATD.setNomAccreditation((A.get(i).getNom()));
-			switch(AATD.getNomAccreditation()){
-			case "Snowboard" : AATD.setNumAccreditation(1);
-				break;
-			case "Ski" : AATD.setNumAccreditation(2);
-				break;
-			case "Ski de fond" : AATD.setNumAccreditation(3);
-				break;
-			case "Telemark" : AATD.setNumAccreditation(4);
-				break;
-			case "Enfant" :AATD.setNumAccreditation(5);
-				break;
-			case "Adulte" :AATD.setNumAccreditation(6);
-				break;
-			}
-			LA.add(AATD);
-		}
-		return LA;
-	}
-	
-	public ArrayList<MoniteurATD> getListDispoATD(int typeCours, long numSemaine, String periode){
+	public ArrayList<MoniteurATD> getListDispoATD(int typeCours, long numSemaine, String nomAccred, String periode){
 		ArrayList<Moniteur> listM = getListDispo(typeCours, numSemaine, periode);
 		ArrayList<MoniteurATD> listMATD = new ArrayList<MoniteurATD>();
+		ArrayList<MoniteurATD> listFiltree = new ArrayList<MoniteurATD>();
 		for (int i = 0; i < listM.size(); i++) {
-			MoniteurATD MATD = new MoniteurATD();
-			MATD.setAdresse(listM.get(i).getAdresse());
-			MATD.setAnneeExp(listM.get(i).getAnneeExp());
-			MATD.setDisponiblecoursParticulier(listM.get(i).getDisponiblecoursParticulier());
-			MATD.setAccrediList(changeTypeAccredilist(listM.get(i).getAccrediList()));
-			MATD.setDateNaissance(listM.get(i).getDateNaissance());
-			MATD.setNom(listM.get(i).getNom());
-			MATD.setPre(listM.get(i).getPre());
-			MATD.setSexe(listM.get(i).getSexe());
+			MoniteurATD MATD = new MoniteurATD(listM.get(i));
 			listMATD.add(MATD);
 		}
-		return listMATD;
+		for (int k = 0; k < listMATD.size() ; k++ ){
+			for (int j = 0; j < listMATD.get(k).getAccrediList().size(); j++) {
+				// On compare la liste des moniteurs avec le cours choisi, s'il correspond alors on l'ajoute à la liste.
+				if (nomAccred.equals(listMATD.get(k).getAccrediList().get(j).getNom()))
+					listFiltree.add(listMATD.get(k));
+			}
+		}
+		return listFiltree;
 	}
-	
+
 	public int getIdATD(MoniteurATD MATD){
 		Moniteur M = new Moniteur();
 		M.setAdresse(MATD.getAdresse());
 		M.setAnneeExp(MATD.getAnneeExp());
 		M.setDisponiblecoursParticulier(MATD.getDisponiblecoursParticulier());
-		M.setAccrediList(changeTypeAccredilistEnATD(MATD.getAccrediList()));
+		M.setAccrediList(AccreditationATD.changeTypeAccredilistEnATD(MATD.getAccrediList()));
 		M.setDateNaissance(MATD.getDateNaissance());
 		M.setNom(MATD.getNom());
 		M.setPre(MATD.getPre());
@@ -159,19 +108,23 @@ public class MoniteurATD extends UtilisateurATD{
 		M.setNumUtilisateur(-1);
 		return  getId(M).getNumPersonne();
 	}
-	
+
+	// IL FAUT LA DEPLACER DANS DISPONIBILITEMONITEUR
 	// Mise à jour de la disponibilite pour les cours particulier du moniteur
 	public boolean updateDispo	(int numMoniteur) {
 		MoniteurATD ATD = new MoniteurATD();
 		return MoniteurDAO.update(ATD.find(numMoniteur));
 	}
+	
+	
+	public boolean ceMoniteurADesReservationsPourCetteSemaine(Date dateDebut, int numMoniteur){
+		ReservationATD RATD = new ReservationATD();
+		return RATD.ceMoniteurADesReservationsPourCetteSemaine(dateDebut, numMoniteur);
+	}
 
-	// METHODE SURCHARGEE
-	@Override
-	public String toString() { 
-		return 
-				super.toString()+ System.getProperty("line.separator")
-				+ "MONITEUR, a accumule" + anneeDexp + " année(s) d'exérience." + System.getProperty("line.separator");
+	public boolean ceMoniteurDoitPresterCoursParticulier(int numMoniteur){
+		ReservationATD RATD = new ReservationATD();
+		return RATD.ceMoniteurDoitPresterCoursParticulier(numMoniteur);
 	}
 
 	// PROPRIETES
@@ -181,7 +134,7 @@ public class MoniteurATD extends UtilisateurATD{
 	public void 	setDisponiblecoursParticulier			(boolean disponiblecoursParticulier) 	{ this.disponiblecoursParticulier = disponiblecoursParticulier; }
 	public ArrayList<AccreditationATD> getAccrediList		() 										{ return listAccreditation; }
 	public void setAccrediList	(ArrayList<AccreditationATD> accrediList) 							{ this.listAccreditation = accrediList; 	}
-	
-	
+
+
 }
 

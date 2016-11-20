@@ -65,29 +65,22 @@ public class EleveATD extends PersonneATD{
 		ArrayList<Eleve>  listE = getListEleveSelonAccredProfEtCours(numMoniteur, numSemaine, numClient, periode);
 		ArrayList<EleveATD> listEATD = new ArrayList<EleveATD>();
 		for (int i = 0; i < listE.size(); i++) {
-			EleveATD EATD = new EleveATD();
-			EATD.setAdresse(listE.get(i).getAdresse());
-			EATD.setCategorie(listE.get(i).getCategorie());
-			EATD.setDateNaissance(listE.get(i).getDateNaissance());
-			EATD.setNom(listE.get(i).getNom());
-			EATD.setPre(listE.get(i).getPre());
-			EATD.setSexe(listE.get(i).getSexe());
-			//System.out.println(EATD.getSexe());
+			EleveATD EATD = new EleveATD(listE.get(i));
 			listEATD.add(EATD);
 		}
 		return listEATD;
 	}
 
 	public int getIdATD(EleveATD EATD){
-		Eleve E = new Eleve();
-		E.setAdresse(EATD.getAdresse());
+		Eleve E = new Eleve(EATD);
+		/*E.setAdresse(EATD.getAdresse());
 		E.setCategorie(EATD.getCategorie());
 		E.setDateNaissance(EATD.getDateNaissance());
 		E.setNom(EATD.getNom());
 		E.setPre(EATD.getPre());
 		E.setSexe(EATD.getSexe());
 		E.setNumEleve(-1);
-		E.setNumPersonne(-1);
+		E.setNumPersonne(-1);*/
 		return getId(E).getNumEleve();
 	}
 
@@ -104,7 +97,7 @@ public class EleveATD extends PersonneATD{
 	}
 
 	// Transformation pour les listes Eleve
-	public ArrayList<EleveATD> EATD(ArrayList<Eleve> listE){
+	public static ArrayList<EleveATD> EATD(ArrayList<Eleve> listE){
 		try {
 			ArrayList<EleveATD> LE = new ArrayList<EleveATD>();
 			for(int i = 0; i < listE.size(); i++){
@@ -119,20 +112,14 @@ public class EleveATD extends PersonneATD{
 	}
 
 
-	public ArrayList<Eleve> changeTypeElevelistEnATD(ArrayList<EleveATD> listEleveATD, int idClient){
+	public static ArrayList<Eleve> changeTypeElevelistEnATD(ArrayList<EleveATD> listEleveATD, int idClient){
 		try {
 			ClientATD CATD = new ClientATD();
 			Client C = CATD.find(idClient);
 			ArrayList<Eleve> LE = new ArrayList<Eleve>();
 			for(int i = 0; i < listEleveATD.size(); i++){
-				Eleve E = new Eleve();
+				Eleve E = new Eleve(listEleveATD.get(i));
 				E.setNumClient(C.getNumClient());
-				E.setDateNaissance(listEleveATD.get(i).getDateNaissance());
-				E.setCategorie(listEleveATD.get(i).getCategorie());
-				E.setNom(listEleveATD.get(i).getNom());
-				E.setPre(listEleveATD.get(i).getPre());
-				E.setAdresse(listEleveATD.get(i).getAdresse());
-				E.setSexe(listEleveATD.get(i).getSexe());
 				LE.add(E);
 			}
 			return LE;
@@ -140,14 +127,6 @@ public class EleveATD extends PersonneATD{
 			e.getStackTrace();
 		}
 		return null;
-	}
-
-	// METHODEs SURCHARGEEs
-	@Override
-	public String toString() { 
-		return 
-				super.toString()+ System.getProperty("line.separator")
-				+ "ELEVE, catégorie " + categorie + System.getProperty("line.separator");
 	}
 
 	// PROPRIETE

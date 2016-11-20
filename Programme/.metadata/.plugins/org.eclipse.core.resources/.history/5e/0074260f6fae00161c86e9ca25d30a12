@@ -1,0 +1,564 @@
+package be.mousty.accessToDao;
+/**
+	Classe métier relatif liée à la classe Reservation et ReservationDAO.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Métier
+ */
+import java.sql.Date;
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
+import be.mousty.dao.AbstractDAOFactory;
+import be.mousty.dao.DAO;
+import be.mousty.pojo.Client;
+import be.mousty.pojo.Cours;
+import be.mousty.pojo.Eleve;
+import be.mousty.pojo.Moniteur;
+import be.mousty.pojo.Reservation;
+import be.mousty.pojo.Semaine;
+
+public class ReservationATD {
+	// VARIABLES
+	private SemaineATD 	S;
+	private CoursATD 		C;
+	private EleveATD 		E;
+	private ClientATD 		Cli;
+	private MoniteurATD 	M;
+	private int 		heureDebut;
+	private int 		heureFin;
+	private boolean 	aUneAssurance;
+	private boolean 	aPaye;
+	//private ArrayList<CoursATD> listCours = new ArrayList<CoursATD>();
+
+	// CONSTRUCTEURS
+	public ReservationATD() { }
+
+	public ReservationATD(int heureDebut, int heureFin, int numReservation, boolean aUneAssurance, SemaineATD S, CoursATD C,
+			EleveATD E, ClientATD Cli, MoniteurATD M, boolean aPaye) {
+		this.heureDebut 	= heureDebut;
+		this.heureFin 		= heureFin;
+		this.aUneAssurance 	= aUneAssurance;
+		this.aPaye 			= aPaye;
+		this.C 				= C;
+		this.S 				= S;
+		this.E 				= E;
+		this.Cli 			= Cli;
+		this.M 				= M;
+		//this.listCours    	= listCours;
+	}
+
+	public ReservationATD(Reservation R) {
+		this.heureDebut 	= R.getHeureDebut();
+		this.heureFin 		= R.getHeureFin();
+		this.aUneAssurance 	= R.getAUneAssurance();
+		this.aPaye 			= R.getaPaye();
+		
+		CoursATD C 			= new CoursATD(R.getCours());
+		SemaineATD S		= new SemaineATD(R.getSemaine());
+		EleveATD E			= new EleveATD(R.getEleve());
+		ClientATD Cli 		= new ClientATD(R.getClient());
+		MoniteurATD M 		= new MoniteurATD(R.getMoniteur());
+		this.C 				= C;
+		this.S 				= S;
+		this.E 				= E;
+		this.Cli 			= Cli;
+		this.M 				= M;
+		//CoursATD CATD 		= new CoursATD();
+		//this.listCours 		= CATD.changeTypeCoursListPojoEnATD(R.getListCours());
+	}
+
+	// APPEL AUX METHODES DAO DANS LES CLASSES METIER
+	AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+	DAO<Reservation> ReservationDAO = adf.getReservationDAO();
+
+	public int 						create				(Reservation r) { return ReservationDAO.create(r); }
+	public boolean 					delete				(Reservation r) { return ReservationDAO.delete(r); }
+	public Reservation 				getId				(Reservation r) { return ReservationDAO.getId(r); }
+	public Reservation 				find				(int id) 		{ return ReservationDAO.find(id); }
+	public ArrayList<Reservation> 	getListRes			() 				{ return ReservationDAO.getList(); }
+	public ArrayList<Reservation> 	getMyList			(int id) 		{ return ReservationDAO.getMyListSelonID(id, -1, -1, ""); }
+	public ArrayList<Reservation> 	getListSelonCriteres(Reservation r) { return ReservationDAO.getListSelonCriteres(r); }
+
+	public int valeurReduction(int numSemaine, int numEleve, double prixCours) {
+		return ReservationDAO.valeurReduction(numSemaine, numEleve, prixCours); 
+	}
+	public boolean updateAssurance(int numEleve, int numSemaine, String periode) { 
+		if(ReservationDAO.besoinDupdateOuNonAssurance(numEleve, numSemaine, periode)){ return ReservationDAO.updateAssurance(numEleve, numSemaine, periode); }
+		return false;
+	}
+
+	// Il faut d'aborde savoir s'il faut update l'assurance / faire payer SANS update car on peut annuler la réservation.
+	public boolean besoinDupdateOuNonAssurance (int numEleve, int numSemaine, String periode) {
+		return ReservationDAO.besoinDupdateOuNonAssurance(numEleve, numSemaine, periode);
+	}
+
+	public long getDateDebutReserv (int numReserv){ return ReservationDAO.getDateDebutReserv(numReserv); }
+
+	public String getAccredSelonCoursEtPeriode(int numMoniteur, int numSemaine, String periode){
+		return ReservationDAO.getCategorieReservation(numMoniteur, numSemaine, periode);
+	}
+
+	// Modification 1.4.0
+
+
+	// METHODES
+	/**
+	 * 
+	 * @return Retourne le nombre de place qu'il reste pour un cours
+	 */
+	public int calculerNombrePlaceRestantePourUnCours (){
+		try {
+			//Moniteur M = new Moniteur(this.getMoniteur());
+			//Semaine S = new Semaine(this.getSemaine());
+			MoniteurATD MATD = this.getMoniteur();
+			SemaineATD SATD = this.getSemaine();
+			System.out.println(1);
+			String strPlaceCours;
+			int numReservation = this.getIdReserv();
+			System.out.println(2);
+			int numCours = this.find(numReservation).getCours().getNumCours();
+			//int numSemaine = SATD.getDateDebut();
+			System.out.println("ReservationATD numCours : " + numCours);
+			System.out.println("ReservationATD dateReserv : " + this.getDateDebutReserv(numReservation));
+			System.out.println("ReservationATD dateReserv : " + (long)SATD.getIdATD(SATD));
+			System.out.println("ReservationATD idMoniteur : " + MATD.getIdATD(MATD));
+			if (this.getCours().getPrix() < 90) { 
+				CoursParticulierATD CPATD = new CoursParticulierATD(); 
+				strPlaceCours = CPATD.calculerPlaceCours(
+						numCours,
+						this.getDateDebutReserv(numReservation),
+						//MATD.getId(this.getMoniteur()).getNumMoniteur());
+						MATD.getIdATD(MATD));
+			}
+			else { 
+				CoursCollectifATD CCATDPaye = new CoursCollectifATD(); 
+				strPlaceCours = CCATDPaye.calculerPlaceCours(
+						numCours,
+						//(long)SATD.getIdATD(S).getNumSemaine(),
+						(long)SATD.getIdATD(SATD),
+						MATD.getIdATD(MATD));
+			}
+			String[] parts = strPlaceCours.split("-");
+			System.out.println("return : " + Integer.parseInt(parts[0]));
+			return Integer.parseInt(parts[0]);
+		}
+		catch (Exception e) { e.getStackTrace(); }
+		return -1;
+	}
+
+	/**
+	 * 
+	 * @return le nombre de place qu'il reste pour valider un cours.
+	 */
+	public int calculerNombrePlaceRestanteMinPourValiderUnCours (){
+		//Moniteur M = new Moniteur(this.getMoniteur());
+		//Semaine S = new Semaine(this.getSemaine());
+		MoniteurATD MATD = this.getMoniteur();
+		SemaineATD SATD =  this.getSemaine();
+		String strPlaceCours;
+		int numReservation = this.getIdReserv();
+		System.out.println("ReservationATD numRes : " + numReservation);
+		int numCours = this.find(numReservation).getCours().getNumCours();
+		if (this.getCours().getPrix() < 90) { 
+			CoursParticulierATD CPATD = new CoursParticulierATD(); 
+			strPlaceCours = CPATD.calculerPlaceCours(
+					numCours,
+					this.getDateDebutReserv(numReservation),
+					MATD.getIdATD(MATD));
+		}
+		else { 
+			CoursCollectifATD CCATDPaye = new CoursCollectifATD(); 
+			strPlaceCours = CCATDPaye.calculerPlaceCours(
+					numCours,
+					(long)SATD.getIdATD(SATD),
+					MATD.getIdATD(MATD));
+		}
+		String[] parts = strPlaceCours.split("-");
+		return Integer.parseInt(parts[1]);
+	}
+
+	/**
+	 * Compare les personnes entre elles afin de voir celles qui pourraient bénéficier d'une réduction
+	 * @param idPersonne
+	 * @param aPaye afin de changer la seconde liste de comparaison
+	 * @return
+	 */
+	public double calculerMontantReductionCours(int idPersonne, boolean aPaye){
+		ArrayList<ReservationATD> listReservSelonPayementATD = this.getListReservationPayeeOuNon(idPersonne, aPaye);
+		ArrayList<ReservationATD> listReservPayeeATD = this.getListReservationPayeeOuNon(idPersonne, true);
+
+		ArrayList<Reservation> listReservSelonPayement= changeTypeReservationlistEnATD(listReservSelonPayementATD);
+		ArrayList<Reservation> listReservPayee = changeTypeReservationlistEnATD(listReservPayeeATD);
+		
+		System.out.println(listReservPayee.size());
+		int somme = 0;
+		for (int i = 0; i < listReservSelonPayement.size(); i++) {
+			for (int j = i; j < listReservPayee.size(); j++) {
+				if (listReservPayee.get(j).getSemaine().getNumSemaine() == listReservSelonPayement.get(i).getSemaine().getNumSemaine() 
+						&& listReservPayee.get(j).getEleve().getNumEleve() == listReservSelonPayement.get(i).getEleve().getNumEleve()
+						&& ((listReservPayee.get(j).getHeureDebut() == 9 && listReservSelonPayement.get(i).getHeureDebut() == 14) || (listReservPayee.get(j).getHeureDebut() == 14 && listReservSelonPayement.get(i).getHeureDebut() == 9))){
+					//Même semaine, même personne, un cours le matin et un l'aprèm.
+					somme += listReservPayee.get(j).getCours().getPrix() +  listReservSelonPayement.get(i).getCours().getPrix();
+				}
+				/*else{
+					if (aPaye == false){
+					System.out.println();
+					System.out.println(listReservPayee.get(j).getSemaine().getNumSemaine() == listReservSelonPayement.get(i).getSemaine().getNumSemaine());
+					System.out.println(listReservPayee.get(j).getEleve() == listReservSelonPayement.get(i).getEleve());
+					System.out.println((listReservPayee.get(j).getHeureDebut() == 9 && listReservSelonPayement.get(i).getHeureDebut() == 14) + " " +listReservSelonPayement.get(i).getHeureDebut() + " " + listReservPayee.get(j).getHeureDebut());
+					System.out.println((listReservPayee.get(j).getHeureDebut() == 14 && listReservSelonPayement.get(i).getHeureDebut() == 9));
+					System.out.println(listReservPayee.get(j).getEleve().getPre() + " " +listReservSelonPayement.get(i).getEleve().getPre());
+					}
+
+				}*/
+			}
+		}
+		System.out.println(somme);
+		return somme - (somme * 0.85);
+
+	}
+
+	public ArrayList<ReservationATD> getMyListATD(int id) {
+		ArrayList<Reservation> listDispo = getMyList(id);
+		ArrayList<ReservationATD> listDispoATD = new ArrayList<ReservationATD>();
+		for (int i = 0; i < listDispo.size(); i++) {
+			ReservationATD RATD = new ReservationATD();
+			RATD.setHeureDebut(listDispo.get(i).getHeureDebut());
+			RATD.setHeureFin(listDispo.get(i).getHeureDebut());
+			RATD.setAUneAssurance(listDispo.get(i).getAUneAssurance());
+			RATD.setaPaye(listDispo.get(i).getaPaye());
+			
+			RATD.setSemaine(new SemaineATD(listDispo.get(i).getSemaine()));
+			RATD.setCours(new CoursATD(listDispo.get(i).getCours()));
+			RATD.setEleve(new EleveATD(listDispo.get(i).getEleve()));
+			RATD.setClient(new ClientATD(listDispo.get(i).getClient()));
+			RATD.setMoniteur(new MoniteurATD(listDispo.get(i).getMoniteur()));
+			listDispoATD.add(RATD);
+		}
+		return listDispoATD;
+	}
+
+	public int getIdReserv(){
+		try {
+			Reservation R 	= new Reservation();
+			Semaine 	s 	= new Semaine(this.getSemaine());
+			Cours 		c 	= new Cours(this.getCours());
+			Client 		cli = new Client(this.getClient());
+			Eleve 		e 	= new Eleve(this.getEleve());
+			
+			SemaineATD SATD = new SemaineATD(s);
+			CoursATD 		CATD 	= new CoursATD(c);
+			ClientATD	CliATD = new ClientATD(cli);
+			EleveATD 		EATD	= new EleveATD(e);
+			
+			
+			s.setNumSemaine(SATD.getIdATD(SATD));
+			c.setNumCours(CATD.getId(c).getNumCours());
+			cli.setNumClient(CliATD.getId(cli).getNumClient());
+			e.setNumEleve(EATD.getId(e).getNumEleve());
+			
+			System.out.println("getID sem : " + s.getNumSemaine());
+			System.out.println("getID cours : " + c.getNumCours());
+			System.out.println("getID cli : " + cli.getNumClient());
+			System.out.println("getID ele : " + e.getNumEleve());
+			
+			R.setSemaine(s);
+			R.setCours(c);
+			R.setClient(cli);
+			R.setEleve(e);
+			System.out.println(getId(R).getNumReservation());
+			return getId(R).getNumReservation();
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		System.out.println("Erreur getID : -1");
+		return -1;
+	}
+
+	public int createReservation() {
+		Reservation R = new Reservation();
+		R.setHeureDebut(this.getHeureDebut());
+		R.setHeureFin(this.getHeureFin());
+		R.setAUneAssurance(this.getAUneAssurance());
+		R.setaPaye(this.aPaye);
+		
+		Semaine 	s 	= new Semaine(S);
+		Cours 		c 	= new Cours(C);
+		Client 		cli = new Client(Cli);
+		Eleve 		e 	= new Eleve(this.getEleve());
+		R.setSemaine(s);
+		R.setCours(c);
+		R.setClient(cli);
+		R.setEleve(e);
+		return ReservationDAO.create(R);
+	}
+
+	public int effectuerReservation(boolean coursCollectif, boolean assurance, int numMoniteur, int idClient, int numEleve, int numSemaine,
+			Date dateJour, int numCours, String periode, boolean payeReservation){
+		CoursATD CATD = new CoursATD ();
+		SemaineATD SATD = new SemaineATD();
+		EleveATD EATD = new EleveATD();
+		ClientATD CLIATD = new ClientATD();
+		MoniteurATD MATD = new MoniteurATD();
+
+		String string;
+		if(!coursCollectif)
+			string = CATD.calculerPlaceCours(numCours, dateJour.getTime(), numMoniteur);
+		else 
+			string = CATD.calculerPlaceCours(numCours, numSemaine, numMoniteur);
+		String[] parts = string.split("-");
+		String part1 = parts[0];
+		if(Integer.parseInt(part1) > 0){
+			String[] partsPer = periode.split("-");
+			String heureDebut = partsPer[0];
+			String heureFin = partsPer[1];
+			this.setHeureDebut(Integer.parseInt(heureDebut));
+			this.setHeureFin(Integer.parseInt(heureFin));
+			this.setAUneAssurance(assurance);
+			this.setaPaye(payeReservation);
+			// utilisé pour réservation coursParticulier.
+			if(!coursCollectif){
+				SATD = SATD.findATD(numSemaine);
+				SATD.setDateDebut(dateJour);
+				SATD.setDateFin(dateJour);
+				this.setSemaine(new SemaineATD(SATD.transformATDintoPojo(numSemaine)));
+				System.out.println("F_AjoutRrdv -> cours particulier");
+			}
+			else { 
+				this.setSemaine(new SemaineATD(SATD.find(numSemaine)));
+				System.out.println("F_AjoutRrdv -> cours collectif");
+			}
+
+			this.setCours(new CoursATD(CATD.find(numCours)));
+			this.setEleve(new EleveATD(EATD.find(numEleve)));
+			this.setClient(new ClientATD(CLIATD.find(idClient)));
+			this.setMoniteur(new MoniteurATD(MATD.find(numMoniteur)));
+			
+			int numReservation = this.createReservation();
+
+			if(numReservation != -1){
+				// On update l'assurance que si tout a fonctionné auparavant
+				this.updateAssurance(numEleve, numSemaine, periode);
+				return numReservation;
+			}
+			else JOptionPane.showMessageDialog(null, "Reservation annulée. (6 ans mini pour faire du snow)");
+		}
+		else JOptionPane.showMessageDialog(null, "Vous ne pouvez plus réserver pour ce cours.");
+		return -1;
+
+	}
+
+	/**
+	 * Objectif : Savoir si les cours risquent d'être annulées
+	 * @param numUtilisateur
+	 * @param typeUtilisateur
+	 */
+	public void getReservationAnnulee (int numUtilisateur, int typeUtilisateur){
+		ArrayList<Reservation> listReserv =  ReservationDAO.getReservationAnnulee(numUtilisateur, typeUtilisateur); 
+		if (listReserv.size() == 0)
+			JOptionPane.showMessageDialog(null, "Suite à un scan de notre programme, aucuns de vos rendez-vous n'est susceptible d'être annulé.");
+		else {
+			for(Reservation R : listReserv){
+				// On n'affiche que ceux qui ont payés
+				if (R.getaPaye()){
+					if (typeUtilisateur == 1 )
+						JOptionPane.showMessageDialog(null,
+								"Les cours suivant risquent d'être annulés : " + "\n"
+										+ "Réservation n° : " + R.getNumReservation() + ", " +  R.getCours().getNomSport() + "\n"
+										+ "Moniteur : " + R.getMoniteur().getNom()  + " " + R.getMoniteur().getPre() + " \n"
+										+ "Client : " + R.getClient().getNom()  + " " + R.getClient().getPre() + " \n"
+										+ "Eleve : " + R.getEleve().getNom()  + " " +  R.getEleve().getPre()  + " \n"
+										+ "Semaine : " + R.getSemaine().getDateDebut() + "\n\n");
+					else 
+						JOptionPane.showMessageDialog(null,
+								"Les cours suivant risquent d'être annulés : " + "\n"
+										+ "Réservation n° : " + R.getNumReservation() + ", " +  R.getCours().getNomSport() + "\n"
+										+ "Moniteur : " + R.getMoniteur().getNom()  + " " + R.getMoniteur().getPre() + " \n"
+										+ "Client : " + R.getClient().getNom()  + " " + R.getClient().getPre() + " \n"
+										+ "Eleve : " + R.getEleve().getNom()  + " " +  R.getEleve().getPre()  + " \n"
+										+ "Semaine : " + R.getSemaine().getDateDebut() + "\n\n"
+										+ "Vous serez remboursé de " + R.getCours().getPrix() + "€" + "\n"
+										+ "Adresse de rembrousement : " + R.getClient().getAdresseFacturation());
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Affiche les réservations payée ou non payée d'un client
+	 * @param idClient
+	 * @param payeOuNon
+	 * @return
+	 */
+	public ArrayList<ReservationATD> getListReservationPayeeOuNon(int idClient, boolean payeOuNon){
+		ArrayList<ReservationATD> listeFull = changeTypeReservationList(getMyList(idClient));
+		ArrayList<ReservationATD> listeFiltree = new ArrayList<ReservationATD>();
+
+		for(ReservationATD RATD : listeFull){
+			if (RATD.getaPaye() == payeOuNon){ listeFiltree.add(RATD); }
+		}
+		return listeFiltree;
+	}
+
+	public boolean update (Reservation r) { 
+		// Il faut trouver le nombre de place max, calculer le nombre actuel et update uniquement si ce nombre est <=.
+		if (this.calculerNombrePlaceRestantePourUnCours() > 0){ return ReservationDAO.update(r); }
+		else { return false; }
+	}
+
+	/**
+	 * Update toutes les cours non payé d'une personne
+	 * @param idClient
+	 */
+	public boolean updatePanierEntier(int idPersonne){
+		boolean fullUpdate = true;
+		try{
+			ArrayList<ReservationATD> listNonPaye = getListReservationPayeeOuNon(idPersonne, false);
+			for (ReservationATD RATD : listNonPaye){
+				Reservation R = new Reservation();
+
+				R.setHeureDebut(RATD.getHeureDebut());
+				R.setHeureFin(RATD.getHeureDebut());
+				R.setAUneAssurance(RATD.getAUneAssurance());
+				R.setaPaye(RATD.getaPaye());
+				
+				R.setSemaine(new Semaine(RATD.getSemaine()));
+				R.setCours(new Cours(RATD.getCours()));
+				R.setEleve(new Eleve(RATD.getEleve()));
+				R.setClient( new Client(RATD.getClient()));
+				R.setMoniteur(new Moniteur(RATD.getMoniteur()));
+				
+				R.setNumReservation(RATD.getIdReserv());
+				fullUpdate = update(R);
+			}
+
+		}
+		catch (Exception e) { e.getStackTrace(); }
+		return fullUpdate;
+	}
+
+	/**
+	 * Objectif : Savoir si un moniteur à une semaine donnée a des cours à prester
+	 * @param dateDebut
+	 * @param numMoniteur
+	 * @return
+	 */
+	public boolean ceMoniteurADesReservationsPourCetteSemaine(Date dateDebut, int numMoniteur){
+
+
+		// Si il est sur false on rechercher un nouveau moniteur pour le suppléer ses réservation à la date indiquée
+		// Il faut récupérer ses réservations, s'il en a.
+		ReservationATD RATD = new ReservationATD();
+		ArrayList<ReservationATD> listReservationMoniteurSelonNumSemaine = new ArrayList<ReservationATD>();
+		ArrayList<ReservationATD> listFullReservation = RATD.getMyListATD(numMoniteur);
+		for(ReservationATD ratd : listFullReservation){
+			if (ratd.getSemaine().getDateDebut().equals(dateDebut)){ listReservationMoniteurSelonNumSemaine.add(ratd); }
+		}
+		// Il y a des reservations dispo, on update pas
+		if (!listReservationMoniteurSelonNumSemaine.isEmpty()){ return true; }
+		return false;
+	}
+
+	/**
+	 * Objectif : Savoir si un moniteur a encore des cours particuliers à prester.
+	 * @param numMoniteur
+	 * @return
+	 */
+	public boolean ceMoniteurDoitPresterCoursParticulier(int numMoniteur){
+		ArrayList<Reservation> listeReserv = this.getMyList(numMoniteur);
+		for (Reservation r: listeReserv){
+			if (r.getCours().getPrix() < 90){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// Modification 1.4.0
+	// Transformation pour les listes réservation
+	public static ArrayList<ReservationATD> changeTypeReservationList(ArrayList<Reservation> listR){
+		try {
+			ArrayList<ReservationATD> LE = new ArrayList<ReservationATD>();
+			for(int i = 0; i < listR.size(); i++){
+				ReservationATD RATD = new ReservationATD();
+				RATD.setHeureDebut(listR.get(i).getHeureDebut());
+				RATD.setHeureFin(listR.get(i).getHeureDebut());
+				RATD.setAUneAssurance(listR.get(i).getAUneAssurance());
+				RATD.setaPaye(listR.get(i).getaPaye());
+				
+				RATD.setSemaine(new SemaineATD(listR.get(i).getSemaine()));
+				RATD.setCours(new CoursATD(listR.get(i).getCours()));
+				RATD.setEleve(new EleveATD(listR.get(i).getEleve()));
+				RATD.setClient( new ClientATD(listR.get(i).getClient()));
+				RATD.setMoniteur(new MoniteurATD(listR.get(i).getMoniteur()));
+				LE.add(RATD);
+			}
+			return LE;
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return null;
+	}
+
+
+	public static ArrayList<Reservation> changeTypeReservationlistEnATD(ArrayList<ReservationATD> listReservationATD){
+		try {
+			ArrayList<Reservation> LE = new ArrayList<Reservation>();
+			for(int i = 0; i < listReservationATD.size(); i++){
+				Reservation R = new Reservation();
+				R.setHeureDebut(listReservationATD.get(i).getHeureDebut());
+				R.setHeureFin(listReservationATD.get(i).getHeureDebut());
+				R.setAUneAssurance(listReservationATD.get(i).getAUneAssurance());
+				R.setaPaye(listReservationATD.get(i).getaPaye());
+				
+				R.setSemaine(new Semaine(listReservationATD.get(i).getSemaine()));
+				R.setCours(new Cours(listReservationATD.get(i).getCours()));
+				R.setEleve(new Eleve(listReservationATD.get(i).getEleve()));
+				R.setClient( new Client(listReservationATD.get(i).getClient()));
+				R.setMoniteur(new Moniteur(listReservationATD.get(i).getMoniteur()));
+				LE.add(R);
+			}
+			return LE;
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+		return null;
+	}
+
+	// FONCTION SURCHARGEE
+	@Override
+	public String toString() {
+		return "Heure de début de séance : " + heureDebut + System.getProperty("line.separator")
+		+ "Heure de fin de séance : " + heureFin + System.getProperty("line.separator") + S.toString()
+		+ System.getProperty("line.separator") + C.toString() + System.getProperty("line.separator")
+		+ E.toString() + System.getProperty("line.separator") + Cli.toString()
+		+ System.getProperty("line.separator") + M.toString() + System.getProperty("line.separator");
+	}
+
+	// PROPRIETE
+	public int 		getHeureDebut		() 						{ return heureDebut; }
+	public int 		getHeureFin			() 						{ return heureFin; }
+	public SemaineATD 	getSemaine		() 						{ return S; }
+	public CoursATD 	getCours		() 						{ return C; }
+	public EleveATD 	getEleve		() 						{ return E; }
+	public ClientATD 	getClient		() 						{ return Cli; }
+	public MoniteurATD getMoniteur		()  					{ return M; }
+	public boolean 	getAUneAssurance	() 						{ return aUneAssurance; }
+	public void 	setHeureDebut		(int heureDebut) 		{ this.heureDebut = heureDebut; }
+	public void 	setHeureFin			(int heureFin) 			{ this.heureFin = heureFin; }
+	public void 	setAUneAssurance	(boolean aUneAssurance) { this.aUneAssurance = aUneAssurance; }
+	public void 	setSemaine 			(SemaineATD S)  			{ this.S = S;}
+	public void 	setCours 			(CoursATD C)  				{ this.C = C;}
+	public void 	setEleve 			(EleveATD E)  				{ this.E = E;}
+	public void 	setClient 			(ClientATD Cli) 			{ this.Cli = Cli;}
+	public void 	setMoniteur 		(MoniteurATD M) 			{ this.M = M;}
+
+	//public ArrayList<CoursATD> 	getListCours() 									{ return listCours; 			}
+	//public void 				setListCours(ArrayList<CoursATD> listCours) 	{ this.listCours = listCours; }
+
+	public boolean 	getaPaye() 				{ return aPaye; }
+	public void 	setaPaye(boolean aPaye) { this.aPaye = aPaye; }
+}
