@@ -1,0 +1,14 @@
+package be.mousty.fenetre;
+
+import javax.swing.JPanel;
+
+public class F_Conn extends JPanel {
+
+	/**
+	 * Create the panel.
+	 */
+	public F_Conn() {
+
+	}
+
+}

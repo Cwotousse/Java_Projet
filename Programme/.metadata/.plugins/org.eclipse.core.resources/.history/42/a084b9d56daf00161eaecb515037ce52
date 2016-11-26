@@ -1,0 +1,189 @@
+package be.mousty.fenetre;
+/**
+	Classe JFrame permettant d'afficher les fenêtres qui permettent d'utiliser le programme.
+	@author Adrien MOUSTY
+	@version Finale 1.3.3
+	@category Fenêtre
+*/
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import be.mousty.accessToDao.UtilisateurATD;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.border.BevelBorder;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
+
+
+
+public class F_Connexion extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2614761702909947171L;
+	private JTextField txtNomDutilisateur;
+	private JPasswordField pwdPassword;
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					F_Connexion frame = new F_Connexion();
+					
+					frame.setVisible(true);
+					
+				}
+				catch (Exception e) { e.printStackTrace(); }
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public F_Connexion() {
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(0, 0, 1632, 918);
+		getContentPane().setLayout(null);
+		
+		
+
+
+		// New
+		JLabel label 			= new JLabel("STATION SKI");
+		label.setForeground(Color.WHITE);
+		JLabel lblStationSki 	= new JLabel("PROJET JAVA");
+		lblStationSki.setForeground(Color.WHITE);
+		JButton btnJeNePossde 	= new JButton("S'inscrire");
+		btnJeNePossde.setFont(new Font("Yu Gothic Light", Font.PLAIN, 15));
+		btnJeNePossde.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		JButton btnSeConnecter 	= new JButton("Se connecter");
+		btnSeConnecter.setFont(new Font("Yu Gothic Light", Font.PLAIN, 15));
+		btnSeConnecter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		txtNomDutilisateur 		= new JTextField();
+		txtNomDutilisateur.setBorder(new LineBorder(new Color(30, 144, 255), 2, true));
+		txtNomDutilisateur.setFont(new Font("Yu Gothic UI", Font.PLAIN, 15));
+		//txtNomDutilisateur.setBackground(Color.BLACK);
+		txtNomDutilisateur.setForeground(Color.WHITE);
+		txtNomDutilisateur.setText("");
+		pwdPassword 			= new JPasswordField("");
+		pwdPassword.setFont(new Font("Yu Gothic UI", Font.PLAIN, 15));
+		pwdPassword.setForeground(Color.WHITE);
+		//pwdPassword.setBackground(Color.BLACK);
+
+		// Font
+		label.setFont(new Font("Century Gothic", Font.BOLD, 51));
+		lblStationSki.setFont(new Font("Century Gothic", Font.BOLD, 51));
+
+		// Tooltip
+		txtNomDutilisateur.setToolTipText("Nom d'utilisateur");
+		pwdPassword.setToolTipText("Mot de passe");
+
+		// columns
+		txtNomDutilisateur.setColumns(10);
+
+		// Bounds
+		label.setBounds				(533, 71, 383, 88);
+		lblStationSki.setBounds		(780, 170, 345, 75);
+		txtNomDutilisateur.setBounds(716, 454, 200, 20);
+		pwdPassword.setBounds		(716, 478, 200, 20);
+		btnSeConnecter.setBounds	(716, 739, 200, 25);
+		btnJeNePossde.setBounds		(716, 775, 200, 25);
+		
+		txtNomDutilisateur.setBackground(new Color(0, 0, 0, 0));
+		pwdPassword.setBackground(new Color(0, 0, 0, 0));
+		btnSeConnecter.setBackground(new Color(15, 0, 0, 0));
+		btnJeNePossde.setBackground(new Color(0, 0, 0, 0));
+		btnSeConnecter.setForeground(Color.WHITE);
+		btnJeNePossde.setForeground(Color.WHITE);
+		
+		txtNomDutilisateur.setOpaque(false);
+		pwdPassword.setOpaque(false);
+		btnSeConnecter.setOpaque(false);
+		btnJeNePossde.setOpaque(false);
+
+		// Add
+		getContentPane().add(label);
+		getContentPane().add(lblStationSki);
+		getContentPane().add(txtNomDutilisateur);
+		getContentPane().add(pwdPassword);
+		getContentPane().add(btnSeConnecter);
+		getContentPane().add(btnJeNePossde);
+		
+		
+		JLabel lbl_backgroundIMG = new JLabel("");
+		lbl_backgroundIMG.setBackground(Color.RED);
+		lbl_backgroundIMG.setBounds(0, 0, 1632, 918);
+		getContentPane().add(lbl_backgroundIMG);
+		//..\\
+		lbl_backgroundIMG.setIcon(new ImageIcon("..\\skiBackground.jpeg"));
+
+
+		// Se connecter
+		btnSeConnecter.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("deprecation")
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					UtilisateurATD UATD = new UtilisateurATD(pwdPassword.getText(), txtNomDutilisateur.getText());
+					UATD = UATD.connexion();
+					switch(UATD.getTypeUtilisateur()){
+					case 1 : // moniteur
+						setVisible(false);
+						F_Moniteur frameMoni = new F_Moniteur(UATD.getNumId());
+						frameMoni.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frameMoni.setVisible(true);
+						//F_Moniteur.
+						break;
+					case 2 : 
+						setVisible(false);
+						F_Client frameCli = new F_Client(UATD.getNumId());
+						frameCli.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+						frameCli.setVisible(true);
+						break;
+						// -1 car le type est inconnu
+					default: JOptionPane.showMessageDialog(getContentPane(), "Donnees incorrectes.");
+					}
+				}
+				catch (Exception e) {
+					e.getStackTrace();
+					JOptionPane.showMessageDialog(getContentPane(), "Erreur.");
+				}
+			}
+		});
+
+		// S'inscrire
+		btnJeNePossde.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				setVisible(false);
+				@SuppressWarnings("deprecation")
+				F_Inscription frame = new F_Inscription(txtNomDutilisateur.getText(), pwdPassword.getText());
+				frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				frame.setVisible(true);
+			}
+		});
+	}
+}

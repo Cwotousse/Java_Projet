@@ -8,6 +8,7 @@ package be.mousty.fenetre;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -66,11 +67,11 @@ public class F_AjoutRdv extends JFrame {
 	JLabel lbl_moniteur = new JLabel("Moniteur");
 	JLabel lbl_eleve = new JLabel("El\u00E8ve");
 	JLabel lbl_horaire = new JLabel("Horaire");
-	JLabel lbl_cours = new JLabel("Cours");
+	JLabel lbl_cours = new JLabel("Niveau");
 	JLabel lbl_infoCours = new JLabel("Il reste x places pour ce cours");
 	JLabel lbl_placeMin = new JLabel("Il manque x places pour ce cours");
 	JLabel lbl_jour = new JLabel("Jour");
-	JLabel lbl_typeCours = new JLabel("Cours");
+	JLabel lbl_typeCours = new JLabel("Sport");
 	
 	JComboBox<ComboItem> cb_typeCours = new JComboBox<ComboItem>();
 	JComboBox<ComboItem> cb_jour = new JComboBox<ComboItem>();
@@ -128,6 +129,8 @@ public class F_AjoutRdv extends JFrame {
 	 * Create the frame.
 	 */
 	public F_AjoutRdv(int idClient) {
+		setTitle("Domaine Châtelet");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("..\\logo.png"));
 		numClient = idClient;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 417);

@@ -1,4 +1,5 @@
 package be.mousty.fenetre;
+import java.awt.Color;
 /**
 	Classe JFrame permettant d'afficher les fenêtres qui permettent d'utiliser le programme.
 	@author Adrien MOUSTY
@@ -7,16 +8,24 @@ package be.mousty.fenetre;
 */
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 
 import be.mousty.accessToDao.UtilisateurATD;
+
+
 
 public class F_Connexion extends JFrame {
 	/**
@@ -35,6 +44,7 @@ public class F_Connexion extends JFrame {
 				try {
 					F_Connexion frame = new F_Connexion();
 					frame.setVisible(true);
+					
 				}
 				catch (Exception e) { e.printStackTrace(); }
 			}
@@ -45,24 +55,51 @@ public class F_Connexion extends JFrame {
 	 * Create the frame.
 	 */
 	public F_Connexion() {
+		setTitle("Domaine Châtelet");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("..\\logo.png"));
+		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 167, 203);
+		setBounds(0, 0, 1632, 918);
 		getContentPane().setLayout(null);
+		
+		
 
 
 		// New
-		JLabel label 			= new JLabel("STATION SKI");
-		JLabel lblStationSki 	= new JLabel("PROJET JAVA");
+		JLabel lblDomaineChtelet 			= new JLabel("Domaine Ch\u00E2telet 260 m");
+		lblDomaineChtelet.setForeground(new Color(250, 128, 114));
+		JLabel lblStationSki 	= new JLabel("ECOLE DE SKI");
+		lblStationSki.setForeground(new Color(250, 128, 114));
 		JButton btnJeNePossde 	= new JButton("S'inscrire");
+		btnJeNePossde.setBorder(new LineBorder(new Color(250, 128, 114), 2, true));
+		btnJeNePossde.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		btnJeNePossde.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		JButton btnSeConnecter 	= new JButton("Se connecter");
+		btnSeConnecter.setBorder(new LineBorder(new Color(250, 128, 114), 2, true));
+		btnSeConnecter.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		btnSeConnecter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		txtNomDutilisateur 		= new JTextField();
-		txtNomDutilisateur.setText("adri");
-		pwdPassword 			= new JPasswordField("test");
+		txtNomDutilisateur.setBorder(new LineBorder(new Color(250, 128, 114), 2, true));
+		txtNomDutilisateur.setFont(new Font("Yu Gothic UI", Font.BOLD, 20));
+		//txtNomDutilisateur.setBackground(Color.BLACK);
+		txtNomDutilisateur.setForeground(new Color(255, 255, 255));
+		txtNomDutilisateur.setText("");
+		pwdPassword 			= new JPasswordField("");
+		pwdPassword.setBorder(new LineBorder(new Color(250, 128, 114), 2, true));
+		pwdPassword.setFont(new Font("Yu Gothic UI", Font.BOLD, 20));
+		pwdPassword.setForeground(Color.WHITE);
+		//pwdPassword.setBackground(Color.BLACK);
 
 		// Font
-		label.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
-		lblStationSki.setFont(new Font("Yu Gothic UI", Font.PLAIN, 11));
+		lblDomaineChtelet.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 54));
+		lblStationSki.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 54));
 
 		// Tooltip
 		txtNomDutilisateur.setToolTipText("Nom d'utilisateur");
@@ -72,20 +109,40 @@ public class F_Connexion extends JFrame {
 		txtNomDutilisateur.setColumns(10);
 
 		// Bounds
-		label.setBounds				(10, 0, 74, 15);
-		lblStationSki.setBounds		(77, 11, 74, 15);
-		txtNomDutilisateur.setBounds(10, 39, 139, 20);
-		pwdPassword.setBounds		(10, 70, 139, 20);
-		btnSeConnecter.setBounds	(10, 113, 139, 23);
-		btnJeNePossde.setBounds		(10, 138, 139, 23);
+		lblDomaineChtelet.setBounds				(508, 70, 651, 88);
+		lblStationSki.setBounds		(653, 141, 345, 75);
+		txtNomDutilisateur.setBounds(686, 444, 260, 30);
+		pwdPassword.setBounds		(686, 478, 260, 30);
+		btnSeConnecter.setBounds	(686, 739, 260, 25);
+		btnJeNePossde.setBounds		(686, 775, 260, 25);
+		
+		txtNomDutilisateur.setBackground(new Color(0, 0, 0, 0));
+		pwdPassword.setBackground(new Color(0, 0, 0, 0));
+		btnSeConnecter.setBackground(new Color(0, 0, 0, 0));
+		btnJeNePossde.setBackground(new Color(0, 0, 0, 0));
+		btnSeConnecter.setForeground(new Color(240, 128, 128));
+		btnJeNePossde.setForeground(new Color(240, 128, 128));
+		
+		txtNomDutilisateur.setOpaque(false);
+		pwdPassword.setOpaque(false);
+		btnSeConnecter.setOpaque(false);
+		btnJeNePossde.setOpaque(false);
 
 		// Add
-		getContentPane().add(label);
+		getContentPane().add(lblDomaineChtelet);
 		getContentPane().add(lblStationSki);
 		getContentPane().add(txtNomDutilisateur);
 		getContentPane().add(pwdPassword);
 		getContentPane().add(btnSeConnecter);
 		getContentPane().add(btnJeNePossde);
+		
+		
+		JLabel lbl_backgroundIMG = new JLabel("");
+		lbl_backgroundIMG.setBackground(Color.RED);
+		lbl_backgroundIMG.setBounds(0, 0, 1632, 918);
+		getContentPane().add(lbl_backgroundIMG);
+		//..\\
+		lbl_backgroundIMG.setIcon(new ImageIcon("..\\skiBackground.jpeg"));
 
 
 		// Se connecter

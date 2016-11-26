@@ -7,6 +7,7 @@ package be.mousty.fenetre;
 */
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
@@ -70,6 +71,8 @@ public class F_PayerReserv extends JFrame {
 	 * Create the frame.
 	 */
 	public F_PayerReserv(boolean coursCollectif, boolean assurance, int numMoniteur, int idClient, int numEleve, int numSemaine, Date dateJour, int numCours, String periode) {
+		setTitle("Domaine Châtelet");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("..\\logo.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 470, 300);
 		contentPane = new JPanel();
@@ -79,7 +82,7 @@ public class F_PayerReserv extends JFrame {
 
 		// New
 		JLabel lbl_reserv 			= new JLabel("R\u00E9servation");
-		JLabel lbl_nom 				= new JLabel("Nom : ");
+		JLabel lbl_nom 				= new JLabel("Client : ");
 		JLabel lbl_affNom 			= new JLabel("");
 		JLabel lbl_factur 			= new JLabel("Adresse facturation : ");
 		JLabel lbl_nomElev 			= new JLabel("El\u00E8ve : ");
@@ -135,7 +138,7 @@ public class F_PayerReserv extends JFrame {
 		contentPane.add(lbl_affReduction, "cell 2 7");
 		contentPane.add(lbl_tot, "cell 1 8");
 		contentPane.add(lbl_affPrixTotal, "cell 2 8");
-		contentPane.add(btn_panier, "cell 5 8");
+		contentPane.add(btn_panier, "cell 5 8,growx");
 		contentPane.add(btn_ret, "cell 1 10");
 		contentPane.add(btn_payer, "cell 5 10,growx");
 

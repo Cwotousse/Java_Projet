@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -74,6 +75,8 @@ public class F_Moniteur extends JFrame {
 	 * Create the frame.
 	 */
 	public F_Moniteur(int idMoniteur) {
+		setTitle("Domaine Châtelet");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("..\\logo.png"));
 		numMoniteur = idMoniteur;
 		boolean premierPassage = true;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

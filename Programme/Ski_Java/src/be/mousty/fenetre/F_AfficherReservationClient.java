@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -56,6 +57,8 @@ public class F_AfficherReservationClient extends JFrame {
 	 * Create the frame.
 	 */
 	public F_AfficherReservationClient(int idPersonne) {
+		setTitle("Domaine Châtelet");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("..\\logo.png"));
 		setForeground(Color.LIGHT_GRAY);
 		try{
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

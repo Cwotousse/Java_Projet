@@ -7,6 +7,7 @@ package be.mousty.fenetre;
 */
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -61,6 +62,8 @@ public class F_AjoutEleve extends JFrame {
 	 * Create the frame.
 	 */
 	public F_AjoutEleve(int numClient) {
+		setTitle("Domaine Châtelet");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("..\\logo.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 192, 379);
 		contentPane = new JPanel();
